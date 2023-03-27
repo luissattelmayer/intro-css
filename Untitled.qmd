@@ -1,0 +1,9 @@
+---
+title: "syllabus"
+format: pdf
+---
+This is a syllabus
+```{r}
+
+```
+
