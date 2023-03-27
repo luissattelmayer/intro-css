@@ -1,29 +1,26 @@
 ---
 title: "Computational Text Analysis"
 author: "Malo Jan & Luis Sattelmayer"
-format: html
+format: pdf
 date: today
 bibliography: tada.bib
-
-
 ---
 
 # Course outline
 
 This course is an introduction to textual statistics, text-as-data methods and computational social sciences. Through the last decades, both methods in quantitative text analysis and the availability of text has increased throughout the field of social sciences. With increasing computational power of home computers, social scientists are now more and more able to overcome constraints of data availability and requirements of time when analyzing large corpora of text. Advances in artificial intelligence and natural language processing are increasingly being imported into the social sciences, with their advantages but also their shortcomings. \par
-This class aims to introduce the students to the logic and methods behind the new turning in computational social sciences. It will gently expose students to more and more elaborated text-as-data [Malo: and Machine Learning]methods throughout the semester. The class will be divided in three sections which build on each other: 
+This class aims to introduce the students to the logic and methods behind the new turning in computational social sciences. It will gently expose students to more and more elaborated \textit{text-as-data} and \textit{machine learning} methods throughout the semester. The class will be divided in three sections which build on each other: 
 
 1. Data Collection \& Construction of Corpus
 2. Text-Mining and Text-Scaling
 3. Supervised & Unsupervised Machine Learning
 
-The first block on \textit{Data Collection \& Construction of Corpus} will teach students the logic of scraping and automated text collection. Further, students will be familiarized with working on Github. The second part, week 4 to 6, is supposed to show conventional methods of text mining, frequency calculations, scaling text and measuring distances between texts. The third section will introduce students to the idea of unsupervised methods such as topic models and the logic of training algorithms by hand to estimate a bigger corpus later on.[Malo : le SML consiste pas forcément à annoter des textes parce que parfois tu les as déjà les labels, je mettrais plutôt : introduce students to unsupervised and supervised machine learning techniques to analyze text]. 
+The first block on Data Collection \& Construction of Corpus will teach students the logic of scraping and automated text collection. Further, students will be familiarized with working on Github. The second part, week 4 to 6, is supposed to show conventional methods of text mining, frequency calculations, scaling text and measuring distances between texts. The third section will introduce students to the idea of unsupervised methods such as topic models and the logic of training algorithms in supervised fashion to analyze text.
+
 
 # Objectives
+The objectives of this class are fourfold. First, we wish to familiarize students with the logic of overcoming data shortcomings by collecting (in automated fashion) textual data and selecting the right and pertinent corpora for their research interest. Second, this class is designed to expose students to the variety of current methods available to conduct quantitative text analyses in a way that they are able to conduct their own research after this class potentially preparing them for research projects, such as a Master's thesis, of a bigger scope using the covered methods. Third, this class puts special emphasis on reproducible and open research. Students will therefore learn how to use Github and reproducible documentation of code. The last objective is that the students will efficiently improve their programming skills and understanding of quantitative reasoning that can be applied to deal with other data than text. \par  
 
-The objectives of this class are fourfold. First, we wish to familiarize students with the logic of overcoming data shortcomings by collecting (in automated fashion) textual data and selecting the right and pertinent corpora for their research interest. Second, this class is designed to expose students to the variety of current methods available to conduct quantitative text analyses in a way that they are able to conduct their own research after this class potentially preparing them for research projects of a bigger scope using the covered methods. Third, this class puts special emphasis on reproducible and open research. Students will therefore learn how to use Github and reproducible documentation of code. The last objective is that the students will learn advanced and efficient data management techniques throughout the sessions by working with text-as-data methods allowing them to work with big databases of text or other datasets. [Malo : plutôt que data management, je mettrais : improve general programming skills and knowledge of quantitative reasoning that can be applied to deal with other data than text] \par  
-
-[Malo : ajouter quelque chose sur le fait qu'aider les étudiants pour leur mémoire]
 
 # Reading Policy
 
@@ -31,12 +28,11 @@ There is no strict reading policy and the sessions will mostly consist of the pr
 
 # Course Validation
 
-As emphasized in the previous paragraph, a strong focus will be put on the final project of the class. From the start, students are asked to think about a final project for this class that will have to be handed in after session 12. Students are required to choose one method covered in one of the classes and apply them to a research question. [Malo : peut être que c'est restrictif de choisir une méthode ? ] Given the course's emphasis on reproducible code, students must also hand in an annotated version of their code in Markdown format. \par
+As emphasized in the previous paragraph, a strong focus will be put on the final project of the class. From the start, students are asked to think about a final project for this class that will have to be handed in after session 12. Students are required to choose methods covered in one of the classes and apply them to a research question. Given the course's emphasis on reproducible code, students must also hand in an annotated version of their code in Markdown format. \par
 
 # Pre-requisites
 
-An intermediate knowledge of RStudio is recommended. Further familiarity with Git, Markdown or Quarto is an advantage but not a must [Malo : je pense que personne est familier avec GIT ahah donc est-ce que ca vaut la peine de le mettre ? Est-ce que intermédiaire ça fait pas trop peur ahah, certaines personnes peut être à l'aise se sentent pas intermédiaire, faut pas qu'il y ait de barrière à l'entrée en termes de self-competence]. In terms of coding skills, this course picks up where the RStudio lab sessions for the Quantitative Methods II lecture ended.
-
+A basic knowledge of RStudio is needed Further familiarity with Git, Markdown or Quarto is an advantage but not a must. In terms of coding skills, this course picks up where the RStudio lab sessions for the Quantitative Methods II lecture ended. 
 
 
 \pagebreak
@@ -88,7 +84,7 @@ An intermediate knowledge of RStudio is recommended. Further familiarity with Gi
 ## 5. Introduction to text-mining
 
 - Transforming text into data
-- `quanteda` \& `tm` package [Malo : surtout `tidytext`, tm c'est outdated ahah]
+- `quanteda` \& `tidytext` package
 - Text pre-processing : tokenization, document-feature-matrix
 - Word frequencies and Tf-idf
 
@@ -105,6 +101,8 @@ An intermediate knowledge of RStudio is recommended. Further familiarity with Gi
 ##### References
 
 - Braby, D., Guinaudeau, B., & Sältzer, M. Scaling models in political science. In Elgar Encyclopedia of Technology and Politics (pp. 98-105). Edward Elgar Publishing.
+
+- Laver, M., Benoit, K., & Garry, J. (2003). Extracting policy positions from political texts using words as data. American political science review, 97(2), 311-331.
 
 - Lowe, W. (2008). Understanding wordscores. Political Analysis, 16(4), 356-371.
 
@@ -137,7 +135,7 @@ Finseraas, H., Høyland, B., & Søyland, M. G. (2021). Climate politics in hard 
 - Introduction to supervised machine learning
 - Use-cases of SML in political science
 - Introduction  to `tidymodels` in R
-- BERT [Malo : je sais pas si on va pouvoir BERT directement parce que R]
+
 
 ##### References
 
@@ -173,6 +171,8 @@ Finseraas, H., Høyland, B., & Søyland, M. G. (2021). Climate politics in hard 
 - Recent developments in computational text analysis
 - Ideally students will present their final papers here
 
+
+\pagebreak
 #### References
 
 - Baden, C., Pipal, C., Schoonvelde, M., & van der Velden, M. A. G. (2022). Three gaps in computational text analysis methods for social sciences: A research agenda. Communication Methods and Measures, 16(1), 1-18.
