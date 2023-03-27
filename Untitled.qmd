@@ -2,8 +2,4 @@
 title: "syllabus"
 format: pdf
 ---
-This is a syllabus
-```{r}
-
-```
-
+This is a syllabus for our text-as data
