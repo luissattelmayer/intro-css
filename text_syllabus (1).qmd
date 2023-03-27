@@ -1,0 +1,80 @@
+---
+title: "Computational Text analysis"
+author: "Malo Jan & Luis Sattlemayer"
+format: pdf
+---
+
+
+
+# Course outline
+
+## 1. Introduction
+
+- What is Computational Social Science
+- What is text-as-data
+- Use-cases of text as data in political science/social sciences
+- Importance of reproducibility in CSS : short intro to github
+
+### References
+
+Grimmer, J., & Stewart, B. M. (2013). Text as data: The promise and pitfalls of automatic content analysis methods for political texts. Political analysis, 21(3), 267-297.
+
+## 2. Collecting text on the web (1)
+
+
+### References
+
+Bruns, A. (2019). After the ‘APIcalypse’: Social media platforms and their fight against critical scholarly research. Information, Communication & Society, 22(11), 1544-1566.
+
+## 3. Collecting text on the web (2)
+
+## 4. Manipulating text
+
+- Text cleaning
+- String manipulation in R 
+- Pattern matching with regular expressions
+
+## 5. Introduction to text-mining
+
+- Transforming text into data
+- Text pre-processing : tokenization, document-feature-matrix
+- Word frequencies
+
+### References
+
+Silge, Julia, and David Robinson. Text mining with R: A tidy approach. " O'Reilly Media, Inc.", 2017.
+
+## 6. Scaling methods
+
+- Wordscores
+- Wordfish
+
+### References
+
+Lowe, W. (2008). Understanding wordscores. Political Analysis, 16(4), 356-371.
+
+Proksch, S. O., & Slapin, J. B. (2010). Position taking in European Parliament speeches. British Journal of Political Science, 40(3), 587-611.
+
+## 7. Unsupervised learning (1) : topic models
+
+- Overview of machine learning methods
+- Topic modelling with LDA and STM
+
+## 8. Unsupervised learning (2) : word embeddings
+
+### References
+
+Rodriguez, Pedro L., and Arthur Spirling. "Word embeddings: What works, what doesn’t, and how to tell the difference for applied research." The Journal of Politics 84.1 (2022): 101-115.
+
+
+## 9. Supervised Machine Learning (1)
+
+### References
+
+Do, Salomé, Étienne Ollion, and Rubing Shen. "The Augmented Social Scientist: Using Sequential Transfer Learning to Annotate Millions of Texts with Human-Level Accuracy." Sociological Methods & Research (2022): 00491241221134526.
+
+Hvitfeldt, E., & Silge, J. (2021). Supervised machine learning for text analysis in R. CRC Press.
+
+## 10. Supervised Machine Learning (2)
+## 11. Supervised Machine Learning (3)
+## 12. Conclusion
