@@ -1,80 +1,134 @@
 ---
-title: "Computational Text analysis"
-author: "Malo Jan & Luis Sattlemayer"
+title: "Computational Text Analysis"
+author: "Malo Jan & Luis Sattelmayer"
 format: pdf
----
-jhhhh
+date: today
+bibliography: tada.bib
 
+
+---
 
 # Course outline
+This course is an introduction to textual statistics, text-as-data methods and computational social sciences. Through the last decades, both methods in quantitative text analysis and the availability of text has increased throughout the field of social sciences. With increasing computational power of home computers, social scientists are now more and more able to overcome constraints of data availability and requirements of time when analyzing large corpora of text. \par
+This class aims to introduce the students to the logic and methods behind the new turning in computational social sciences. It will gently expose students to more and more elaborated text-as-data methods throughout the semester. The class will be divided in three sections which build on each other: 
+
+1. Data Collection \& Construction of Corpus
+2. Text-Mining and Text-Scaling
+3. Supervised & Unsupervised Machine Learning
+
+The first block on \textit{Data Collection \& Construction of Corpus} will teach students the logic of scraping and automated text collection. Further, students will be familiarized with working on Github. The second part, week 4 to 6, is supposed to show conventional methods of text mining, frequency calculations, scaling text and measuring distances between texts. The third section will introduce students to the idea of unsupervised methods such as topic models and the logic of training algorithms by hand to estimate a bigger corpus later on.
+
+
+
+
+# Objectives
+The objectives of this class are fourfold. First, we wish to familiarize students with the logic of overcoming data shortcomings by collecting (in automated fashion) textual data and selecting the right and pertinent corpora for their research interest. Second, this class is designed to expose students to the variety of current methods available to conduct quantitative text analyses in a way that they are able to conduct their own research after this class potentially preparing them for research projects of a bigger scope using the covered methods. Third, this class puts special emphasis on reproducible and open research. Students will therefore learn how to use Github and reproducible documentation of code. The last objective is that the students will learn advanced and efficient data management techniques throughout the sessions by working with text-as-data methods allowing them to work with big databases of text or other datasets. \par  
+
+# Reading Policy
+There is no strict reading policy and the sessions will mostly consist of the presentation of the methods by the teachers and applications in RStudio. For each session, we will try, however, to provide both methods papers as well as publications in which the presented methods are applied in order to highlight the possibilities, advantages and shortcomings of each.
+
+# Course Validation
+As emphasized in the previous paragraph, a strong focus will be put on the final project of the class. From the start, students are asked to think about a final project for this class that will have to be handed in after session 12. Students are required to choose one method covered in one of the classes and apply them to a research question. Given the course's emphasis on reproducible code, students must also hand in an annotated version of their code in Markdown format. \par
+
+
+# Pre-requisites
+An intermediate knowledge of RStudio is recommended. Further familiarity with Git, Markdown or Quarto is an advantage but not a must. In terms of coding skills, this course picks up where the RStudio lab sessions for the Quantitative Methods II lecture ended.
+
+
+
+\pagebreak
+# Detailed Outline of the Sessions
 
 ## 1. Introduction
 
-- What is Computational Social Science
+- What is Computational Social Science (CSS)
 - What is text-as-data
-- Use-cases of text as data in political science/social sciences
-- Importance of reproducibility in CSS : short intro to github
+- Applications of text as data methods in political science/social sciences
+- Importance of reproducibility in CSS
+- Introduction to and setting up GitHub
 
-### References
+##### References
 
-Grimmer, J., & Stewart, B. M. (2013). Text as data: The promise and pitfalls of automatic content analysis methods for political texts. Political analysis, 21(3), 267-297.
+- Grimmer, J., & Stewart, B. M. (2013). Text as data: The promise and pitfalls of automatic content analysis methods for political texts. Political analysis, 21(3), 267-297.
 
-## 2. Collecting text on the web (1)
+## 2. Collecting text from the web (1)
+- The logic of webscraping
+- APIs
+- `rvest` package
+- What makes a good corpus?
 
+##### References
 
-### References
+- Bruns, A. (2019). After the ‘APIcalypse’: Social media platforms and their fight against critical scholarly research. Information, Communication & Society, 22(11), 1544-1566.
 
-Bruns, A. (2019). After the ‘APIcalypse’: Social media platforms and their fight against critical scholarly research. Information, Communication & Society, 22(11), 1544-1566.
+## 3. Collecting text from the web (2)
+- From research question to assembling the corpus
+- Lab session on webscraping
 
-## 3. Collecting text on the web (2)
 
 ## 4. Manipulating text
 
 - Text cleaning
 - String manipulation in R 
-- Pattern matching with regular expressions
+- `quanteda` \& `tm` package 
+- Pattern matching with regular expressions (RegEx)
 
 ## 5. Introduction to text-mining
 
 - Transforming text into data
 - Text pre-processing : tokenization, document-feature-matrix
 - Word frequencies
+git reset --hard HEAD~
 
-### References
+##### References
 
-Silge, Julia, and David Robinson. Text mining with R: A tidy approach. " O'Reilly Media, Inc.", 2017.
+- Silge, Julia, and David Robinson. Text mining with R: A tidy approach. " O'Reilly Media, Inc.", 2017.
 
 ## 6. Scaling methods
+- Measuring distances between texts
 
 - Wordscores
 - Wordfish
 
-### References
+##### References
 
-Lowe, W. (2008). Understanding wordscores. Political Analysis, 16(4), 356-371.
+- Lowe, W. (2008). Understanding wordscores. Political Analysis, 16(4), 356-371.
 
-Proksch, S. O., & Slapin, J. B. (2010). Position taking in European Parliament speeches. British Journal of Political Science, 40(3), 587-611.
+- Proksch, S. O., & Slapin, J. B. (2010). Position taking in European Parliament speeches. British Journal of Political Science, 40(3), 587-611.
 
 ## 7. Unsupervised learning (1) : topic models
 
 - Overview of machine learning methods
-- Topic modelling with LDA and STM
+- Topic modelling with Latent Dirichlet Allocation (LDA) and Structural Topic Modeling (STM)
 
 ## 8. Unsupervised learning (2) : word embeddings
 
-### References
 
-Rodriguez, Pedro L., and Arthur Spirling. "Word embeddings: What works, what doesn’t, and how to tell the difference for applied research." The Journal of Politics 84.1 (2022): 101-115.
+
+##### References
+
+- Rodriguez, Pedro L., and Arthur Spirling. "Word embeddings: What works, what doesn’t, and how to tell the difference for applied research." The Journal of Politics 84.1 (2022): 101-115.
 
 
 ## 9. Supervised Machine Learning (1)
+- What is a supervised machine/algorithm?
+- How to handcode?
+- BERT 
 
-### References
+##### References
 
-Do, Salomé, Étienne Ollion, and Rubing Shen. "The Augmented Social Scientist: Using Sequential Transfer Learning to Annotate Millions of Texts with Human-Level Accuracy." Sociological Methods & Research (2022): 00491241221134526.
+- Do, Salomé, Étienne Ollion, and Rubing Shen. "The Augmented Social Scientist: Using Sequential Transfer Learning to Annotate Millions of Texts with Human-Level Accuracy." Sociological Methods & Research (2022): 00491241221134526.
 
-Hvitfeldt, E., & Silge, J. (2021). Supervised machine learning for text analysis in R. CRC Press.
+- Hvitfeldt, E., & Silge, J. (2021). Supervised machine learning for text analysis in R. CRC Press.
 
 ## 10. Supervised Machine Learning (2)
+- Coding labsession
+
+
 ## 11. Supervised Machine Learning (3)
+- Coding labsession
+
 ## 12. Conclusion
+- Coding labsession
+- Ideally students will present their final papers here
+
