@@ -4,27 +4,31 @@ author : "Malo Jan & Luis Sattelmayer"
 format: pdf
 ---
 
-This course is an introduction to Computational social sciences. Over the last two decades, the amount of data available in text format, the methods and computational power available to analyse it, have increased dramatically. This course aims to introduce participants to the use of computational methods to answer social science questions. The objective is to demystify their complexity and to show how social scientists can take advantage of new data collected on the internet and text analysis methods. The class covers different methods used in computational social sciences, including web scraping, text mining, topic modelling, word embeddings, and supervised machine learning. 
+This course is an introduction to *Computational Social Sciences* (CSS). Over the last two decades, the amount of data available in text format, the methods and computational power available to analyze it, have drastically increased. This course aims to introduce participants to the use of computational methods to answer questions of the social sciences. The objective is to demystify their complexity and to show how social scientists, both qualitative and quantitative, can take advantage of data collected from the internet, and text analysis methods. The class covers a variety of different methods used in CSS, including web scraping, text mining, topic modelling, word embeddings, and supervised machine learning using Transformer models and LLMs. 
 
-This class has three main goals. First, we want to help students understand how to address data limitations by automatically collecting textual data and choosing the right corpora for their research interests. Second, we aim to introduce students to various practical methods for analyzing text quantitatively, enabling them to conduct their own research and potentially prepare for more extensive projects like a Master's thesis. Lastly, we hope that students will improve their programming skills and grasp quantitative reasoning, which can be applied to handle different types of data, not just text.
+# Objectives
+This class has three main goals. First, we want to help students understand how to address data limitations by automatically collecting textual data and choosing the right corpora for their research interests. Second, we aim to expose students to various practical methods for analyzing text quantitatively, enabling them to conduct their own research and potentially prepare for more extensive projects like a Master's thesis. Lastly, we hope that students will improve their programming skills and grasp quantitative reasoning, which can be applied to handle different types of data, not just text.
 
-The course spans five days and integrates lectures with hands-on application of the methods. Each morning session, lasting for two hours, is dedicated to presenting comprehensive content on the methods employed. This includes an exploration of the underlying logic, advantages, disadvantages, and typical applications of the methods discussed. In the afternoon, the first session will focus on demonstrating the practical application of these methods. The final session of each day is designed to actively engage students in applying the knowledge they have acquired throughout the day. 
+The course will take place over a span of five days and integrates lectures with hands-on lab-sessions to apply the methods. Each morning session, lasting for two hours, is dedicated to presenting comprehensive content on the methods employed. This includes an exploration of the underlying logic, advantages, disadvantages, and typical applications of the methods discussed. In the afternoon, the first session will focus on demonstrating the practical application of these methods. The final session of each day is designed to actively engage students in applying the knowledge they have acquired throughout the day. 
+
 
 # Pre-requisites
 
-The course requires basic knowledge of Rstudio. In terms of coding skills, this course picks up where the RStudio lab sessions for the Quantitative Methods II lecture ended. The final day introduces students to a text analysis application in Python, but no knowledge of this language is required. 
+The course requires basic knowledge of RStudio. In terms of coding skills, this course picks up where the RStudio lab sessions for the Quantitative Methods II of the School of Research lecture ended. The final day introduces students to a text analysis application in Python, but no knowledge of this language is required. 
+
+\pagebreak
 
 # Day 1 : Computational social sciences and webscraping
 
 *10h-12h : Introduction to Computational social sciences*
 
-To begin with, the instructors will present the objective of the course and what computational social sciences are. An overview of the methods and their different objectives will be presented, as well as existing applications in political science. 
+To begin with, the instructors will present the objectives of the course and what CSS are. An overview of the methods and their different objectives will be presented, as well as existing applications in political science. 
 
 *13h30-14h45 : Introduction to webscraping*
 
-In this session, students will be introduced to web scraping for collecting data on the web. The course will cover the logic of the method, the ethics of web scraping and its application in Rstudio with the `rvest` package. 
+In this session, students will be introduced to web scraping for collecting data on the web. The course will cover the logic of the method, the ethics of web scraping and its application in RStudio with the `rvest` package. 
 
-*15h15-16h45 : Application in Rstudio*
+*15h15-16h45 : Application in RStudio*
 
 #### References
 
@@ -38,13 +42,13 @@ In this session, students will be introduced to web scraping for collecting data
 
 *10h-12h : Transforming text to numbers*
 
-This session is designed to familiarize participants with the process of converting textual information into numerical representations. The lecture covers essential concepts in natural language processing, including word representations, tokenization, document-term matrices, and tf-idf. Students will gain insights into word counts, dictionary methods, and their associated limitations.
+This session is designed to familiarize participants with the process of converting textual information into numerical representations. The lecture covers essential concepts in Natural Language Processing, including word representations, tokenization, document-term matrices, and tf-idf. Students will gain insights into word counts, dictionary methods, and their associated limitations.
 
-*13h30-14h45 : Manipulating text in Rstudio*
+*13h30-14h45 : Manipulating text in RStudio*
 
-This session will be devoted to lean how to use the methods presented in the morning. Students will learn how to manipulate text in Rstudio with `stringr` and converting text into numbers with the `tidytext` package.
+This session will be devoted to lean how to use the methods presented in the morning. Students will learn how to manipulate text in RStudio with `stringr` and converting text into numbers with the `tidytext` package.
 
-*15h15-16h45 : Applications in Rstudio*
+*15h15-16h45 : Applications in RStudio*
 
 #### References
 
@@ -58,7 +62,7 @@ In this session, participants will delve into the fundamentals of unsupervised t
 
 *13h30-14h45 : Topic modelling and word embeddings in practice*
 
-*15h15-16h45 : Applications in Rstudio*
+*15h15-16h45 : Applications in RStudio*
 
 #### References
 
@@ -80,7 +84,7 @@ In this session, we will explore supervised machine learning methods designed to
 
 *13h30-14h45 : Supervised machine learning in practice*
 
-*15h15-16h45 : Applications in Rstudio*
+*15h15-16h45 : Applications in RStudio*
 
 #### References
 
@@ -98,7 +102,7 @@ In this session, we will explore supervised machine learning methods designed to
 
 This session will provide students with an introduction to cutting-edge methods in text analysis utilizing Large Language Models such as BERT or GPT. The lecture will explore the distinctions between these advanced models and their predecessors, emphasizing how artificial intelligence can contribute to addressing social sciences' questions. 
 
-*13h30-14h45 : LLms in practice*
+*13h30-14h45 : LLMs in practice*
 
 This practical session aims to guide students through the usage of Large Language Models in a straightforward manner. Utilizing the Huggingface Python library and Google Colab, participants will gain hands-on experience in applying LLMs. 
 
