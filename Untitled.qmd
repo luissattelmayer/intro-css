@@ -1,5 +1,0 @@
----
-title: "syllabus"
-format: pdf
----
-This is a syllabus for our text-as data
