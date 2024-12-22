@@ -131,9 +131,10 @@ collect_unsg_pr_urls <- function(x) {
 
 # Test sur 10 pages because take around 35-40 minutes to run
 
-unsg_pr_urls <- map_df(unsg_page_urls, collect_unsg_pr_urls, .progress = T)
+unsg_pr_urls <- map(unsg_page_urls[1:10], safely(collect_unsg_pr_urls), .progress = T) |> 
+    map_df("result") 
 
-# write_csv(unsg_pr_urls, "data/unsg_urls.csv")
+#write_csv(unsg_pr_urls, "data/unsg_urls.csv")
 ```
 
 
@@ -150,17 +151,17 @@ collect_unsg_pr_content <- function(x) {
     tibble(
         # Extract title
         title = html_element(page, ".page-header") |>
-            html_text(),
+            html_text2(),
         text = html_element(page, ".field--type-text-with-summary") |>
-            html_text(),
+            html_text2(),
         date = html_element(page, "time") |>
-            html_text() |>
+            html_text2() |>
             dmy(),
         keywords = html_elements(page, ".field__items a") |>
-            html_text() |>
+            html_text2() |>
             str_c(collapse = "|"),
         id = html_element(page, ".field--name-field-symbol") |>
-            html_text()
+            html_text2()
     )
 }
 
@@ -171,7 +172,7 @@ unsg_df
 
 # Write the dataframe to a csv file
 
-# write_csv(unsg_df, "data/unsg_dataset.csv")
+write_csv(unsg_df, "data/unsg_dataset.csv")
 
 # If you run this for all the press releases, it will take several hours
 
@@ -293,6 +294,13 @@ This example is a good starting point for understanding how to scrape data from 
 It is possible that some URLs may not work, or some of the elements you are looking for might not be available for certain texts, making the process prone to errors and causing your code to break. Therefore, it is important to add error-handling mechanisms to your code to manage these issues without stopping the execution. ChatGPT is a valuable tool for this purpose, helping you develop more robust and error-tolerant code.
 
 Next, most pages on the web are dynamic, meaning their content is loaded dynamically using JavaScript. In such cases, you will need to simulate a headless browser to mimic clicks on a website, which can be achieved using Selenium. This is a more advanced technique that requires additional programming knowledge. It is worth noting that while this process is quite simple in Python, it can be a nighmare to implement in R. Therefore, for dynamic web scraping, opt for Python. 
+
+# Applications
+
+Now that you have learned how to scrape data from the web, you can apply this knowledge to various use cases. Here are some examples of pages that you can try to scrape and where we have a solution for you if you need it. You are also free to choose any other website that interests you and we will be happy to help you with the scraping process.
+
+- [Spanish radical right party VOX's press releases](https://www.voxespana.es/noticias)
+- [UK Gov news](https://www.gov.uk/search/news-and-communications)
 
 
 
