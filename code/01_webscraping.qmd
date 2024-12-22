@@ -1,0 +1,299 @@
+---
+title : "Web scraping"
+author: "Malo Jan"
+format: pdf
+editor_options: 
+  chunk_output_type: console
+---
+
+This script is an introduction to web scraping with R, with a focus on the `rvest` package. Our goal here is to create a corpus of press releases from the United Nations Secretary General. As this corpus is not available in a structured format, we will have to collect the data from the website from scratch.
+
+```{r}
+# Import necesarry packages
+
+needs(tidyverse, rvest)
+```
+
+The main functions of `rvest` are the following :
+
+- `read_html()` : Extract the source code of a HTML page
+- `html_element()` : Select an element on this page
+- `html_text()` : Extract the text of this element
+- `html_table()` : Extract a table from this element
+- `html_attr()` : Extract an attribute from this element (ex : links)
+
+# Step 1 : Familiarize yourself with the website
+
+- [Press releases of the UN Secretaty general](https://press.un.org/en/content/secretary-general/press-release)
+
+# Step 2 : Test on one page
+
+Our goal is to collect all press releases of the UN Secretary-General from the website. First, we will test the scraping process on a single page to understand its structure. We will then generalize the process to collect all press releases.
+
+We start by saving the URL of a press release and extract the HTML code of the page using `read_html()`. This allows us to manipulate the HTML code of the page in R.
+
+```{r}
+# Save url test in an object
+
+url_test <- "https://press.un.org/en/2024/sgsm22502.doc.htm"
+
+url_test
+
+# Read html code of the page with read_html()
+page_html <- read_html(url_test)
+```
+
+Next, we extract the different elements of the page using `html_element()` with the corresponding CSS selector and then extract the text with `html_text()`. Here, we extract the title, text, date, keywords, and ID of the press release, saving each in an object and creating a data frame.
+
+
+```{r}
+# Extract press relase title with .css selector .page-header
+
+title <- page_html %>% 
+  html_element(".page-header") |> 
+  html_text()
+
+# Extract press release text with .css selector .field--type-text-with-summary
+
+text <- page_html |> 
+  html_element(".field--type-text-with-summary") |>  
+  html_text()
+
+# Extract press release date with .css selector time
+
+date <- page_html |>  
+  html_element("time") |>  
+  html_text()
+
+# Extract keywords
+
+keywords <- page_html |> 
+        html_elements(".field__items a") |> 
+        html_text() |>
+        str_c(collapse = "|")
+
+# Extract id, always useful
+
+id <- page_html |> 
+    html_element(".field--name-field-symbol") |>
+    html_text()
+
+# Create a data frame
+
+un_pr <- tibble(title, text, date, keywords, id)
+```
+
+# Step 3 : Collect urls of all press releases
+
+Now that we have successfully extracted data from a single press release, we can generalize the process to collect all press releases. To do this, we first extract the URLs of all press releases from the main page.
+
+If we go to the first page of the website, we can find the urls of all of the press releases of that page with css selectors and extract them with the `html_attr()` function that allows us to extract the links with the `href` attribute.  
+
+```{r}
+ex_urls <- "https://press.un.org/en/content/secretary-general/press-release" |> 
+    read_html() |>
+    html_elements("h3 > a") |> 
+    html_attr("href")
+
+ex_urls <- str_c("https://press.un.org", ex_urls)
+
+ex_urls
+```
+
+Yet, to collect the urls of all press releases, we have to repeat this process, for all pages of the website that contains press releases. Here comes the fun and beauty of automation. Urls on a website are often structured in a logical way that makes it easy to extract them :
+
+    - https://press.un.org/en/content/secretary-general/press-release?page=1
+    - https://press.un.org/en/content/secretary-general/press-release?page=2
+    - https://press.un.org/en/content/secretary-general/press-release?page=3
+
+In this case, the worflow consists in extracting the urls of all press releases of a page, then moving to the next page and repeating the process until there are no more pages. Here, we have 1994 pages where press releases are stored with around 10 press releases per page (n ~ 19940 press releases).
+
+```{r}
+# Create a vector of all of the urls
+
+unsg_page_urls <- str_c("https://press.un.org/en/content/secretary-general/press-release?page=", 1:1994)
+
+unsg_page_urls
+```
+
+
+```{r}
+# Create a function that extracts the urls of all press releases of a page
+
+collect_unsg_pr_urls <- function(x) {
+    page <- read_html(x)
+    
+    urls <- tibble(link = page |>
+                       html_elements("h3 > a") |>
+                       html_attr("href")) |>
+        mutate(link = str_c("https://press.un.org", link))
+}
+
+# Test sur 10 pages because take around 35-40 minutes to run
+
+unsg_pr_urls <- map_df(unsg_page_urls, collect_unsg_pr_urls, .progress = T)
+
+# write_csv(unsg_pr_urls, "data/unsg_urls.csv")
+```
+
+
+# Step 4 : Collect text of each press release
+
+Now that we have the URLs of all press releases, we can iterate over each of them to extract the data for every press release, as we did for the test press release. As in the previous step, we will create a function to extract the data from a press release and then apply this function to all the URLs. Running the function will visit each page, extract the data, and compile everything into a single data frame. 
+```{r}
+
+collect_unsg_pr_content <- function(x) {
+    # Get html code of page
+    page <- read_html(x)
+    # Create dataframe with the different elements
+    
+    tibble(
+        # Extract title
+        title = html_element(page, ".page-header") |>
+            html_text(),
+        text = html_element(page, ".field--type-text-with-summary") |>
+            html_text(),
+        date = html_element(page, "time") |>
+            html_text() |>
+            dmy(),
+        keywords = html_elements(page, ".field__items a") |>
+            html_text() |>
+            str_c(collapse = "|"),
+        id = html_element(page, ".field--name-field-symbol") |>
+            html_text()
+    )
+}
+
+unsg_df <- map(unsg_pr_urls$link, safely(collect_unsg_pr_content), .progress = T) |> 
+    map_df("result")
+
+unsg_df
+
+# Write the dataframe to a csv file
+
+# write_csv(unsg_df, "data/unsg_dataset.csv")
+
+# If you run this for all the press releases, it will take several hours
+
+```
+
+# Step 5 : Enhance dataframe
+
+
+```{r}
+unsg_df <- unsg_df |> 
+    mutate(year = str_sub(date, 1, 4) |> as.numeric(),
+           secretary_general = case_when(
+               date >= "2017-01-01" ~ "Antonio Guterres",
+               date >= "2007-01-01" ~ "Ban Ki-Moon",
+               date >= "1997-01-01" ~ "Kofi Annan",
+               date >= "1992-01-01" ~ "Boutros Boutros-Ghali"))
+
+```
+
+# Step 6 : Explore the data
+
+```{r}
+unsg_df <- read_csv("data/unsg_dataset.csv")
+
+# Evolution of the number of press releases over time
+
+# Evolution du nombre de communiqués de presse par année et par secrétaire général
+
+unsg_df |>
+    ggplot(aes(date)) +
+    geom_histogram(bins = 100) +
+    # Add a vertical line for each secretary general
+    geom_vline(xintercept = as.Date(c(
+        "1992-01-01", "1997-01-01", "2007-01-01", "2017-01-01"
+    )), linetype = "dashed") +
+    # Add a label for each secretary general
+    annotate(
+        "text",
+        x = as.Date(c(
+            "1992-01-01", "1997-01-01", "2007-01-01", "2017-01-01"
+        )),
+        y = 400,
+        label = c(
+            "Boutros Boutros-Ghali",
+            "Kofi Annan",
+            "Ban Ki-Moon",
+            "Antonio Guterres"
+        ),
+        angle = 0,
+        ,
+        size = 2,
+        hjust = -0.1
+    ) +
+    scale_y_continuous("Number of press releases")  +
+    scale_x_date("Date", date_breaks = "5 year", date_labels = "%Y") +
+    theme_light()  
+
+
+```
+
+
+```{r}
+
+unsg_keywords_counts <- unsg_df |> 
+    separate_rows(keywords, sep = "\\|") |> 
+    count(keywords) |> 
+    filter(keywords != "") |> 
+    arrange(desc(n))
+
+unsg_keywords_counts |> 
+    filter(n > 80) |> 
+    mutate(keywords = fct_reorder(keywords, n)) |> 
+    ggplot(aes(keywords, n)) +
+    geom_col() +
+    coord_flip() +
+    theme_minimal()
+
+# Keyword search
+
+unsg_df <- unsg_df |> 
+    mutate(
+        palestine = str_detect(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"),
+        israel = str_detect(text, "[Ii]srael|[Tt]el aviv|Netanyahu")
+    )
+
+palestine_shares <- unsg_df |> 
+    group_by(year) |> 
+    count(palestine) |> 
+    mutate(prop_palestine = n / sum(n)) |> 
+    filter(palestine == TRUE)
+
+israel_shares <- unsg_df |> 
+    group_by(year) |> 
+    count(israel) |>
+    mutate(prop_israel = n/sum(n)) |> 
+    filter(israel == TRUE)
+
+
+palestine_shares |>
+    left_join(israel_shares, by = "year") |>
+    pivot_longer(
+        cols = c(prop_israel, prop_palestine),
+        names_to = "Keywords",
+        values_to = "prop"
+    ) |>
+    ggplot(aes(year, prop, color = Keywords)) +
+    geom_line() +
+    # Color by israel and palestine color code
+    scale_color_manual(values = c("#0038B8", "#007A33")) +
+    theme_minimal() +
+    scale_y_continuous("Proportion of press releases") +
+    scale_x_continuous("Year")
+```
+
+# Going further
+
+This example is a good starting point for understanding how to scrape data from the web. However, it is also one of the simplest examples of web scraping, as the website is straightforward, the URLs are logically structured, and the data is easily extractable. In many situations, however, you will need to deal with more complex websites.
+
+It is possible that some URLs may not work, or some of the elements you are looking for might not be available for certain texts, making the process prone to errors and causing your code to break. Therefore, it is important to add error-handling mechanisms to your code to manage these issues without stopping the execution. ChatGPT is a valuable tool for this purpose, helping you develop more robust and error-tolerant code.
+
+Next, most pages on the web are dynamic, meaning their content is loaded dynamically using JavaScript. In such cases, you will need to simulate a headless browser to mimic clicks on a website, which can be achieved using Selenium. This is a more advanced technique that requires additional programming knowledge. It is worth noting that while this process is quite simple in Python, it can be a nighmare to implement in R. Therefore, for dynamic web scraping, opt for Python. 
+
+
+
+
