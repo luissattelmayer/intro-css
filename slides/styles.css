@@ -1,0 +1,4 @@
+.reveal section h2 {
+  font-size: 1.2em !important;  /* Adjust to your desired size */
+  font-weight: bold !important;  /* Ensures the title remains bold */
+}
