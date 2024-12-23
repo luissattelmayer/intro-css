@@ -1,0 +1,38 @@
+---
+title: "Collecting online data"
+subtitle: "Introduction on webscraping"
+author: "Malo Jan"
+date: today
+format: 
+  revealjs:
+    slide-number: c/t
+    footer: "Collecting online data"
+    theme: simple
+    echo: true
+    incremental: false
+
+---
+
+## What is web scraping? {.smaller}
+
+<br>
+
+::: {.fragment fragment-index=1}
+
+> Web scraping is a data collection technique on the web that involves extracting data from a web page.
+
+:::
+
+::: {.fragment fragment-index=2}
+
+- We are all manual web scrapers: copying/pasting/downloading data from the web daily.
+- But we can automate all of this: machines are faster and more extensive than we are.
+:::
+
+## Use cases {.smaller}
+
+- Collecting social media data
+- Collecting press releases from an organization, speeches from actors
+- Extracting data from wikipedia pages
+- Automatically download hundreds of pdfs from a website
+- Collect meta data from a website

@@ -182,6 +182,10 @@ write_csv(unsg_df, "data/unsg_dataset.csv")
 
 
 ```{r}
+
+unsg_df <- read_csv("data/unsg_dataset.csv")
+
+
 unsg_df <- unsg_df |> 
     mutate(year = str_sub(date, 1, 4) |> as.numeric(),
            secretary_general = case_when(
@@ -195,7 +199,6 @@ unsg_df <- unsg_df |>
 # Step 6 : Explore the data
 
 ```{r}
-unsg_df <- read_csv("data/unsg_dataset.csv")
 
 # Evolution of the number of press releases over time
 
@@ -261,13 +264,15 @@ unsg_df <- unsg_df |>
 palestine_shares <- unsg_df |> 
     group_by(year) |> 
     count(palestine) |> 
-    mutate(prop_palestine = n / sum(n)) |> 
+    mutate(prop_palestine = n / sum(n)*100) |> 
     filter(palestine == TRUE)
+
+palestine_shares |> view()
 
 israel_shares <- unsg_df |> 
     group_by(year) |> 
     count(israel) |>
-    mutate(prop_israel = n/sum(n)) |> 
+    mutate(prop_israel = n/sum(n)*100) |> 
     filter(israel == TRUE)
 
 
@@ -279,12 +284,19 @@ palestine_shares |>
         values_to = "prop"
     ) |>
     ggplot(aes(year, prop, color = Keywords)) +
-    geom_line() +
-    # Color by israel and palestine color code
+    geom_line(size = 1) +
+    geom_point()+
+     # Color by israel and palestine color code
     scale_color_manual(values = c("#0038B8", "#007A33")) +
     theme_minimal() +
     scale_y_continuous("Proportion of press releases") +
     scale_x_continuous("Year")
+
+unsg_df |>
+    filter(year == 2024, palestine == TRUE) |>
+    select(title, text, keywords) |> view()
+
+
 ```
 
 # Going further
