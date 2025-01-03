@@ -24,6 +24,8 @@ editor_options:
 - Today : how to use these numerical representations to automate the classification of texts into categories, one of the main use cases of text analysis in social sciences
 - Supervised text classification : what is it, how to do it, how to evaluate it
 
+# Supervised learning : uses and workflow
+
 ## Text classification in social sciences {.smaller}
 
 - Long tradition in social sciences to measure/operationalize concepts from text : content analysis (different from interpretive approach) [@krippendorff2018content]
@@ -37,7 +39,7 @@ editor_options:
 
 <!-- categories are often mutually exclusive-->
 
-## Advantages and limits of manual content analysis
+## Advantages and limits of manual content analysis {.smaller}
 
 - Importance of human judgment, context-knowledge
 - High quality data, in comparison to automated methods such as dictionnaries
@@ -82,6 +84,7 @@ editor_options:
 
 ## Supervised text classification pipeline {.smaller}
 
+1. Create a training set
 1. Get a clean corpus of texts segmented into units (eg. documents, sentences, paragraphs)
 2. Get labelled data
     - Sample a subset of the corpus to annotate
@@ -102,10 +105,15 @@ editor_options:
 8. Use in downstream analysis
 
 
+## {.smaller}
+
+![@licht2024measuring : A supervised learning workflow](03_licht_pipeline.png)
 
 ## {.smaller}
 
-![@do2024augmented : Policy vs Politics classification task](do_supervised.png)
+![@do2024augmented : Policy vs Politics classification task](03_do_supervised.png)
+# Constructing a training set
+
 ## Getting labelled data {.smaller}
 
 - Training a "classifier" requires labelled data : texts with categories assigned

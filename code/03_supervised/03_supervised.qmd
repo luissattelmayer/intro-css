@@ -1,0 +1,324 @@
+---
+title : "Supervised text classification in R"
+author: "Malo Jan"
+format : pdf
+---
+
+The following script introduces supervised text classification in R. To do so, we use the `tidymodels` package, which provides a consistent interface to train and evaluate models, which are otherwised scattered across different packages in R.
+
+```{r}
+needs(tidymodels, tidyverse, tidytext, textrecipes, vip)
+```
+
+To illustrate the process, we use a dataset from Benoit et al. (2016) that was crowdsourced to classify english party manifestos being about economy policy, social policy or other. The corpus contains around 16000 natural sentences from British Conservative, Labour and Liberal democrats manifestos between 1987 and 2010. We focus here on a binary classification task about the speech being about economic policy or not. 
+
+```{r}
+df <- read_csv("https://raw.githubusercontent.com/haukelicht/advanced_text_analysis/refs/heads/main/data/labeled/benoit_crowdsourced_2016/benoit_crowdsourced_2016-policy_area.csv")
+
+df |> 
+    count(label)
+```
+
+Since the labels in the dataset are coded from 1 to 3, we recode them as 0 and 1, respectively, to make the classification task binary. In practice, such a classification task may not require this many labels to train a model. However, the larger the training set, the longer the model takes to train. For the sake of this example, I randomly reduce the number of labels to 3,000.
+
+
+```{r}
+
+
+df <- df |> 
+    mutate(
+        label = case_when(
+            label == 2 ~ 1, # economic policy
+            .default = 0 # Not economic policy
+        ) |> as.factor()
+    )
+
+df |>
+    count(label) |>
+    mutate(prop = n / sum(n) * 100)
+
+df <- df |> 
+    slice_sample(n = 3000)
+```
+
+## Split into training and testing sets 
+
+The first step, once we have a clean, annotated dataset, is to divide it into a training set and a testing set. The training set is used to train the model, while the testing set evaluates the model's performance on unseen data. For this, we use the `initial_split` function from the `rsample` package, which randomly separates the dataset into two parts. The proportion allocated to the training set is specified using the `prop` argument—set here to 80%. Commonly, this proportion falls between 70% and 80%.
+
+To ensure the label distribution is consistent across both sets, we use the `strata` argument to perform stratified sampling. Since this splitting process is random, we set a seed to ensure reproducibility; otherwise, results may vary between runs. Once the split is completed, we can generate the training and testing sets using the `training` and `testing` functions, respectively, and verify the label distribution in each set.
+
+```{r}
+set.seed(123)
+
+split <- initial_split(df, prop = 0.8, strata = label)
+
+df_train <- training(split)
+df_test <- testing(split)
+
+df_train |> 
+    count(label) |> 
+    mutate(prop = n / sum(n) * 100)
+
+df_test |>
+    count(label) |> 
+    mutate(prop = n / sum(n) * 100)
+```
+
+## Pre-processing and featurization
+
+Once we have the training and testing sets, we can begin the preprocessing steps to create numerical representations of the text data for input into a supervised model. In tidymodels, we need to create a "recipe" that specifies the preprocessing steps to be applied to the data. The recipe is created using the `recipe()` function, where we specify the dependent variable (label) and the independent variable (text). We can then add various preprocessing steps, such as tokenization with step_tokenize. Many preprocessing steps are available and can be combined, such as removing stopwords, retaining only the most frequent words, lemmatization, and more.  These different options can be seen [here](https://cran.r-project.org/web/packages/textrecipes/textrecipes.pdf). Eventually, we add a final step to convert the text data into a numerical representation. Here we use the term frequency-inverse document frequency (tf-idf) method with `step_tfidf`. Alternatives include using only word counts with `step_tf()` or using pre-trained word embeddings with `step_word_embeddings()`. We can explore the output of the recipe using the `prep()` and `bake()` functions that gives us a document-term matrix with the tf-idf values for each word in the text data.
+
+```{r}
+economy_recipe <- recipe(label ~ text, data = df_train) |> 
+  step_tokenize(text) |>
+  step_tfidf(text) 
+
+economy_recipe
+
+economy_dfm <- economy_recipe |> 
+  prep() |> 
+  bake(new_data = NULL)
+
+economy_dfm
+```
+
+## Modelling
+
+After preprocessing the text and converting it into numerical features, the next step is to specify a model for training. Several options are available, including logistic regression, lasso regression, ridge regression, Naive Bayes, support vector machines (SVM), random forest, and more. This is achieved using the `parsnip` package, which involves the following steps:
+
+1. Model specification: Specify the type of model you want to train.
+2. Engine: Specify an "engine," which refers to the underlying package that provides the implementation of the model.
+3. Mode: Indicate the mode, which is either "classification" for categorical outcomes or "regression" for continuous outcomes. As our goal here is text classification, we will always use "classification" as the mode.
+
+Some models also require the specification of hyperparameters that slightly change how the model behaves. For instance, random forests models have a `trees` hyperparameter to change the number of decision trees that the model has. The higher the number of trees is, the more complex the model becomes, which can lead to overfitting. The process of finding the optimal hyperparameters is called hyperparameter tuning but is not covered in this example. 
+
+We also set the importance method to "impurity" to calculate feature importance based on the decrease in impurity. In a random forest, feature importance refers to a metric that indicates how useful each feature (or variable) is in making predictions. It helps determine which features have the most impact on the model's decisions. 
+
+```{r}
+# Specify a random forest classifier
+rf_spec <- rand_forest(trees = 100) |> 
+    set_engine("ranger", importance = "impurity") |> 
+    set_mode("classification")
+```
+
+## Model training
+
+With `tidymodels`, training is done through a workflow that combines preprocessing and model specification. We begin by creating an empty workflow, to which we add both the recipe and the model. Next, we train the model on the training set using the `fit()` function. This process yields a supervised text classification model that learns the relationship between the text features in the training set and their corresponding labels. Below, we train a random forest model on the training set.
+
+```{r}
+# Create a workflow with the recipe and model for random forest
+economy_workflow_rf <- workflow() |>
+    add_recipe(economy_recipe) |>
+    add_model(rf_spec)
+
+# Fit the models on the training set (take some time to run)
+economy_model_rf <- fit(economy_workflow_rf, data = df_train)
+```
+
+Some models, including random forests, provide feature importance scores that indicate the contribution of each word to the model's predictions. We can extract these scores using the `extract_fit_parsnip()` function and visualize them using the `vip` package. This visualization helps us understand which words are most important for the model's predictions.
+
+```{r}
+economy_model_rf |> 
+    extract_fit_parsnip() |>
+    vip(num_features = 20)
+```
+
+
+## Model evaluation
+
+To evaluate the model, we have to use the test set that contains data not seen by the model during training. For this we use the augment function that apply the model trained on the test set, giving us label predictions and a probability for each sentence in the test set. 
+
+```{r}
+preds_economy_rf <- augment(economy_model_rf, df_test)
+
+# Exemple of a prediction
+preds_economy_rf |> 
+    slice_sample(n =1) |> 
+    select(text, label, .pred_class, .pred_1)
+```
+
+We can have a first glimpse on the quality of our predictions by looking at the confusion matrix that report the number of true positives, true negative, false positives and false negatives. 
+```{r}
+# Confusion matrix for random forest model
+
+conf_mat <- conf_mat(preds_economy_rf, truth = label, estimate = .pred_class)
+
+conf_mat
+```
+
+Yet, the confusion matrix is not enough to evaluate the model. We can compute several metrics such as accuracy, recall, precision, and F1-measure to get a better understanding of the model's performance. These metrics are computed using the `metric_set()` function from the `yardstick` package.
+
+```{r}
+# Create a function to compute multiple metrics
+compute_metrics <- metric_set(accuracy, recall, precision, f_meas)
+
+# Compute metrics for random forest model
+compute_metrics(preds_economy_rf, truth = label, estimate = .pred_class)
+```
+
+Beyond quantitative metrics, it is always helpful to examine the actual predictions to understand where the model is failing. First, we look at the false negatives, which are cases where the model predicted the text as not related to the economy, when it actually was. Next, we explore the false positives, which are cases where the model predicted the text as related to the economy, when it was not.
+
+```{r}
+# Explore false negatives
+
+preds_economy_rf |> 
+    filter(label == 1, .pred_class == 0) |> 
+    pull(text)
+
+# Look at false positives
+
+preds_economy_rf |> 
+    filter(label == 0, .pred_class == 1) |> 
+    pull(text)
+```
+
+## Benchmark against other methods
+
+It is generally a good practice to benchmark different supervised models and also compare their performance against other methods to validate their effectiveness. Reviewers often request this when submitting papers with supervised models. The simplest alternative method for comparison is a dictionary of keywords aimed at measuring the same concept. Here, I create a dictionary of keywords related to the economy to compare against the random forest model. It is a simple list of words that are likely to appear in sentences related to the economy but is not exhaustive.
+
+```{r}
+econ_keywords <- c("economy", "fiscal", "budget", "taxation", "inflation", 
+              "monetary", "subsidy", "deficit", "investment", "trade")
+
+preds_economy_rf <- preds_economy_rf |> 
+    mutate(
+        pred_keywords = case_when(
+            str_detect(text, str_c(econ_keywords, collapse = "|")) ~ 1,
+            .default = 0
+        ) |> as.factor()
+    )
+
+preds_economy_rf |> 
+    count(pred_keywords)
+
+compute_metrics(preds_economy_rf, truth = label, estimate = pred_keywords)
+```
+
+## Inference on full corpus
+
+The goal of supervised text classification is to train a model on a small sample and then apply it to a larger corpus, which saves significant time. In this case, we apply the random forest model we have trained on a full corpus of UK manifestos from 1970 to 2024 to predict the presence of social policy issues in each manifesto at the sentence level. The model enables us to generalize to more sentences from the same parties and elections, as well as to new parties and elections. However, it is important to note that the model’s performance is limited by the data it was trained on, and it may not generalize well to other contexts. If you are starting to annotate a new corpus, it is crucial to ensure that the training set includes texts from different periods and groups.
+
+```{r}
+# Import UK manifestos
+
+manifestos <- read_csv("data/gbr_manifesto_corpus_clean.csv")
+```
+
+
+```{r}
+# Inference
+
+preds_manifesto <- augment(economy_model_rf, manifestos)
+
+preds_manifesto |> 
+    count(.pred_class)
+```
+
+
+```{r}
+# Look at evolution over time
+
+preds_manifesto |> 
+    filter(partyname %in% c("Lab", "Tories", "Lib Dems", "SNP", "Green")) |> 
+    group_by(year, partyname) |> 
+    count(.pred_class) |> 
+    mutate(prop = n/sum(n)*100) |> 
+    filter(.pred_class == 1) |>
+    ggplot(aes(x = year, y = prop, color = partyname)) +
+    geom_line(size = 0.8) +
+    theme_light() +    # Add colors for different parties
+    scale_color_manual(
+        "Party",
+        values = c(
+            "Tories" = "#0072B2",
+            "Green" = "#009E73",
+            "Lab" = "#E64B35",
+            "Lib Dems" = "#E69F00",
+            "SNP" = "black"
+        )) +
+    theme(legend.position = "bottom")
+```
+
+
+## Cross validation and hyperparameter tuning
+
+As mentioned earlier, some models require hyperparameters to be set before training, and these hyperparameters can significantly impact the model's performance. To find the optimal hyperparameters, we can use a technique called grid search, which trains the model using different combinations of hyperparameters and selects the best combination based on a performance metric such as accuracy or F1-score.
+
+However, we cannot use the same data to both tune the hyperparameters and evaluate the model, as this can lead to overfitting. Instead, it is common to use cross-validation, a technique that splits the data into multiple folds. The model is trained on all but one fold and evaluated on the remaining fold. This process is repeated for each fold, and the performance is averaged to ensure that the hyperparameter selection is robust and not biased toward a specific subset of the data.
+
+![Graph from https://scikit-learn.org/stable/modules/cross_validation.html/](https://scikit-learn.org/stable/_images/grid_search_cross_validation.png)
+This process is repeated multiple times to get a more accurate estimate of the model's performance. Here, we use the `vfold_cv()` function from the `rsample` package to create 10 folds for cross-validation.
+
+```{r}
+econ_folds <- vfold_cv(df_train)
+
+econ_folds
+```
+
+
+```{r}
+workflow_econ_rf_cv <- workflow() |> 
+    add_model(rf_spec) |> 
+    add_recipe(economy_recipe)
+
+econ_rf_resampled <- fit_resamples(
+  workflow_econ_rf_cv,
+  econ_folds,
+  control = control_resamples(save_pred = TRUE),
+  metrics = metric_set(accuracy, recall, precision, f_meas)
+)
+```
+
+```{r}
+econ_cv_metrics <- collect_metrics(econ_rf_resampled)
+econ_cv_predictions <- collect_predictions(econ_rf_resampled)
+```
+
+
+```{r}
+# Define the grid of hyperparameters
+
+econ_model_rf_tune <- rand_forest(trees = tune()) |> 
+    set_mode("classification") |> 
+    set_engine("ranger")
+```
+
+With text, it is also possible to tune the preprocessing steps, such as the number of tokens to keep or the maximum number of features in the TF-IDF matrix. Here, we tune the `max_tokens` argument in the `step_tokenfilter()` function, which controls the number of tokens to keep after tokenization. We also tune the number of trees in the random forest model.
+
+```{r}
+econ_recipe_rf_tune <- recipe(label ~ text, data = df_train) |>
+    step_tokenize(text) |>
+    step_tokenfilter(text, max_tokens = tune()) |>
+    step_tfidf(text)
+
+lambda_grid <- grid_regular(
+  trees(range = c(100, 300)),
+  max_tokens(range = c(1e3, 2e3)), 
+  levels = 5
+  )
+
+econ_wf_rf_tune <- workflow() |> 
+    add_recipe(econ_recipe_rf_tune) |> 
+    add_model(econ_model_rf_tune)
+
+set.seed(123)
+
+tune_rf_rs <- tune_grid(
+  econ_wf_rf_tune,
+  econ_folds,
+  grid = lambda_grid,
+  metrics = metric_set(f_meas)
+)
+
+tune_rf_rs
+
+collect_metrics(tune_rf_rs) |> 
+    ggplot(aes(x = trees, y = mean, color = as.factor(max_tokens))) +
+    geom_line()
+
+collect_metrics(tune_rf_rs) |> 
+    filter(mean == max(mean))
+
+```
+
+
