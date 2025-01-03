@@ -1,0 +1,336 @@
+---
+title : "Scaling texts"
+date : today
+author : "Malo Jan"
+format : pdf
+editor_options: 
+  chunk_output_type: console
+---
+
+# Scaling methods
+
+Political scientists are often interested in locating actors in a political space with different dimensions. For instance, using various methods, we try to estimate where political actors stand on a left-right dimension relative to others. Scaling methods are one approach that has been used to extract ideological or policy ideal points from texts, such as legislative speeches or party programs. These methods have been shown to be a potential alternative to other approaches, such as relying on the left-right scale of the Manifesto Project (RILE) or the CHES to measure political positions (or roll-call votes). These positions cannot be observed directly, so we aim to estimate them from a latent dimension. Therefore, we seek to map the texts of different actors onto one or more latent dimensions to derive information on their positions. This type of text analysis was one of the first to be used in political science by @laver2003extracting. 
+
+Scaling methods usually rely on bag-of-words analysis and, therefore, require the conversion of text into a document-feature matrix. These methods assume that the relative frequency of words in a text reflects the position of actors within a political space. There are two main methods for scaling texts: Wordscores, a supervised method, and Wordfish, an unsupervised method. This document presents both methods and implements them using R code.
+
+## Wordscores
+
+Wordscores is a method developed by @laver2003extracting to estimate the positions of actors in a political space. This method is a supervised scaling technique, meaning it requires a set of reference texts to estimate a model. It needs a set of texts for which we know the positions of actors on a given dimension, as well as a set of "virgin" texts for which we do not have any information and wish to estimate their positions. These two sets are similar to the logic of supervised learning, where we have a training set and a test set.
+
+The first step is to obtain texts with a priori know positions, ideally that represents the extremes and center of a dimension of interests. In the literature, these texts are then assigned values based on a previous expert survey. For instance, if we have manifestos of different parties for a given year, we can assign the values of how political scientists have located these parties on a left-right dimension at a similar time. 
+
+Next, the logic of wordscores is to estimate word scores for each word in the references texts. To do so, we compute the number of times each word occurs in the texts and test the difference with other texts. Based on how similar these words are to the other texts, the model assigns a position to the text. The model then estimates the positions of the "virgin" texts based on the word scores of the reference texts.
+
+
+The main advantage of wordscores is that is allows to map texts into a pre-defined dimension. Wordscores have several limits, as identified by @slapin2008scaling who propose the wordfish alternative that is presented below. First of all, wordscores need references texts, which can be challenging to obtain when the texts contain several dimensions. Next, in the models, all the words are given the same weight. Third, the estimation is based on references texts and so cannot be used for time-series estimation, as the lexicon of parties changes over time. 
+
+## Wordfish
+
+Wordfish is a scaling algorithm developed by @slapin2008scaling in an APSR article, which shares the same goal as Wordscores: locating actors in a latent space based on the words they use. The authors highlight three main advantages of Wordfish over Wordscores. First, Wordfish does not require reference texts. In contrast to Wordscores, the method is unsupervised and aims to uncover the (unidimensional) latent structure that emerges from the text, allowing for time-series estimates. Third, it enables the extraction of words from the model that define the dimension, discriminate across different groups, and help us understand how to interpret the dimension. 
+
+## Implementation in R
+
+The easiest way to use these two methods in R is to used the `quanteda` package. This package allows for the easy transformation of texts into a document-feature matrix and the estimation of Wordscores and Wordfish models. The following code shows how to estimate these models using the `quanteda` package. Here we will use UK manifestos. 
+
+### Preprocessing
+
+To begin with, after importing the required package, I import the UK manifestos from a clean corpus provided by the [ManifestoVault](https://dataverse.nl/dataset.xhtml?persistentId=doi:10.34894/VKQSPO) by Dolinsky et al., which contains manifestos from the UK at the sentence level. I retain only a limited set of parties, recode some variables, and combine the texts at the document level to ensure there is only one text per party and year. This is the most suitable unit of analysis for the scaling we aim to perform, as our goal is to estimate the position of a manifesto rather than each individual sentence.
+
+
+```{r}
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(quanteda)
+library(here)
+library(quanteda.textmodels)
+library(quanteda.textstats)
+library(quanteda.textplots)
+library(gghighlight)
+library(haven)
+
+# Import UK manifesto
+
+uk_manifestos <- read_csv(here("data/gbr_manifesto_corpus_clean.csv")) |>
+    filter(
+        partyname %in% c(
+            "Tories",
+            "Lab",
+            "Lib Dems",
+            "UKIP",
+            "Reform UK",
+            "Green",
+            "SNP",
+            "PC"
+        )
+    ) |> 
+    group_by(party_id, partyname, party_year, year, doc_id) |>
+    summarise(text = str_c(text, collapse = " ")) |>
+    ungroup() |>
+    drop_na(partyname)
+
+```
+
+Scaling models require a document-feature matrix, which is a matrix where rows represent documents and columns represent words. The values in the matrix are the frequency of each word in each document. To create this matrix, we first tokenize the texts, remove stopwords, and create a document-feature matrix.
+
+```{r}
+uk_dfm <-
+    corpus(uk_manifestos, text_field = "text", docid_field = "doc_id") |>
+    quanteda::tokens() |>
+    quanteda::dfm() |>
+    quanteda::dfm_remove(stopwords("en")) 
+```
+
+## Wordscores
+
+To estimate the Wordscores model, we need reference scores. As I want to estimate the ideological position of UK manifestos, I use the Chapel Hill Expert Survey (CHES) dataset, which provides expert evaluations of party positions in various countries and years. Specifically, I use the assessment of general left-right positions of parties from the 2019 CHES dataset. I then merge this dataset with the corpus of UK manifestos using their Comparative Manifesto Project IDs, which are available in both datasets. For the sake of the exemple, I only keep the scores for the Labour Party, liberal democrats and Conservative Party,   that are the reference scores for a leftist, centrist and rightist positions. 
+
+```{r}
+# Import reference scores from ches
+
+ches <-
+    read_dta("https://www.chesdata.eu/s/1999-2019_CHES_dataset_meansv3-y4tg.dta") |>
+    select(lrgen, ches_party = party, year, party_id = cmp_id)  |>
+    mutate(year = as.numeric(year)) |>
+    filter(party_id %in% c("51320", "51620", "51421", "51901", "51902", "51110"))
+
+
+uk_manifestos <- uk_manifestos |>
+    left_join(ches, by = c("party_id", "year")) |>
+    mutate(lrgen2 = case_when(party_id %in% c("51320", "51620", "51421")  ~
+                                  lrgen,
+                              .default = NA_real_))
+
+uk_manifestos |>
+    filter(year == 2019) |>
+    select(partyname, lrgen2)
+```
+
+Before using the wordscore algorithm, we need to create a dfm object for the year we are interested in. In this case, we are interested in the 2019 UK manifestos. We then filter the reference scores for the same year. To "train" the wordscore model, we use the `textmodel_wordscores` function from the `quanteda.textmodels` package that takes the dfm object and the reference scores as arguments. We then extract the wordscores from the model and merge them with the original dataset. 
+
+```{r}
+uk_dfm_2019 <- uk_dfm |>
+    dfm_subset(year == 2019) |>
+    dfm_subset(party_id %in% c("51320", "51620", "51421"))
+
+uk_manifestos_2019 <- uk_manifestos |>
+    filter(year == 2019,
+           party_id %in% c("51320", "51620", "51421"))
+
+wordscore_model <-
+    textmodel_wordscores(uk_dfm_2019, uk_manifestos_2019$lrgen2)
+```
+
+The model gives us the wordscores for each word in the corpus. We can extract these scores to look at them in a more readable format.
+
+```{r}
+# Extract wordscores
+
+wordscores <- wordscore_model$wordscores
+
+
+tidy_wordscores <-
+    wordscores <- tibble(words = attributes(wordscores)$names,
+                         scores = as_tibble_col(wordscores)) |>
+    arrange(desc(scores))
+
+```
+
+Once the Wordscores model is trained on the set of manifestos and the reference scores, we can use it to predict the positions of the manifestos. We use the `predict` function from the `quanteda.textmodels` package to predict the positions of the manifestos. We also set the `se.fit` argument to `TRUE` to get the standard errors of the predictions.
+
+Next, we merge the predicted Wordscores with the original dataset and plot the Wordscores for the 2019 UK manifestos. The model successfully predicts the positions of manifestos for which it had not seen reference scores, such as those of the SNP, the Greens, and Plaid Cymru. For instance, the Greens are positioned between Labour and the Liberal Democrats, which seems to aligns with their ideological stance. However, the model places the SNP and Plaid Cymru to the right of the Liberal Democrats, a result that differs from evaluations provided by the CHES dataset, for example.
+
+```{r}
+predicted_wordscores <-
+    predict(wordscore_model, se.fit = TRUE, newdata = uk_dfm) |>
+    as_tibble()
+
+uk_manifestos <- uk_manifestos |>
+    bind_cols(predicted_wordscores)
+
+uk_manifestos |>
+    filter(year == 2019) |>
+    ggplot(aes(fct_reorder(partyname, fit), fit)) +
+    geom_pointrange(aes(ymin = fit - se.fit, ymax = fit + se.fit)) +
+    theme_light() +
+    coord_flip() +
+    scale_x_discrete(name = "Party") +
+    labs(title = "Wordscores for UK manifestos in 2019")
+```
+
+Yet, the picture becomes more complicated when we look at the predictions for other years. The following plot shows the Wordscores for the UK manifestos from 1970 to 2024. We observe that the 2019 values for the Conservatives and Labour are clearly outliers compared to their positions predicted in other years. While the model tends to consistently place the Lib Dems at the center, Labour to the left, and the Conservatives to the right, it seems unlikely that parties such as UKIP or Reform would be located at the center of the ideological spectrum in the year for which we have an estimation. This confirms that using wordscores for time-series estimation can be challenging, as the model may not be able to capture the changes of lexical content over time.
+
+```{r}
+
+uk_manifestos |>
+    ggplot(aes(
+        x = year,
+        y = fit,
+        color = partyname,
+        group  = partyname
+    )) +
+    geom_pointrange(aes(ymin = fit - se.fit, ymax = fit + se.fit),
+                    position = position_dodge(width = 0.5)) +
+    # Add colors for different parties
+    scale_color_manual(
+        "Party",
+        values = c(
+            "Tories" = "#0072B2",
+            "Green" = "#009E73",
+            "Lab" = "#E64B35",
+            "PC" = "grey",
+            "Reform UK" = "#56B4E9",
+            "Lib Dems" = "#E69F00",
+            "SNP" = "black",
+            "UKIP" = "#CC79A7"
+        )
+    ) +    geom_line() +
+    theme_light() +
+    # Legend at bottom
+    theme(legend.position = "bottom")
+```
+
+
+### Wordfish
+
+To scale our texts we wordfish, we can use `textmodel_wordfish` function from the `quanteda` package. It may take a minute to run. 
+
+```{r}
+wordfish_model <- textmodel_wordfish(uk_dfm)
+```
+
+The model first returns, for each document, the parameter theta, which represents the position of the document in the latent space, along with its standard error. Here, I extract these two parameters into a tibble and bind them to the original data to easily plot the scaling of the documents alongside other metadata. 
+
+```{r}
+wordfish_output <- tibble(
+    theta = wordfish_model$theta,
+    se = wordfish_model$se.theta
+)
+
+uk_manifestos <- uk_manifestos |>
+    bind_cols(wordfish_output)
+```
+
+Below, I plot the estimated theta for each document, along with its standard error, ordered by the estimated theta. Interestingly, the Wordfish model does not capture ideological differences between parties, as parties are not clearly separated in the latent space. Instead, the primary dimension uncovered by the model appears to correspond to the time period, with higher theta values assigned to older documents and lower values to more recent ones. We also see that the model locate all of the SNP and Plaid Cymry manifestos at the lower end of the latent space, indicating that their vocabulary is more homogenous over time and more distinct from the other parties.
+
+```{r}
+#| warning: false
+#| message: false
+#| fig.width: 8
+#| fig.height: 8
+
+uk_manifestos |>
+    ggplot(aes(
+        fct_reorder(party_year, theta),
+        theta,
+        ymin = theta - se,
+        ymax = theta + se
+    )) +
+    geom_pointrange() +
+    coord_flip() +
+    theme_light() +
+    labs(title = "Wordfish scaling of British manifesto",
+         x = "Document",
+         y = "Estimated theta")
+```
+
+We can further interpret the Wordfish model by examining the estimated beta for each word and the psi, which measures the frequency of the word in the corpus. I extract these measures into a tibble and plot the estimated beta against the psi. Beta values around 0 indicate that a word is not informative about the latent dimension, while values farther from 0 suggest that the word is informative.
+
+Additionally, we can highlight specific words in the plot to observe their positions in the latent space. For instance, the model appears to position documents along a temporal dimension, as words like '1973' and '2023' are located at the extremes of the latent space. On the left side, we see terms such as 'COVID,' 'Brexit,' and 'LGBT,' while on the right side, we find words like 'liberalize' and 'nationalize.' In contrast, words such as 'labor,' 'health,' 'Europe,' 'welfare,' and 'education' are not very informative about the latent dimension. 
+
+```{r}
+#| warning: false
+#| message: false
+#| fig.width: 8
+#| fig.height: 8
+
+
+wordfish_words <- tibble(
+    features = wordfish_model$features,
+    beta = wordfish_model$beta,
+    psi = wordfish_model$psi
+) |> 
+    arrange(desc(beta))
+
+wordfish_words
+
+wordfish_words |>
+    ggplot(aes(beta, psi, label = features)) +
+    geom_text(size = 3.5) +
+    theme_light() +
+    geom_vline(xintercept = 0, linetype = 2) +
+    # Highlight only the word islam
+    gghighlight::gghighlight(
+        features %in% c(
+            "islam",
+            "europe",
+            "debt",
+            "non-binary",
+            "lgbt",
+            "labour",
+            "welfare",
+            "health",
+            "2023",
+            "1973",
+            "covid",
+            "brexit",
+            "nationalise",
+            "socialists",
+            "indo-china",
+            "liberalize",
+            "zero-carbon",
+            "education"
+        )
+    )
+
+```
+
+The estimation of the Wordfish model illustrates both the advantages and limitations of such an unsupervised model. On the one hand, we do not use any prior information about the documents, yet the model is able to uncover a meaningful latent dimension. However, the model does not capture ideological differences between parties, which might be the primary focus in such applications. Instead, we find that, rather than revealing positions in the ideological space, the words used in the corpus are more informative about *when* the documents were written than *who* wrote them. 
+
+# References
+
+Aydogan, A., & Slapin, J. B. (2015). Left–right reversed: Parties and ideology in modern Turkey. Party Politics, 21(4), 615-625.
+
+Baek, Y. M., Cappella, J. N., & Bindman, A. (2011). Automating content analysis of open-ended responses: Wordscores and affective intonation. Communication methods and measures, 5(4), 275-296.
+
+Benoit, K., & Laver, M. (2007). Estimating party policy positions: Comparing expert surveys and hand-coded content analysis. Electoral Studies, 26(1), 90-107.
+
+Benoit, K., & Laver, M. (2007). Benchmarks for text analysis: A response to Budge and Pennings. Electoral Studies, 26(1), 130-135.
+
+Benoit, K., & Laver, M. (2008). Compared to what? A comment on “A robust transformation procedure for interpreting political text” by Martin and Vanberg. Political Analysis, 16(1), 101-111.
+
+Bruinsma, B., & Gemenis, K. (2019). Validating Wordscores: The promises and pitfalls of computational text scaling. Communication Methods and Measures, 13(3), 212-227.
+
+Budge, I., & Pennings, P. (2007). Do they work? Validating computerised word frequency estimates against policy series. Electoral studies, 26(1), 121-129.
+
+Frid-Nielsen, S. S. (2018). Human rights or security? Positions on asylum in European Parliament speeches. European union politics, 19(2), 344-362.
+
+Gessler, T., & Hunger, S. (2022). How the refugee crisis and radical right parties shape party competition on immigration. Political Science Research and Methods, 10(3), 524-544.
+
+Hjorth, F., Klemmensen, R., Hobolt, S., Hansen, M. E., & Kurrild-Klitgaard, P. (2015). Computers, coders, and voters: Comparing automated methods for estimating party positions. Research & Politics, 2(2), 2053168015580476.
+
+Klemmensen, R., Hobolt, S. B., & Hansen, M. E. (2007). Estimating policy positions using political texts: An evaluation of the Wordscores approach. Electoral Studies, 26(4), 746-755.
+
+Laver, M., Benoit, K., & Garry, J. (2003). Extracting policy positions from political texts using words as data. American political science review, 97(2), 311-331.
+
+Laver, M., Benoit, K., & Sauger, N. (2006). Policy competition in the 2002 French legislative and presidential elections. European Journal of Political Research, 45(4), 667-697.
+
+Lo, J., Proksch, S. O., & Slapin, J. B. (2016). Ideological clarity in multiparty competition: A new measure and test using election manifestos. British Journal of Political Science, 46(3), 591-610.
+
+Lowe, W. (2008). Understanding wordscores. Political Analysis, 16(4), 356-371.
+
+Lowe, W., Benoit, K., Mikhaylov, S., & Laver, M. (2011). Scaling policy preferences from coded political texts. Legislative studies quarterly, 36(1), 123-155.
+
+Linhart, E., & Shikano, S. (2009). Ideological signals of German parties in a multi-dimensional space: An estimation of party preferences using the CMP data. German Politics, 18(3), 301-322.
+
+Martin, L. W., & Vanberg, G. (2008). Reply to Benoit and Laver. Political Analysis, 16(1), 112-114.
+
+Proksch, S. O., Lowe, W., Wäckerle, J., & Soroka, S. (2019). Multilingual sentiment analysis: A new approach to measuring conflict in legislative speeches. Legislative Studies Quarterly, 44(1), 97-131.
+
+Proksch, S. O., & Slapin, J. B. (2009). How to avoid pitfalls in statistical analysis of political texts: The case of Germany. German Politics, 18(3), 323-344.
+
+Slapin, J. B., & Proksch, S. O. (2008). A scaling model for estimating time‐series party positions from texts. American Journal of Political Science, 52(3), 705-722.
+
+
+
