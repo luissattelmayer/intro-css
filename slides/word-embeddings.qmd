@@ -1,0 +1,137 @@
+---
+title: "Word Embeddings"
+author : "Malo Jan & Luis Sattelmayer"
+date : today
+css: styles.css  # Link to your custom CSS file
+execute: 
+  echo: false
+  warning: false
+format: 
+    revealjs:
+        highlight-style: breeze
+        theme: simple
+        pdf-separate-fragments: false
+        self-contained: true
+bibliography: references.bib
+editor_options: 
+  chunk_output_type: console
+---
+
+## What are word embeddings? 
+- ”You shall know a word by the company it keeps” [@firth_synopsis_1957]
+- Word embeddings are dense vector representations of words in a high-dimensional space
+- They are learned from large text corpora using *unsupervised* learning techniques
+- Words are represented as "ordered sequences: the occurrence of a given word(s) is used to predict the occurrence of the next one(s)" [@rodriguez2022word]
+
+## {.smaller}
+- To be simple, imagine a low-dimensional space where words are distributed according to their semantic similarity: the embeddings are their coordinates
+- Words that have a similar meaning will have similar vectors, possible to measure distance, similarity and basic arithmetic: King - Man + Woman = Queen
+- Breakthrough in NLP in 2013 estimate of word embeddings from neural networks with word2vec [@mikolov2013distributed]
+  - Predict occurence of a word given a context window: How likely is it that legislator will appear in the same context as lawmaker?
+
+## Difference to BoW
+- Bag of Words model: 
+    - Sparse vector representation
+    - Each word is represented by a one-hot vector
+    - No information about the context of the word
+
+- Word embeddings:
+    - Dense vector representation
+    - Capture semantic relationships between words
+    - Words with similar meanings are close in the embedding space
+    
+
+## Sparse one-hot vs. dense vectors
+
+![Difference between sparse and dense matrices](images/04_we_sparse-matrix.png)
+
+
+## Dense vectors {.smaller}
+- Distributional hypothesis : words that appear in a similar context tend to have a similar meaning: eg. lawmaker, legislator, politician
+- Dense vectors are more efficient than BoW
+- **Rationale**: represent words in ~300 dimensions
+- **Advantages**: 
+    - Capture semantic relationships and process synonyms
+    - Reduce dimensionality
+    - Improve performance/efficiency
+    - Transfer learning: pre-trained embeddings can be used in other tasks
+    
+## Cosine Similarity {.smaller}
+- Cosine similarity: inner product of two non-zero vectors (basically taking the cosine of the angle between two vectors)
+  - $[-1; 1]$ where $-1$ = no similarity, $1$ = same word, $0$ = independence (orthogonal)
+- Thus, we can place words and their similarity with the help of vectors:
+
+:::{.fragment}
+![](images/04_we_word2vec.png){height="400" width="700"}
+:::
+
+
+## Word embeddings in practice
+
+![](images/04_we_queen_king.png)
+
+- Example from [Jay Alammar's GitHub](https://jalammar.github.io/illustrated-word2vec/)
+- This algorithm was trained to detect the word embeddings of the word king and relating words
+- What dimensionalities could we see? We do not know...
+  - What are the latent measurements?
+
+
+## Three main algorithms
+- **word2vec** [@mikolov2013distributed] (Google 2013) 
+- **fastText** [@bojanowski2017enriching] (Facebook 2017)
+    - faster than word2vec
+    - subword information
+- **GloVe** [@pennington2014glove] (Stanford 2014)
+
+## Neuralgic points of word embeddings
+1. How much context is really context? 
+2. How many dimensions? 
+3. Customize corpus or pre-trained corpora?
+4. What modeling approach? 
+5. How to evaluate the embeddings?
+
+## WE decision tree
+![](images/04_word_embeddings_decision_tree.png)
+## Shortcomings
+- The embeddings are *static*: words have a unique meaning regardless of their context
+- For instance, ”climate” will still have the same representation in different contexts
+  1. ”Foreign investors know what a favourable climate the United Kingdom provides for manufacturing enterprise.”
+  2. ”The Prime Minister signed the Rio convention on climate change last June.”
+- Word order still does not matter
+  1. ”The government serves the people.”
+  2. ”The people serve the government.”
+- Dimensonality and embedding might be hard to understand
+
+## Textual biases working against WEs {.smaller}
+- **Bias**: although used to detect biases and social structure, word embeddings can also reflect and reinforce said biases
+    - GloVe is trained on Wikipedia data, but Wikipedia is not free of bias: e.g. gender bias in article authorship or biographical representations  [@wagner2016women]
+
+- This Table illustrates racial bias in word embeddings [(taken from a by Speer (2017))](https://blog.conceptnet.io/posts/2017/how-to-make-a-racist-ai-without-really-trying/)
+
+| Phrase                                  | Sentiment Score       |
+|-----------------------------------------|-----------------------|
+| Let's go get Italian food               | 2.0429166109408983    |
+| Let's go get Chinese food               | 1.4094033658140972    |
+| Let's go get Mexican food               | 0.38801985560121732   |
+| My name is Emily                        | 2.2286179364745311    |
+| My name is Heather                      | 1.3976291151079159    |
+| My name is Yvette                       | 0.98463802132985556   |
+| My name is Shaniqua                     | -0.47048131775890656  |
+
+
+
+## Applications of word embeddings
+- However, these biases can also intentionally be used for research purposes
+- Word embeddings are mathematical representations of words
+- Corpora, as mentioned in the first session, are collections of texts *created by social actors in a society*
+    - thus, corpora reflect social structure and dynamics
+- Word embeddings can be used to analyze these biases
+
+## @garg2018word
+- Analyze how social attitudes towards women and minorities have changed over time
+- 
+
+## References
+
+
+
