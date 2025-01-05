@@ -74,21 +74,23 @@ editor_options:
 
 
 ::: {.column width="50%"}
-![@licht2024they](00_licht_sczepanski1.png)
+![@licht2024they](images/00_licht_sczepanski1.png)
 :::
 
 ::: {.column width="50%"}
-![](00_licht_sczepanski2.png)
+![](images/00_licht_sczepanski2.png)
 :::
 
 ::::
 
 ## The meaning of "class" in books {.smaller}
 
-![](00_kozlowski.png)
+![]images/(00_kozlowski.png)
 
 ## CSS pipeline
 
+- Getting a corpus
+- Preprocessing
 
 
 
@@ -128,6 +130,7 @@ editor_options:
     
 ## API {.smaller}
 
+- Application Programming Interface
 
-- Apycalipse : Facebook, Instagram and Twitter Researcher access have closed (see [minet](https://github.com/medialab/minet) for workaround)
-- [Bluesky](https://github.com/JBGruber/atrrr)
+- Existing API :  :Guardian, New York Times, Spotify, [Bluesky](https://github.com/JBGruber/atrrr) 
+- Apycalypse : Facebook, or Twitter that had before extensive API access for researchers but now closed (see [minet](https://github.com/medialab/minet) for some workarounds)

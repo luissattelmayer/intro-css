@@ -172,6 +172,14 @@ unsg_df
 
 # Write the dataframe to a csv file
 
+unsg_df <- unsg_df |> 
+    mutate(year = str_sub(date, 1, 4) |> as.numeric(),
+           secretary_general = case_when(
+               date >= "2017-01-01" ~ "Antonio Guterres",
+               date >= "2007-01-01" ~ "Ban Ki-Moon",
+               date >= "1997-01-01" ~ "Kofi Annan",
+               date >= "1992-01-01" ~ "Boutros Boutros-Ghali"))
+
 write_csv(unsg_df, "data/unsg_dataset.csv")
 
 # If you run this for all the press releases, it will take several hours
@@ -186,13 +194,7 @@ write_csv(unsg_df, "data/unsg_dataset.csv")
 unsg_df <- read_csv("data/unsg_dataset.csv")
 
 
-unsg_df <- unsg_df |> 
-    mutate(year = str_sub(date, 1, 4) |> as.numeric(),
-           secretary_general = case_when(
-               date >= "2017-01-01" ~ "Antonio Guterres",
-               date >= "2007-01-01" ~ "Ban Ki-Moon",
-               date >= "1997-01-01" ~ "Kofi Annan",
-               date >= "1992-01-01" ~ "Boutros Boutros-Ghali"))
+
 
 ```
 
@@ -313,6 +315,7 @@ Now that you have learned how to scrape data from the web, you can apply this kn
 
 - [Spanish radical right party VOX's press releases](https://www.voxespana.es/noticias)
 - [UK Gov news](https://www.gov.uk/search/news-and-communications)
+-
 
 
 

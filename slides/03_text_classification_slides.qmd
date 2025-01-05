@@ -24,18 +24,24 @@ editor_options:
 - Today : how to use these numerical representations to automate the classification of texts into categories, one of the main use cases of text analysis in social sciences
 - Supervised text classification : what is it, how to do it, how to evaluate it
 
-# Supervised learning : uses and workflow
+<!-- A voir si inclusion dictionnary comme une façon de text classification-->
+# Supervised text classification : uses and workflow
 
-## Text classification in social sciences {.smaller}
+## Text classification as measurement in social sciences {.smaller}
 
-- Long tradition in social sciences to measure/operationalize concepts from text : content analysis (different from interpretive approach) [@krippendorff2018content]
-- Assign predefined categories to texts units to measure a social phenomena
+- Long tradition in social sciences to measure/operationalize concepts from text
+- Content analysis : assign predefined categories to texts units to measure a social phenomena  [@krippendorff2018content]
+- Systematic measurement of (latent) concepts in texts, through coding rules and quantification
+- Different from more qualitative/intepretative approaches of text analysis which focus on meaning, context, interpretation
+
+## Text classification through manual content analysis {.smaller}
+
 - Historical use through *manual content analysis*
 - Use of (multiple) Experts/RAs/crowdworkers to code texts 
 - Exemples : 
     - Coding of news articles to measure media frames
-    - Protest event analysis
-    - Extensive datasets : [Comparative manifesto project](https://manifesto-project.wzb.eu/), [Comparative Agendas projects](https://www.comparativeagendas.net/) 
+    - Protest event analysis :[eg. Poldem](https://poldem.eui.eu/data-overview/)
+    - Extensive datasets with high number of categories : [Comparative manifesto project](https://manifesto-project.wzb.eu/), [Comparative Agendas projects](https://www.comparativeagendas.net/) 
 
 <!-- categories are often mutually exclusive-->
 
@@ -44,10 +50,14 @@ editor_options:
 - Importance of human judgment, context-knowledge
 - High quality data, in comparison to automated methods such as dictionnaries
 
-- Highly time consuming and human labor intensive
+- Highly time consuming, human labor intensive and costly
     - Eg : Manifesto Project, CAP
 - Often need to rely on a small sample of texts, which can be biased
     - Eg. Protest event Analysis
+
+<!--
+Compare to dictionnary : context of words matters
+-->    
 
 ## Let the machine come in {.smaller}
 
@@ -59,17 +69,30 @@ editor_options:
 - *Unsupervised* : we do not need a labeled dataset, the model will learn the categories by itself
 - The model will learn the text features that are associated with the categories
 
-## Inputs and outpus of a supervised machine learning model
+
+## Some common machine learning terms explained {.smaller}
+
+| Machine Learning Lingo         | Statistics Lingo                          |
+|---------------------------------|-------------------------------------------|
+| Feature                         | Independent variable                      |
+| Label                           | Dependent variable                        |
+| Labeled dataset                 | Dataset with both independent and dependent variables |
+| To train a model                | To estimate                               |
+| Classifier (classification)     | Model to predict nominal outcomes         |
+| To annotate                     | To (manually) code (content analysis)     |
+
+: From [van Atteveldt et al, 2022](https://v2.cssbook.net/content/chapter08#tbl-mllingo)
+
+## Inputs and outpus in supervised learning for text analysis {.smaller}
 
 <!-- "Train a classifier" -->
 
-- Input : text features + categories (labels in ML lingo)
-- Model : a function that will learn the relationship between the text features and the categories
+- Input : text features + labels
+- Model : a function that will learn the relationship between the text features and the labels
 - Ouput :
     - Probabilities of belonging to each category  
     - If two categories, a binary classification, usually > 0.5
     - If more than two categories, a multi-class classification, class assign is highest probability
-    - Potential multi-label classification
 
 ## Uses cases  {.smaller}
 
@@ -81,10 +104,17 @@ editor_options:
 - Stance detection : eg. towards Donald Trump [@burnham2024stance]
 - In your daily life : spam detection, credit card fraud detection, content moderation on social media, sentiment analysis of Amazon reviews, language detection
 
-
 ## Supervised text classification pipeline {.smaller}
 
-1. Create a training set
+1. Getting a clean corpus of labelled texts
+2. Transforming texts into numerical features
+3. Model training
+4. Model evaluation
+5. Inference on full corpus
+6. Validation
+7. Use in downstream analysis
+
+<!--1. Create a training set
 1. Get a clean corpus of texts segmented into units (eg. documents, sentences, paragraphs)
 2. Get labelled data
     - Sample a subset of the corpus to annotate
@@ -102,51 +132,78 @@ editor_options:
 6. Infer the model
     - Apply the model to the rest of the corpus
 7. Validation
-8. Use in downstream analysis
+8. Use in downstream analysis-->
 
 
 ## {.smaller}
 
-![@licht2024measuring : A supervised learning workflow](03_licht_pipeline.png)
+![@licht2024measuring : A supervised learning workflow](images/03_licht_pipeline.png)
 
 ## {.smaller}
 
-![@do2024augmented : Policy vs Politics classification task](03_do_supervised.png)
-# Constructing a training set
+![@do2024augmented : Policy vs Politics classification task](images/03_do_supervised.png)
+# Getting a clean corpus of labelled texts
 
-## Getting labelled data {.smaller}
+## Getting a clean corpus of labelled texts {.smaller}
 
 - Training a "classifier" requires labelled data : texts with categories assigned
+- Labels are used to :
+    - Train the model
+    - As a gold standard to evaluate the performance of the model
 - Existing labels
     - Potential labels with similar categories from other projects
     - Labels in the wild : metadata from datasets/website
-- Labelling data : sample of the corpus
-    - Random sample, stratified sample
-    - RAs, crowdworkers, or yourself
-    - Coding rules, codebook
-    - Inter-coder reliability
-    - Ideally, a random sample, sometimes stratified
-    - Most projects use RAs or crowdworkers : but accuracy, intercoder reliability
-    - But often as phd students, we do it ourselves
+- Most of the time, we need to label the data ourselves
 
-- Curcial part from experience : get to know the data
-<!-- Training a model needs
+## *Which* texts to annotate ? {.smaller}
 
-- Labels
-- Text features
-- Type of model to learn
+- From a corpus of texts, we need to select a sample to annotate
+- Series of decisions to make
+- Text unitization : documents, paragraphs, sentences ? 
+- Sample size : how many texts to annotate ?
+    - Usually the more the better
+    - But depends on number of categories, complexity of the task
+- Sampling strategy : random, stratified ?
+    - Important to have a representative sample 
 
--->
+## *How* to annotate ? {.smaller}
+
+- Coding rules, codebook, to be refined
+- Quality of annotation is super important : garbage in, garbage out
+- Has to be systematic, replicable
+- Get to know the data
+
+## *Who* annotates ? {.smaller}
+
+- Most of text classification projects rely on RAs or crowdworkers
+    - Trained on the codebook and paid for their work
+    - Quality of annotations checked with inter-coder reliability (ICR) tests
+- As phd students, we often do it ourselves
+    - Time consuming, but we know the data better
+    - But if you want to publish, you need to show ICR
+- More and more use of LLms to annotate texts : highly discussed in the literature
+
+# Transforming texts into numerical features
+
+## Transforming texts into numerical features {.smaller}
+
+- Texts are not directly usable by machine learning algorithms
+- Need to convert them into numerical features
+- Different possibilities : 
+    - Bag-of-words (BOW)
+    - Term frequency-inverse document frequency (TF-IDF)
+    - Static word embeddings (Word2Vec, GloVe) 
+    - Contextual word embeddings (eg. BERT)
+
+# Model training
+
 ## Supervised learning models {.smaller}
 
-<!-- Estimate a model that predict Y as a function of  X -->
-- Goal is to learn a function that maps input text features to labels,
-- To do so, we train a algorithm predicting Y (labels) from X (text features) to find the best parameters to minimize the error
+- Split the annotated sample into a training set and a test set (70/30 rule)
+- Train a model on the training set that learns the relationship between the text features and the labels
+- Return the probability of a text belonging to a category
 
-- A supervised classification model is a function that learns the relationship between input text features and labels and returns the probability of a text belonging to a category
-
-
-
+## Different types of models {.smaller}
 
 - Classical models : Logistic regression, Naive Bayes, SVM, Random Forest
     - Simple and fast
@@ -160,20 +217,24 @@ editor_options:
     - Transfer-learning paradigm : models have already language knowledge
     - Computationally intensive
 
+# Model evaluation
+
 ## Evaluating performance of the model {.smaller}
 
-- The evaluation of a model is done by comparing the predictions of the model with the true categories, a "gold standard"
-- We need a test set, a set of texts that the model has not seen but for which we know the categories, "held-out" data
-- **Accuracy** : proportion of correctly classified texts
+- Use the test set to evaluate the performance of the model
+    - Set of texts that the model has not seen but for which we know the categories
+    - "Held-out" data/Gold standard
+- The model is used to predict the categories of the texts in the test set
+- The predictions are compared to the true categories with different metrics
 
-Equation : 
+- **Accuracy** : proportion of correctly classified texts (highly limited for imbalanced datasets)
+
 
 $$
 \
 \text{Accuracy} = \frac{\text{Number of Correct Predictions}}{\text{Total Number of Predictions}}
 \
 $$
-- Accuracy is highly limited for imbalanced datasets
 
 ## Confusion matrix {.smaller}
 
@@ -182,8 +243,8 @@ $$
 
 | | Predicted Positive | Predicted Negative |
 |---|---|---|
-| **Actual Positive** | True Positive | False Negative |
-| **Actual Negative** | False Positive | True Negative |
+| **Actual Positive** | True Positive (TP) | False Negative (FN) |
+| **Actual Negative** | False Positive (FP) | True Negative (TN) |
 
 ## Recall, Precision and f1-score {.smaller}
 
@@ -210,31 +271,48 @@ $$
 \text{f1-score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
 \
 $$
+## Recall and precision trade-offs {.smaller}
 
-
+- Recall and precision are often in trade-off
+    - Increasing recall involves predicting more positive cases at the risk of increasing false positives (reduce precision)
+    - Increasing precision involves predicting less positive cases at the risk of missing some positive cases (reduce recall)
+- The model may be optimized to maximize one of the two, depends on the task
+    - Eg. in a spam detection task, we want to maximize precision : we prefer to have some spam in our inbox rather than missing an important email
+    - Content moderation/hate speech : we often want to maximize recall : we prefer to have some false positives rather than missing a hate speech
+- We can change the threshold of the model to optimize recall or precision (ROC)
 
 ## What is a good performance ?  {.smaller}
 
-- Performance not always satisfactory
+- Maximization of one metric, but depends on the task
+- In general, we look for at least f1-score > 0.7
 - A "good" performance depends on the complexity of the task
     - Conceptual complexity 
     - Task complexity : multi-class, imbalanced classes
-- In general, we look for at least f1-score > 0.7
- 
+- Performance also vary across class
+- But, sometimes we do not want our model to be too good neither : overfitting 
+
 ## How to improve performance {.smaller}
 
-- Reasons for poor performance : 
-    - Unbalanced classes -> Undersampling & oversampling
-    - Not enough training data -> More annotation
-    - Bad quality of the training data -> Better annotation
-    - Bad quality of the text features -> Better preprocessing
-    - Limited text representation -> Go for more complex models
+| Problem                       | Solution                        |
+|-------------------------------|---------------------------------|
+| Unbalanced classes            | Undersampling & oversampling    |
+| Not enough training data      | More annotation                 |
+| Bad quality of the training data | Better annotation             |
+| Bad quality of the text features | Better preprocessing          |
+| Limited text representation   | Go for more complex models      |
+| Too complex concept               | Accepting okay-ish performance  |
  
-## Inference {.smaller}
+# Inference and validation
+
+# Inference {.smaller}
 
 - Once a model is trained and evaluated, it can be used for inference
 - For a supervised learning model, the inference is the prediction of the categories for new (unseen) texts
 - Corpus of 1 million texts, model trained on 1000, use the model to classify all the remaining texts
+- Important to consider the generalization capacity of the model on new data
+    - Out-of-domain texts : texts that are very different from the training texts
+    - Out-of-language texts : texts in a language different from the training language
+- If texts are a bit different, may be important to compare predictions with human annotations
 
 ## Measurement validity {.smaller}
 
@@ -248,16 +326,20 @@ $$
 ## What to do classification outputs ? {.smaller}
 
 - It is all about measurement !
+- Often used as to measure previously unmeasured concepts
 - Often some aggregated measure of the categories is used
-- Descriptives : evolution over time, across countries, groups
+- Descriptives : variation over time, across countries, groups
 - Downstream tasks : 
     - Use measurement as DV in a regression
     - Use measurement as IV in a regression
 - But careful because : measurement error can bias the results
 
+## What to do with classification outputs ? {.smaller}
+
+![@licht2024measuring : use of classification output as DV](images/03_licht_populism.png)
 ## Challenges in supervised text classification
 
 - Only the first step
 - Still a lot of manual work
 - Imbalanced classes : active learning
-- Limit of bag of words representations 
+- Limit of bag of words representations
