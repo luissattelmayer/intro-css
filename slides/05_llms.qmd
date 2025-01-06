@@ -1,0 +1,169 @@
+---
+title: "Large Language Models"
+author : "Malo Jan & Luis Sattelmayer"
+date : today
+execute: 
+  echo: false
+  warning: false
+format: 
+    revealjs:
+        highlight-style: breeze
+        theme: simple
+        pdf-separate-fragments: false
+        self-contained: true
+bibliography: references.bib
+editor_options: 
+  chunk_output_type: console
+---
+
+## Climbing the ladder of abstraction in NLP {.smaller}
+- Bag of Words
+    - text is represented as a collection of individual words without considering order or context
+    
+## {.smaller .scrollable}
+
+| **Feature**               | **Bag-of-Words**                                           | **Static Embeddings**                                    | **Transformers**                                     |
+|---------------------------|-----------------------------------------------------------|----------------------------------------------------------|-----------------------------------------------------|
+| **Core Idea**             | Word count representation                                | Dense, fixed-size vectors capturing word semantics.      | Context-aware embeddings using attention mechanisms |
+| **Representation**        | Sparse vectors (e.g., one-hot encoding, counts)          | Dense vectors (e.g., 300 dimensions).                   | Contextualized vectors generated dynamically       |
+| **Semantics**             | None (words treated independently)                      | Semantic similarity but context-independent.            | Semantic and context-aware understanding           |
+| **Polysemy Handling**     | Cannot distinguish between meanings                     | Single vector for all senses of a word.                 | Context-aware disambiguation                       |
+| **Methods**               | TF-IDF, word counts, scaling methods                    | Word2Vec, GloVe, FastText.                              | LLMs: BERT, GPT, Llama & Co                        |
+| **Weaknesses**            | Ignores order and context, sparse                       | Context-blind, limited for nuanced tasks.               | Computationally expensive, requires large data     |
+
+
+
+
+## Large Language Models
+![](images/05_llms_overview.png)
+
+## 
+
+![](images/05_history_of_ai.png)
+
+
+## 
+
+![](images/05_layers_of_ai.png)
+
+
+## Neural Networks
+![](images/05_geoffrey_hinton.jpg)
+
+- A profile in the [New Yorker](https://www.newyorker.com/magazine/2023/11/20/geoffrey-hinton-profile-ai) about Geoffrey Hinton 
+
+
+## Neural Networks {.smaller}
+- Computational model inspired by the way biological neural networks in the human brain process information
+- Designed to recognize patterns, make predictions, or classify data by mimicking the interconnected structure of neurons in the brain
+
+![A simple one-layered NN](images/05_neural_network.png)
+
+
+## Deep Learning {.smaller}
+- Oftentimes deep learning & NNs used interchangeably
+- Deep refers to the number of layers in the network (i.e. the depth)
+
+- **Weights**: values that define the strength of the connection between two neurons in adjacent layers of a neural network
+- **Biases**: parameters that allow the network to shift the activation function up or down
+- **Activation Function**: decides whether a neuron should "fire" (pass its signal forward) and how strong that signal should be
+    - necessary to introduce *non-linearity* into the network and handle complex patterns in the data
+
+
+## Transformer Architecture
+- Also a NN, state of the art since early 2018
+- "Attention is all you need" [@vaswani2017attention]
+
+- **Attention Mechanism**: 
+    - allows the model to focus on different parts of the input sequence when predicting the next token
+    - crucial for understanding the *context* of a word in a sentence
+
+
+## Training a transformer
+- After the model was given huge amounts of raw text, it learns *causal language modeling* and *masked language modeling*
+
+![Causally predicting the next word](images/05_causal_modeling.png)
+
+
+## Masked Language Modeling
+
+![](images/05_masked_modeling.png)
+
+
+- 
+
+## 
+
+![](images/05_transformer_architecture.png)
+
+## 
+
+![](images/05_nvidia_stock.png)
+
+## Nvidia stock development 
+![](images/05_nvidia_stock.png)
+
+
+## What is GPU? {.smaller}
+
+- **Graphics Processing Unit**: 
+    - a specialized processor to render images and video
+    - parallel processing capabilities
+    - complements the CPU (Central Processing Unit), which excels at sequential tasks
+    - optimized for matrix and vector operations; crucial for neural network computations
+
+
+- **CUDA**: Compute Unified Device Architecture
+    - a parallel computing platform and application programming interface model created by NVIDIA
+    - allows software developers to use a CUDA-enabled GPU for general purpose processing
+
+## GPU for LLMs
+- Massive computation requirements
+- Memory bandwidth
+- Parallelization
+- A task that would take days with a CPU can be done in hours with a GPU
+- This does mean that working with LLMs...
+    - ... requires patience, time, and unfortunately computational ressources
+
+
+## BERT
+- **BERT**: Bidirectional Encoder Representations from Transformers
+    - Masked language model for NLP tasks
+    
+    
+## BERT vs. GPT (vs. Open Source Models)
+
+
+
+## Multilingual Models
+
+
+
+## Issues with LLMs
+- Carbon footprint
+    - on quantifying ML's carbon footprint see @lacoste2019quantifying
+
+- LLMs hardly solve the problem of bias in AI
+    
+
+
+## What use-cases other than classification tasks? 
+- Image generation
+    - Dall-E
+    - Midjourney
+    - Stable diffusion
+    
+- speech-to-text
+    - Whisper
+
+- 
+    
+## Whisper
+
+
+
+
+
+
+
+

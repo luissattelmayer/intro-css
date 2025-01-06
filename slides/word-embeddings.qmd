@@ -1,5 +1,5 @@
 ---
-title: "Word Embeddings"
+title: "Unsupervised Learning"
 author : "Malo Jan & Luis Sattelmayer"
 date : today
 css: styles.css  # Link to your custom CSS file
@@ -16,7 +16,18 @@ bibliography: references.bib
 editor_options: 
   chunk_output_type: console
 ---
+## Outline
+1. What is unsupervised learning? 
+2. 
 
+
+# Unsupervised Learning
+
+
+
+
+
+# Word Embeddings
 ## What are word embeddings? 
 - ”You shall know a word by the company it keeps” [@firth_synopsis_1957]
 - Word embeddings are dense vector representations of words in a high-dimensional space
