@@ -154,6 +154,9 @@ statistical models (clustering, scaling, topic models, supervised machine learni
 ## The meaning of "class" in books {.smaller}
 
 ![](images/00_kozlowski.png)
+## Immigration stance over time in Germany
+![](images/00_stance_average_per_party_per_wave.png)
+
 
 ## References
 
