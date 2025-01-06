@@ -70,15 +70,21 @@ editor_options:
 ## LDA
 ![](images/03_lda.png)
 
+## Structural Topic Modeling
+- Structural Topic Modeling (STM) [@roberts2014structural] is an extension of LDA that incorporates document metadata
+- It inclusion of covariates in the model, which can help to explain the relationship between topics and document metadata
+
+- If you have when metadata critical to your research questions (understanding how topics vary across groups, over time, or in relation to specific attributes)
+
+
+
 ## LDA as a BoW approach
-- LDA still remains a Bag of Words approach
+- Topic models still remains a Bag of Words approach
 - It ignores: 
     - word order
     - context
     - syntax
-    
 - LDA enhances the basic BoW model by assuming that documents are mixtures of topics, and topics are distributions over words
-
 
 
 # Word Embeddings

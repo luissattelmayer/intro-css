@@ -1,0 +1,224 @@
+---
+title: "Topic Modeling in R"
+format: html
+author: "Luis Sattelmayer"
+
+---
+
+In this script [^1], we are going to take a look at topic modeling. More precisely, we are going to implement model based on the Latent Dirichlet Allocation (LDA) and Structural Topic Models (STM). The advantage of STMs is that they can incorporate metadata into the model, which can be used to explain the topics. 
+
+[^1]: This script is inspired by [Felix Lennert](https://felix-lennert.netlify.app/)
+
+Broadly speaking, topic models assume two things: 
+
+1. Each document is a mixture of topics
+2. Each topic is a distribution over words
+
+LDA and STM differ in their flexibility, and ability to incorporate document-level metadata. STMs inclusion of covariates can influence the topic prevalence and content, i.e. how topics are expressed in different contexts (e.g., "healthcare" might include different terms in liberal vs. conservative documents). 
+
+The goal of topic modeling is to infer the topics that best explain the observed documents. For that purpose, we are going to use the `topicmodels` package. 
+
+# Preprocessing the text
+Here we will work with the corpus that comes in the `sotus` package. It is a collection of State of the Union addresses of U.S. presidents. In order to use topic models, we must transform our corpus into a *document-term matrix* (DTM). A DTM is a matrix where each row represents a document and each column represents a word. The value of each cell is the frequency of the word within the given document. We can use the `tidytext` package to do so:
+
+```{r}
+needs(sotu, tidyverse, tidytext, topicmodels, broom, ldatuning, stm)
+
+sotu_clean <- sotu_meta |> 
+  mutate(text = sotu_text |> 
+           str_replace_all("[,.]", " ")) |> 
+  filter(between(year, 1900, 2000)) |> 
+  unnest_tokens(output = token, input = text) |> 
+  anti_join(get_stopwords(), by = c("token" = "word")) |> 
+  filter(!str_detect(token, "[:digit:]")) |> 
+  mutate(token = SnowballC::wordStem(token, language = "en"))
+```
+
+The code above imports and merges the data included in the `sotu` package, cleans and tokenizes it, before removing stopwords and numbers. 
+
+# Document Term Matrix
+We can then proceed to transform all of this into a DTM:
+
+```{r}
+sotu_dtm <- sotu_clean |> 
+  filter(str_length(token) > 1) |> 
+  count(year, token) |> 
+  group_by(token) |> 
+  filter(n() < 95) |> 
+  cast_dtm(document = year, term = token, value = n)
+```
+
+This is what the final DTM looks like:
+
+```{r}
+sotu_dtm |> as.matrix() %>% .[1:5, 1:5]
+```
+
+# Latent Dirichlet Allocation
+It is not a bold claim to state that U.S. politics have evolved over the last 250 years. It is safe to say that the political issues that presidents have talked about, have also evolved. However, a simple LDA approach requires us to take a guess at the number of documents our corpus might include. 
+
+Let's take a random -- and pretty bad -- guess of 10 topics. The LDA function will now try to fit our data to 10 possible topics. The `tidy` function of the `broom` package renders a neat output in the end.
+
+```{r}
+#| eval: false
+sotu_lda_k10 <- LDA(sotu_dtm, k = 10, control = list(seed = 1312))
+
+sotu_lda_k10_tidied <- tidy(sotu_lda_k10)
+```
+
+
+```{r}
+#| include: false
+sotu_lda_k10_tidied <- read_csv("data/sotu_lda_k10_tidied.csv")
+```
+
+```{r}
+sotu_lda_k10_tidied
+```
+
+```{r}
+top_terms_k10 <- sotu_lda_k10_tidied |>
+  group_by(topic) |>
+  slice_max(beta, n = 5, with_ties = FALSE) |>
+  ungroup() |>
+  arrange(topic, -beta)
+
+top_terms_k10 |>
+  mutate(topic = factor(topic),
+         term = reorder_within(term, beta, topic)) |>
+  ggplot(aes(term, beta, fill = topic)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  scale_x_reordered() +
+  scale_fill_brewer(palette = "Set2") +
+  facet_wrap(~topic, scales = "free", ncol = 2) +
+  coord_flip()
+```
+
+
+This is a pretty crude output and it is not very easy to make sense out of the different topics that the package found based on the forced number *k = 10*. Fortunately, you can finetune the hyperparameters of the LDA. Be careful as the code below will take quite some time to run:
+
+```{r}
+determine_k <- FindTopicsNumber(
+  sotu_dtm,
+  topics = seq(from = 2, to = 30, by = 2),
+  metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
+  method = "Gibbs",
+  control = list(seed = 77),
+  mc.cores = 16L,
+  verbose = TRUE
+)
+```
+
+
+```{r}
+#| include: false
+determine_k <- read_rds("data/determine_k.rds")
+```
+
+
+1. Griffiths2004 measures the likelihood-based coherence
+2. CaoJuan2009 penalizes high similarity between topics
+3. Arun2010 balances document and topic distributions
+Deveaud2014 encourages diverse yet interpretable topics
+
+```{r}
+determine_k 
+```
+
+```{r}
+FindTopicsNumber_plot(determine_k)
+```
+
+Given this graphical output, the sweetspot for `k` lies somewhere between 14 and 18. 
+
+
+## Structural Topic Models
+
+The STM package allows us to incorporate metadata into the model. In our case, we can use the year of the State of the Union address as metadata. This way, we can see how the topics have evolved over time. 
+
+```{r}
+sotu_stm <- sotu_meta |> 
+  mutate(text = sotu_text) |> 
+  distinct(text, .keep_all = TRUE) |> 
+  filter(between(year, 1900, 2020))
+
+glimpse(sotu_stm)
+```
+
+First, we will process our data into a format that is required for the `stm` package to work using the `textProcessor()` function. 
+
+```{r}
+processed <- textProcessor(sotu_stm$text, metadata = sotu_stm |> select(-text))
+```
+
+The `processed` object is a list that contains the processed text and metadata. We can now proceed to fit the STM model. Next, we can prepare the documents within the processed object. Words that appear less then three times are omitted with `lower.thresh = 3` and anything beyond 80 times is also omitted with `upper.thresh = 80`.
+
+```{r}
+prepped_docs <- prepDocuments(processed$documents, 
+                              processed$vocab,
+                              processed$meta, 
+                              lower.thresh = 5, 
+                              upper.thresh = 80)
+```
+
+
+```{r}
+out <- list(documents = processed$documents,
+            vocab = processed$vocab,
+            meta = processed$meta)
+```
+
+Below we finally fit the STM model. The `K` parameter specifies the number of topics we want to fit. I choose 15 as the result of the `ldatuning` function was around that value. The `prevalence` parameter specifies the metadata that we want to include in the model. We suppose that the prevalence of a topic depends on the party affiliation of the speaker and the point in time. The `content` parameter specifies the metadata that we want to include in the model. We only set it to party affiliation. The `max.em.its` parameter specifies the number of iterations that the EM algorithm should run. The `data` parameter specifies the metadata that we want to include in the model. The `init.type` parameter specifies the type of initialization that we want to use. The `verbose` parameter specifies whether we want to print out the progress of the model fitting.
+
+```{r}
+sotu_content_fit <- stm(documents = prepped_docs$documents, 
+                        vocab = prepped_docs$vocab, 
+                        K = 15, 
+                        prevalence = ~party + s(year),
+                        content = ~party,
+                        max.em.its = 75, 
+                        data = prepped_docs$meta, 
+                        init.type = "Spectral",
+                        verbose = FALSE)
+
+write_rds(sotu_content_fit, "data/sotu_content_fit.rds")
+```
+
+```{r}
+#| include: false
+sotu_content_fit <- read_rds("data/sotu_content_fit.rds")
+```
+
+
+```{r}
+topic_prevalence <- tibble(
+  topic = seq_len(ncol(sotu_content_fit$theta)),
+  prevalence = colMeans(sotu_content_fit$theta)
+)
+
+ggplot(topic_prevalence, aes(x = factor(topic), y = prevalence)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Topic Prevalence",
+    x = "Topic",
+    y = "Prevalence"
+  ) +
+  theme_minimal()
+```
+
+
+
+```{r}
+labelTopics(sotu_content_fit, n = 10)
+```
+
+
+
+
+The question is where does this leave us with Topic Models and what should we do with them? Well, the answer probably is that it is hard so say. On the one hand, they are a fun and relatively quick method to inductively explore a corpus of text. On the other hand, they are not very robust and the results are often hard to interpret. Granted, the results in this example are relatively non-sensical but a better hyperparameter finetuning would probably yield a better fit. You could also now use these results in some way for inferential classical statistical models but in light of the interpretability and robustness issues, this might not be the best idea. Topic models might rather be used as a first (exploratory) step in a more comprehensive text analysis pipeline. 
+
+
+
+
+
+
