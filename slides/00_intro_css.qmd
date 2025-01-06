@@ -40,7 +40,7 @@ editor_options:
 ## Outline of the course {.smaller}
 
 - Day 1 : Introduction to CSS + Web scraping
-- Day 2 : Manipulating text data
+- Day 2 : Manipulating textual data
 - Day 3 : Supervised learning for text classification
 - Day 4 : Unsupervised learning
 - Day 5 : Large language models
