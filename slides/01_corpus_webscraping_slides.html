@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.5.41">
 
   <meta name="author" content="Malo Jan &amp; Luis Sattelmayer">
-  <meta name="dcterms.date" content="2025-01-05">
+  <meta name="dcterms.date" content="2025-01-06">
   <title>Corpus selection and online data collection</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -337,7 +337,7 @@ Malo Jan &amp; Luis Sattelmayer
 </div>
 </div>
 
-  <p class="date">2025-01-05</p>
+  <p class="date">2025-01-06</p>
 </section>
 <section>
 <section id="corpus-selection" class="title-slide slide level1 center">
@@ -348,49 +348,74 @@ Malo Jan &amp; Luis Sattelmayer
 <h2>What is a corpus ?</h2>
 <ul>
 <li>Every project involving text analysis starts with a corpus</li>
-<li>Choose documents to analyze</li>
-<li>A corpus is a collection of texts</li>
-<li>Crucial task and often overlooked</li>
-<li>Corresponds to identifying the population of interest</li>
-</ul>
-</section>
-<section id="corpus-selection-1" class="slide level2 smaller">
-<h2>Corpus selection</h2>
-<ul>
-<li>Start a research interest about a social phenomena</li>
-<li>What would be a corpus that would help me answer this question ?</li>
+<li>A corpus is a collection of texts, along with metadata</li>
+<li>Corpus selection is a crucial task and often overlooked</li>
+<li>Corresponds to identifying the population of interest, choosing documents to analyze according to research questions and interests</li>
+<li>What would be a corpus that would help me answer my research question ?</li>
 <li>Eg. twitter data is fun but not useful for everything</li>
-<li>Corpus and metadata</li>
 </ul>
 </section>
-<section id="section" class="slide level2">
-<h2></h2>
+<section id="corpus-selection-and-bias" class="slide level2 smaller">
+<h2>Corpus selection and bias</h2>
 <ul>
+<li>Several aspects to consider when selecting a corpus</li>
 <li>How exhaustive is the corpus ? Is it only a sample or not</li>
-<li>Think about data generation process : how these texts were produced</li>
+<li>Think about data generation process : how these texts were produced, how does it affect the corpus
+<ul>
+<li>Eg. Censorship <span class="citation" data-cites="king2013censorship">[@king2013censorship]</span></li>
+</ul></li>
 <li>Important to explore, read some of the texts</li>
-<li>Think about quantity of interest : what could you derive as a measure from those texts : eg. How much a given topic is discussed in these texts</li>
+<li>Think about quantity of interest, what could you derive as a measure from those texts :
+<ul>
+<li>eg. How much a given topic is discussed in these texts</li>
+</ul></li>
 </ul>
 </section>
 <section id="finding-or-creating-a-corpus" class="slide level2 smaller">
 <h2>Finding or creating a corpus</h2>
 <ul>
 <li>Existing corpora vs creating original corpora</li>
-<li>Existing corpora :
+<li>Existing corpora
 <ul>
-<li>Texs datasets already available in such format : eg. Manifesto corpus, UNGA corpus, corpus that other researchers have collected, Open data</li>
+<li>Texts available in open data : eg. <a href="https://data.assemblee-nationale.fr/travaux-parlementaires/debats">French parliament speeches</a></li>
+<li>Texts released by other researchers : eg. <a href="https://manifesto-project.wzb.eu/information/documents/corpus">Manifesto corpus</a>, <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0TJX8Y">UNGA corpus</a>, <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L4OAKN">Parlspeech</a>, <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UGGXUF">EU commissioners press releases</a></li>
 </ul></li>
-<li>Collecting texts
+<li>Collecting digital texts
 <ul>
-<li>API</li>
+<li>Digitizing texts : through Optical Character Recognition (OCR)</li>
+<li>Application programming interface (API)</li>
 <li>Web scraping</li>
 </ul></li>
 </ul>
+</section></section>
+<section>
+<section id="text-digitization" class="title-slide slide level1 center">
+<h1>Text digitization</h1>
+
 </section>
-<section id="api" class="slide level2 smaller">
-<h2>API</h2>
+<section id="corpus-creation-with-digitized-texts" class="slide level2 smaller">
+<h2>Corpus creation with digitized texts</h2>
 <ul>
-<li>Application Programming Interface</li>
+<li>Important avenues for research in the digital humanities</li>
+<li>Digitization of old texts, newspapers, books, archives</li>
+<li>Allows to create large original corpora</li>
+<li>Requires OCR (Optical Character Recognition) tools
+<ul>
+<li>Transforms images of texts into machine-readable text</li>
+<li>Tools such as <a href="https://cran.r-project.org/web/packages/tesseract/vignettes/intro.html">Tesseract</a>, <a href="https://huggingface.co/docs/transformers/model_doc/trocr">TrOCR</a></li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="apis" class="title-slide slide level1 center">
+<h1>APIs</h1>
+
+</section>
+<section id="application-programming-interface-api" class="slide level2 smaller">
+<h2>Application programming interface (API)</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<ul>
 <li>One important way to access data online</li>
 <li>Access to data through
 <ul>
@@ -399,12 +424,16 @@ Malo Jan &amp; Luis Sattelmayer
 <li>Receiving data in a structured format (JSON, XML)</li>
 </ul></li>
 </ul>
+</div><div class="column" style="width:60%;">
+<p><img data-src="https://media.geeksforgeeks.org/wp-content/uploads/20230216170349/What-is-an-API.png"></p>
+</div>
+</div>
 </section>
 <section id="advantages-of-apis" class="slide level2 smaller">
 <h2>Advantages of APIS</h2>
 <ul>
 <li>Allows for easy &amp; legal access to data</li>
-<li>Get structured data</li>
+<li>Get structured data that can be easily processed</li>
 <li>In many cases, someone has already created a package facilitating the access to the API : <a href="https://github.com/news-r/nytimes">NY Times</a>, <a href="https://manifesto-project.wzb.eu/information/documents/api">Manifesto project</a>, <a href="https://github.com/JBGruber/atrrr">Bluesky</a>, <a href="https://www.rcharlie.com/spotifyr/">Spotify</a>, <a href="https://developers.google.com/youtube/v3?hl=fr">Youtube</a> <a href="https://github.com/cjbarrie/academictwitteR">Twitter (RIP)</a></li>
 </ul>
 </section>
@@ -413,8 +442,8 @@ Malo Jan &amp; Luis Sattelmayer
 <ul>
 <li>Access only to the data that the API provider wants to share</li>
 <li>Often limited in the number of requests you can make</li>
-<li>Some APIs are not free</li>
-<li>Apicalypse : APIs can be closed or modified at any time
+<li>Some APIs are not free : eg. Twitter API now</li>
+<li>APIcalypse/Post-API Age : APIs can be closed or modified at any time
 <ul>
 <li>Facebook, or Twitter that had before extensive API access for researchers but now closed (see <a href="https://github.com/medialab/minet">minet</a> for some workarounds)</li>
 </ul></li>
@@ -424,10 +453,15 @@ Malo Jan &amp; Luis Sattelmayer
 <h2>Learning how to use an API</h2>
 <ul>
 <li>This course will not cover how to use APIs</li>
-<li>But there are many resources online</li>
-<li>httr package in R</li>
-<li></li>
+<li>But there are many resources online, <a href="https://tellingstorieswithdata.com/07-gather.html">here</a></li>
+<li>Request data from API with <a href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2</a></li>
+<li>Parse Json or XML in R with <a href="https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html">jsonlite</a></li>
 </ul>
+</section></section>
+<section>
+<section id="webscraping" class="title-slide slide level1 center">
+<h1>Webscraping</h1>
+
 </section>
 <section id="what-is-web-scraping" class="slide level2 smaller">
 <h2>What is web scraping?</h2>
@@ -453,13 +487,8 @@ Malo Jan &amp; Luis Sattelmayer
 <li>Automatically download hundreds of pdfs from a website</li>
 <li>Collect meta data from a website</li>
 </ul>
-</section></section>
-<section>
-<section id="how-the-web-is-written" class="title-slide slide level1 center">
-<h1>How the web is written</h1>
-
 </section>
-<section id="how-the-web-is-written-1" class="slide level2 smaller">
+<section id="how-the-web-is-written" class="slide level2 smaller">
 <h2>How the web is written</h2>
 <ul>
 <li>Web scraping involves a minimum understanding of how the web is written: what is a web page?
@@ -489,11 +518,6 @@ Malo Jan &amp; Luis Sattelmayer
 <li>Web scraping consists in extracting the content of the html source code to get certain information</li>
 <li>CTRL + U /Selector Gadget</li>
 </ul>
-</section></section>
-<section>
-<section id="web-scraping-ethics" class="title-slide slide level1 center">
-<h1>Web scraping ethics</h1>
-
 </section>
 <section id="ethics-on-data-access" class="slide level2 smaller">
 <h2>Ethics on data access</h2>
@@ -526,11 +550,6 @@ Malo Jan &amp; Luis Sattelmayer
 <p><img data-src="images/01_scrap.png" class="absolute" style="top: 100px; right: 10px; width: 400px; height: 400px; "></p>
 </div>
 </div>
-</section></section>
-<section>
-<section id="web-scraping-challenges" class="title-slide slide level1 center">
-<h1>Web scraping challenges</h1>
-
 </section>
 <section id="complex-and-dynamic-pages" class="slide level2 smaller">
 <h2>Complex and dynamic pages</h2>

@@ -16,65 +16,94 @@ format:
 
 ## What is a corpus ? {.smaller}
 
-- Every project involving text analysis starts with a corpus
-- Choose documents to analyze
-- A corpus is a collection of texts
-- Crucial task and often overlooked
-- Corresponds to identifying the population of interest
-
-## Corpus selection {.smaller}
-
-- Start a research interest about a social phenomena
-- What would be a corpus that would help me answer this question ?
+- Every project involving text analysis starts with a corpus 
+- A corpus is a collection of texts, along with metadata
+- Corpus selection is a crucial task and often overlooked
+- Corresponds to identifying the population of interest, choosing documents to analyze according to research questions and interests
+- What would be a corpus that would help me answer my research question ?
 - Eg. twitter data is fun but not useful for everything
-- Corpus and metadata
 
-##
+## Corpus selection and bias {.smaller}
 
+- Several aspects to consider when selecting a corpus
 - How exhaustive is the corpus ? Is it only a sample or not
-- Think about data generation process : how these texts were produced
+- Think about data generation process : how these texts were produced, how does it affect the corpus
+    - Eg. Censorship [@king2013censorship]
 - Important to explore, read some of the texts
-- Think about quantity of interest : what could you derive as a measure from those texts : eg. How much a given topic is discussed in these texts
-
-
+- Think about quantity of interest,  what could you derive as a measure from those texts : 
+    - eg. How much a given topic is discussed in these texts
+    
 ## Finding or creating a corpus {.smaller}
 
--  Existing corpora vs creating original corpora
-- Existing corpora : 
-    - Texs datasets already available in such format : eg. Manifesto corpus, UNGA corpus, corpus that other researchers have collected, Open data 
-- Collecting texts
-    - API
-    - Web scraping
-    
-## API {.smaller}
+- Existing corpora vs creating original corpora
+- Existing corpora 
+    - Texts available in open data : eg. [French parliament speeches](https://data.assemblee-nationale.fr/travaux-parlementaires/debats) 
+    - Texts released by other researchers : eg. [Manifesto corpus](https://manifesto-project.wzb.eu/information/documents/corpus), [UNGA corpus](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0TJX8Y), [Parlspeech](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L4OAKN), [EU commissioners press releases](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UGGXUF)
 
-- Application Programming Interface
+- Collecting digital texts
+    - Digitizing texts : through Optical Character Recognition (OCR) 
+    - Application programming interface (API)
+    - Web scraping
+
+# Text digitization
+
+## Corpus creation with digitized texts {.smaller}
+
+- Important avenues for research in the digital humanities
+- Digitization of old texts, newspapers, books, archives
+- Allows to create large original corpora
+- Requires OCR (Optical Character Recognition) tools
+    - Transforms images of texts into machine-readable text
+    - Tools such as [Tesseract](https://cran.r-project.org/web/packages/tesseract/vignettes/intro.html), [TrOCR](https://huggingface.co/docs/transformers/model_doc/trocr)
+    
+# APIs
+
+## Application programming interface (API) {.smaller}
+
+:::: {.columns}
+::: {.column width="40%"}
+
+
 - One important way to access data online
 - Access to data through
     - Authentication with an API key
     - Querying the API with specific requests
-    - Receiving data in a structured format (JSON, XML)
+    - Receiving data in a structured format (JSON, XML) 
+
+:::
+
+::: {.column width="60%"}
+
+![](https://media.geeksforgeeks.org/wp-content/uploads/20230216170349/What-is-an-API.png)
+:::
+::::
+
+
 
 ## Advantages of APIS {.smaller}
 
 - Allows for easy & legal access to data
-- Get structured data
+- Get structured data that can be easily processed
 - In many cases, someone has already created a package facilitating the access to the API :  [NY Times](https://github.com/news-r/nytimes), [Manifesto project](https://manifesto-project.wzb.eu/information/documents/api), [Bluesky](https://github.com/JBGruber/atrrr),  [Spotify](https://www.rcharlie.com/spotifyr/), [Youtube](https://developers.google.com/youtube/v3?hl=fr)  [Twitter (RIP)](https://github.com/cjbarrie/academictwitteR)
 
 ## Limits of APIs {.smaller}
 
 - Access only to the data that the API provider wants to share
 - Often limited in the number of requests you can make
-- Some APIs are not free
-- Apicalypse : APIs can be closed or modified at any time
+- Some APIs are not free : eg. Twitter API now
+- APIcalypse/Post-API Age : APIs can be closed or modified at any time
     - Facebook, or Twitter that had before extensive API access for researchers but now closed (see [minet](https://github.com/medialab/minet) for some workarounds)
 
 ## Learning how to use an API {.smaller}
 
 - This course will not cover how to use APIs
-- But there are many resources online
-- httr package in R
-- 
+- But there are many resources online, [here](https://tellingstorieswithdata.com/07-gather.html)
+- Request data from API with [httr2](https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/)
+- Parse Json or XML in R with [jsonlite](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) 
+
+
+    
+# Webscraping
 
 ## What is web scraping? {.smaller}
 
@@ -100,8 +129,6 @@ format:
 - Automatically download hundreds of pdfs from a website
 - Collect meta data from a website
 
-# How the web is written
-
 ## How the web is written {.smaller}
 
 - Web scraping involves a minimum understanding of how the web is written: what is a web page?
@@ -126,7 +153,6 @@ format:
 - Web scraping consists in extracting the content of the html source code to get certain information
 - CTRL + U /Selector Gadget
 
-# Web scraping ethics
 
 ## Ethics on data access {.smaller}
 
@@ -158,7 +184,6 @@ format:
 :::
 ::::
 
-# Web scraping challenges
 
 ## Complex and dynamic pages {.smaller}
 
@@ -182,6 +207,7 @@ format:
 
 - Web scraping is often just the first step and can involve a lot of cleaning, text manipulation, parsing to get structured information
 - Requires additional skills and tools like *regular expressions* (regex) : see the package [stringr](https://stringr.tidyverse.org/) in R
+
 
 
 
