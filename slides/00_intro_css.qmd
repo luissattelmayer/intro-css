@@ -89,7 +89,7 @@ CSS from two main developments :
 - Rise of LLMs
 - GPU
 
-## Developments in political science
+## Developments in political science {.smaller}
 
 - Early development of computational text analysis in the 2000's in political science : convert text to numbers to perform statistical analysis
 - But really booming over the last few years with advances in AI allowing to perform more complex analysis
@@ -98,7 +98,7 @@ CSS from two main developments :
     - Image, Video as data, multimodal analysis
     - Generative language
 
-## Six principles for CSS [@grimmer2022text]
+## Six principles for CSS [@grimmer2022text] {.smaller}
 1. Social science theories and substantive knowledge are essential for research design. 
 2. Text analysis does not replace humans -- it augments them (see also the great paper by @do2024augmented)
 3. Building, refining, and testing social science theories requires iteration and cumulation. 
@@ -155,9 +155,6 @@ statistical models (clustering, scaling, topic models, supervised machine learni
 
 ![](images/00_kozlowski.png)
 
+## References
 
-## CSS pipeline
 
-- Corpus acquisition, selection and cleaning
-- Text preprocessing : convert text to numbers
-- Use text-as-data as input for statistical models
