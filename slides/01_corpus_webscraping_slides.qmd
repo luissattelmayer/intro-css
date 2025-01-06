@@ -17,21 +17,41 @@ format:
 ## What is a corpus ? {.smaller}
 
 - Every project involving text analysis starts with a corpus 
-- A corpus is a collection of texts, along with metadata
+- A collection of texts, along with metadata
 - Corpus selection is a crucial task and often overlooked
 - Corresponds to identifying the population of interest, choosing documents to analyze according to research questions and interests
 - What would be a corpus that would help me answer my research question ?
-- Eg. twitter data is fun but not useful for everything
+- E.g.: Twitter data is fun but not useful for everything
+
 
 ## Corpus selection and bias {.smaller}
 
 - Several aspects to consider when selecting a corpus
-- How exhaustive is the corpus ? Is it only a sample or not
-- Think about data generation process : how these texts were produced, how does it affect the corpus
-    - Eg. Censorship [@king2013censorship]
+- How exhaustive is the corpus ?        
+    - Can I obtain the entirety of a document type/collection?
+- Think about data generation process
+    - How were these texts produced?
+    - How could this affect the corpus?
 - Important to explore, read some of the texts
 - Think about quantity of interest,  what could you derive as a measure from those texts : 
     - eg. How much a given topic is discussed in these texts
+    - eg. How much a given sentiment is expressed in these texts
+    
+## Four biases in text selection {.smaller}
+- **Resource Bias**
+  - "texts often better reflect populations with more ressources to produce, record, and store documents" [@grimmer2022text]
+  - social groups are marginalized and invisible in all societies, thus also in text
+  - eg. Twitter data is not representative of the general population; it can only speak for behavior *on Twitter*
+
+- **Incentive Bias**
+  - (self-)censoring on Social Media or in official government documents is an issue [@king2013censorship]
+  
+- **Medium Bias**
+  - Twitter only allowed 140 characters until 2017 or meeting transcripts/speeches do not necessarily reflect the tonality of the actual communication
+
+- **Retrieval Bias**
+  - errors or skewed queries in text mining, intransparent APIs
+
     
 ## Finding or creating a corpus {.smaller}
 
@@ -125,9 +145,9 @@ format:
 
 - Collecting social media data
 - Collecting press releases from an organization, speeches from actors
-- Extracting data from wikipedia pages
-- Automatically download hundreds of pdfs from a website
-- Collect meta data from a website
+- Extracting data from Wikipedia pages
+- Automatically download hundreds of PDFs from a website
+- Collect metadata from a website
 
 ## How the web is written {.smaller}
 
@@ -151,7 +171,8 @@ format:
     - h1, h2, h3
 
 - Web scraping consists in extracting the content of the html source code to get certain information
-- CTRL + U /Selector Gadget
+- CTRL + U
+- [Selector Gadget](https://chromewebstore.google.com/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb?hl=de&pli=1)
 
 
 ## Ethics on data access {.smaller}
@@ -172,7 +193,7 @@ format:
 ::: {.column width="60%"}
 
 - Web scraping can be used to collect personal and sensitive data
-- Eg. Old twitter API: possibility to download all tweets of a user in 2 lines of code
+- E.g.: Old twitter API: possibility to download all tweets of a user in 2 lines of code
 - Data protection laws (GDPR) apply to web scraping
 - Need to think about the use of the data
 
@@ -183,7 +204,6 @@ format:
 ![](images/01_scrap.png){.absolute top=100 right=10 width="400" height="400"}
 :::
 ::::
-
 
 ## Complex and dynamic pages {.smaller}
 

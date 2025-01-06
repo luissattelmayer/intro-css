@@ -86,17 +86,26 @@ CSS from two main developments :
 
 
 - Development of new algorithms, models in Natural Language Processing
-- Rise of LLs
+- Rise of LLMs
 - GPU
 
 ## Developments in political science
 
 - Early development of computational text analysis in the 2000's in political science : convert text to numbers to perform statistical analysis
 - But really booming over the last few years with advances in AI allowing to perform more complex analysis
-- Even more recent developemnts : 
+- Even more recent developments : 
     - Muiltilingual text analysis
     - Image, Video as data, multimodal analysis
     - Generative language
+
+## Six principles for CSS [@grimmer2022text]
+1. Social science theories and substantive knowledge are essential for research design. 
+2. Text analysis does not replace humans -- it augments them (see also the great paper by @do2024augmented)
+3. Building, refining, and testing social science theories requires iteration and cumulation. 
+4. Text analysis methods distill generalizations from language. 
+5. The best method depends on the task. 
+6. Validations are essential and depend on the theory and the task. 
+
 
 ## What are textual statistics? {.smaller}
 - Capture *latent meaning* in text
@@ -105,6 +114,17 @@ CSS from two main developments :
 - This means that we are more or less informed about the *latent dimensionality(ies)* of our texts
 - It is also a mathematization of language 
   - written or not, there is no difference as long as the text is available in a form that is readable for computers
+  
+## Representing text-as-data {.smaller}
+- Analyzing text-as-data involves transforming text into a numeric representation in order to use
+statistical models (clustering, scaling, topic models, supervised machine learning etc.)
+- Featurization: extract numeric features from raw text
+- Three main steps in text analysis:
+  1. **Bag of word representation**
+  2. **Static word embeddings**
+  3. **Contextual embeddings from Large Language Models (LLMs)**
+- *The best method depends on the task* 
+
 
 ## Why use these methods? {.smaller}
 - Counter issues of data availability
@@ -134,14 +154,6 @@ CSS from two main developments :
 ## The meaning of "class" in books {.smaller}
 
 ![](images/00_kozlowski.png)
-
-## Six principles for CSS [@grimmer2013text]
-1. Social science theories and substantive knowledge are essential for research design. 
-2. Text analysis does not replace humans -- it augments them (see also the great paper by @do2024augmented)
-3. Building, refining, and testing social science theories requires iteration and cumulation. 
-4. Text analysis methods distill generalizations from language. 
-5. The best method depends on the task. 
-6. Validations are essential and depend on the theory and the task. 
 
 
 ## CSS pipeline
