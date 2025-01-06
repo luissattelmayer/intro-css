@@ -116,7 +116,7 @@ CSS from two main developments :
 
 ## The meaning of "class" in books {.smaller}
 
-![]images/(00_kozlowski.png)
+![](images/00_kozlowski.png)
 
 ## CSS pipeline {.smaller}
 
