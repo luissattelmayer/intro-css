@@ -17,37 +17,77 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction to CSS {.smaller}
+# Course Introduction {.smaller}
+## Instructors {.smaller}
 
-- Introduce to the field of CSS
+- Malo Jan
+- Luis Sattelmayer
+
+## Goal of the course {.smaller}
+
+- Introduction to Computational Social Sciences
+- From data collection to analysis
 - Mostly about text analysis
 - Only the basics to explore more
 - Require you know about programming
 - Goal to provide less technical introduction possible, focus on use cases
 
+## Outline of the course {.smaller}
+
+- Day 1 : Introduction to CSS + Web scraping
+- Day 2 : Manipulating text data
+- Day 3 : Supervised learning for text classification
+- Day 4 : Unsupervised learning
+- Day 5 : Large language models
+
+## Course structure {.smaller}
+
+- Lecture session in the morning
+- 1 "lab" lecture in the afternoon
+- 1 session for applying what you learned
+- Ressrouces and addtional scripts for methods not covered in the course
+
+## Course material {.smaller}
+
+- Github repository 
+
+# Computational Social Sciences {.smaller}
+
 ## What are CSS {.smaller}
 
-- Use of computing powers to analyze social phenomena
-- Quite recent and interdisciplinary
-- Not a "field" but rather a set of tools and methods
-- But specific journals have developed, networks (SICSS) and now positions
+
+> Computational social science is an interdisciplinary field that advances theories of human behavior by applying computational techniques to large datasets from social media sites, the Internet, or other digitized archives such as administrative records. @edelmann2020computational
+
+
+- Institutionalization of CSS
+    - Specific journals : eg. JCSS
+    - Networks : eg. SICCS
+    - Positions : Assistant professor in CSS, postdocs...
 
 ## Evolution over last decades {.smaller}
 
-- More data
-    - Data on the web
-    - Date from the web
-- Computing power 
+CSS from two main developments : 
+
+- New and more data
+    - Data on the web : digitization of text, historical archives, administrative records, open data
+    - Data from the web : social media, websites
+- New methods and computing power 
     - More powerful computers and hardware
     - More powerful algorithms, models, IA
     
-## New opportunities
+## More data {.smaller}
 
 - New data sources
-- Unstructured data : not produced by researcher
+- Unstructured data : not produced by researchers (such as survey, qualitative interviews)
 - Collecting population rather than sample
+- Allows to train more complex models
+
+## More computing power and methods  {.smaller}
 
 
+- Development of new algorithms, models in Natural Language Processing
+- Rise of LLms
+- GPU
 
 ## Developments in political science
 
@@ -58,15 +98,6 @@ editor_options:
     - Image, Video as data, multimodal analysis
     - Generative language
 
-- Using gilardi and Wuest 2018 different steps ? 
-
-- Transformation of text corpora into numbers to perform statistical analysis
-
--   For this we need to use text-as-data, meaning, we have to transform our documents with a **numerical representation** : this is what text as data means : featurisation : want to represent a collection of documents to a numerical form
-
--   To learn from the data the function linking the text and the label, the machine needs to have numbers and not text so we need to transform our text in \*\*a numerical representation
-
--   Learn feature representation of text : based on Natural Language Processing techniques, whole scientific field design to use computers to understand text
 
 ## Social group detection in party manifestos {.smaller}
 
@@ -85,52 +116,10 @@ editor_options:
 
 ## The meaning of "class" in books {.smaller}
 
-![]images/(00_kozlowski.png)
+![](images/00_kozlowski.png)
 
-## CSS pipeline
+## CSS pipeline {.smaller}
 
-- Getting a corpus
-- Preprocessing
-
-
-
-# Corpus selection
-
-## What is a corpus ? {.smaller}
-
-- Every project involving text analysis starts with a corpus
-- Choose documents to analyze
-- A corpus is a collection of texts
-- Crucial task and often overlooked
-- Corresponds to identifying the population of interest
-
-## Corpus selection {.smaller}
-
-- Start a research interest about a social phenomena
-- What would be a corpus that would help me answer this question ?
-- Eg. twitter data is fun but not useful for everything
-- Corpus and metadata
-
-##
-
-- How exhaustive is the corpus ? Is it only a sample or not
-- Think about data generation process : how these texts were produced
-- Important to explore, read some of the texts
-- Think about quantity of interest : what could you derive as a measure from those texts : eg. How much a given topic is discussed in these texts
-
-
-## Finding or creating a corpus {.smaller}
-
--  Existing corpora vs creating original corpora
-- Existing corpora : 
-    - Texs datasets already available in such format : eg. Manifesto corpus, UNGA corpus, corpus that other researchers have collected, Open data 
-- Collecting texts
-    - API
-    - Web scraping
-    
-## API {.smaller}
-
-- Application Programming Interface
-
-- Existing API :  :Guardian, New York Times, Spotify, [Bluesky](https://github.com/JBGruber/atrrr) 
-- Apycalypse : Facebook, or Twitter that had before extensive API access for researchers but now closed (see [minet](https://github.com/medialab/minet) for some workarounds)
+- Corpus acquisition, selection and cleaning
+- Text preprocessing : convert text to numbers
+- Use text-as-data as input for statistical models
