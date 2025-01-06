@@ -18,24 +18,29 @@ editor_options:
 ---
 
 # Course Introduction {.smaller}
-## Instructors {.smaller}
+## About us {.smaller}
 
 - Malo Jan
+    - 3rd year PhD student at the CEE working on Climate politics, Legislative politics, Party politics, Quantitative and computational methods
+    - malo.jan@sciencespo.fr
+    
 - Luis Sattelmayer
+    - 3rd year PhD student at the CEE working on Party Competition, Partisan Strategies, Immigration Politics, Quantitative and computational methods
+    - luis.sattelmayer@sciencespo.fr
 
 ## Goal of the course {.smaller}
 
 - Introduction to Computational Social Sciences
 - From data collection to analysis
 - Mostly about text analysis
-- Only the basics to explore more
-- Require you know about programming
+- Exposure to different methods, tools, and their applications
+- Prerequisites: solid command of RStudio
 - Goal to provide less technical introduction possible, focus on use cases
 
 ## Outline of the course {.smaller}
 
 - Day 1 : Introduction to CSS + Web scraping
-- Day 2 : Manipulating text data
+- Day 2 : Manipulating textual data
 - Day 3 : Supervised learning for text classification
 - Day 4 : Unsupervised learning
 - Day 5 : Large language models
@@ -45,11 +50,7 @@ editor_options:
 - Lecture session in the morning
 - 1 "lab" lecture in the afternoon
 - 1 session for applying what you learned
-- Ressrouces and addtional scripts for methods not covered in the course
-
-## Course material {.smaller}
-
-- Github repository 
+- Ressources and additional scripts for methods not covered in the course are available on the [Github repository](https://github.com/luissattelmayer/intro-css/tree/main)
 
 # Computational Social Sciences {.smaller}
 
@@ -57,7 +58,6 @@ editor_options:
 
 
 > Computational social science is an interdisciplinary field that advances theories of human behavior by applying computational techniques to large datasets from social media sites, the Internet, or other digitized archives such as administrative records. @edelmann2020computational
-
 
 - Institutionalization of CSS
     - Specific journals : eg. JCSS
@@ -78,7 +78,7 @@ CSS from two main developments :
 ## More data {.smaller}
 
 - New data sources
-- Unstructured data : not produced by researchers (such as survey, qualitative interviews)
+- Unstructured data: not produced by researchers (such as survey, qualitative interviews)
 - Collecting population rather than sample
 - Allows to train more complex models
 
@@ -86,17 +86,54 @@ CSS from two main developments :
 
 
 - Development of new algorithms, models in Natural Language Processing
-- Rise of LLms
+- Rise of LLMs
 - GPU
 
 ## Developments in political science
 
 - Early development of computational text analysis in the 2000's in political science : convert text to numbers to perform statistical analysis
 - But really booming over the last few years with advances in AI allowing to perform more complex analysis
-- Even more recent developemnts : 
+- Even more recent developments : 
     - Muiltilingual text analysis
     - Image, Video as data, multimodal analysis
     - Generative language
+
+## Six principles for CSS [@grimmer2022text]
+1. Social science theories and substantive knowledge are essential for research design. 
+2. Text analysis does not replace humans -- it augments them (see also the great paper by @do2024augmented)
+3. Building, refining, and testing social science theories requires iteration and cumulation. 
+4. Text analysis methods distill generalizations from language. 
+5. The best method depends on the task. 
+6. Validations are essential and depend on the theory and the task. 
+
+
+## What are textual statistics? {.smaller}
+- Capture *latent meaning* in text
+  - Meaning can be discovered through the method (inductively -- unsupervised)
+  - Or we can use a more deductive reasoning beforehand to nudge our method toward a specific underlying pattern we are interested in (supervised)
+- This means that we are more or less informed about the *latent dimensionality(ies)* of our texts
+- It is also a mathematization of language 
+  - written or not, there is no difference as long as the text is available in a form that is readable for computers
+  
+## Representing text-as-data {.smaller}
+- Analyzing text-as-data involves transforming text into a numeric representation in order to use
+statistical models (clustering, scaling, topic models, supervised machine learning etc.)
+- Featurization: extract numeric features from raw text
+- Three main steps in text analysis:
+  1. **Bag of word representation**
+  2. **Static word embeddings**
+  3. **Contextual embeddings from Large Language Models (LLMs)**
+- *The best method depends on the task* 
+
+
+## Why use these methods? {.smaller}
+- Counter issues of data availability
+- Uncover patterns/dimensionalities in text that humans do not recognize as such
+- Save time (*scalability* of methods)
+- Albeit being a quantitative method, methods covered in this class are also useful for qualitative research
+    - collecting documents, corpora
+    - organizing and structuring data
+    - uncovering patterns *inductively*
 
 
 ## Social group detection in party manifestos {.smaller}
@@ -118,7 +155,8 @@ CSS from two main developments :
 
 ![](images/00_kozlowski.png)
 
-## CSS pipeline {.smaller}
+
+## CSS pipeline
 
 - Corpus acquisition, selection and cleaning
 - Text preprocessing : convert text to numbers

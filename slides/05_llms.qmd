@@ -20,6 +20,14 @@ editor_options:
 - Bag of Words
     - text is represented as a collection of individual words without considering order or context
     
+- Word embeddings
+    - dense, fixed-size vectors capturing word semantics
+    - e.g. Word2Vec, GloVe, FastText
+
+- Today: **Large Language Models** (LLMs)
+    - context-aware embeddings using attention mechanisms
+    - e.g. BERT, GPT, Llama & Co
+    
 ## {.smaller .scrollable}
 
 | **Feature**               | **Bag-of-Words**                                           | **Static Embeddings**                                    | **Transformers**                                     |
@@ -70,13 +78,21 @@ editor_options:
     - necessary to introduce *non-linearity* into the network and handle complex patterns in the data
 
 
-## Transformer Architecture
+## Transformer Architecture 
 - Also a NN, state of the art since early 2018
 - "Attention is all you need" [@vaswani2017attention]
 
 - **Attention Mechanism**: 
     - allows the model to focus on different parts of the input sequence when predicting the next token
     - crucial for understanding the *context* of a word in a sentence
+
+## Attention in Transformers
+- For a visualization see [here](https://colab.research.google.com/drive/1hXIQ77A4TYS4y3UthWF-Ci7V7vVUoxmQ?usp=sharing)
+- Viz below taken from @clark2019does
+
+![](images/05_attention_mechanism.png)
+
+
 
 
 ## Training a transformer
@@ -89,8 +105,37 @@ editor_options:
 
 ![](images/05_masked_modeling.png)
 
+## Transfer learning & fine-tuning {.smaller}
 
-- 
+- LLMs are trained on large corpora and thus contain a lot of knowledge about the (written) world
+- This knowledge can be *transferred* to other similar and related tasks
+- Transfer learning adds a new layer of neural network on top of the pre-trained model
+
+
+:::{.fragment}
+- *Fine-tuning* a pre-trained model on a specific task is often faster and requires less data than training a model from scratch
+- The model is fine-tuned on a smaller dataset to adapt to the specifics of the new task
+- For fine-tuning, The weights within the model are adjusted to the new task
+:::
+
+## Transfer learning
+![](images/05_transfer_learning.png)
+
+
+
+## From pretrained models...
+![](images/05_pretrained_model.png)
+
+
+## ... to finetuning
+![](images/05_finetuned_model.png)
+
+## Finetuning visualized [@do2024augmented]
+
+![](images/03_do_supervised.png)
+
+
+
 
 ## 
 
@@ -126,28 +171,56 @@ editor_options:
     - ... requires patience, time, and unfortunately computational ressources
 
 
-## BERT
-- **BERT**: Bidirectional Encoder Representations from Transformers
-    - Masked language model for NLP tasks
-    
-    
-## BERT vs. GPT (vs. Open Source Models)
 
 
+## BERT {.smaller}
+- **B**idirectional **E**ncoder **R**epresentations from **T**ransformers
+    - masked language model for NLP tasks
+    - only uses encoder part of the architecture
+    - bi-directional attention, meaning it looks at the context from both the left and right sides of a word
+
+- **RoBERTa**: Removed NSP and trained on larger datasets with more robust techniques
+- **DistilBERT**: Smaller and faster version of BERT
+- and other variants trained on different languages, tasks, etc 
+
+
+## BERT vs. GPT {.smaller}
+
+|    | **BERT**                             | **GPT**                             |
+|-------------------|--------------------------------------|--------------------------------------|
+| **Type**         | Encoder-only                        | Decoder-only                        |
+| **Training**    | Masked Language Modeling (MLM)       | Causal Language Modeling (CLM)      |
+| **Direction**    | Bi-directional                      | Uni-directional                     |
+| **Task Focus**   | Language understanding              | Language generation                 |
+| **Strength**     | Deep sentence/context understanding | Coherent and fluent text generation |
+
+
+## Evolution of LLMs
+![](images/05_evolutionary_tree.jpg)
 
 ## Multilingual Models
+![](images/05_translation.png)
 
 
 
-## Issues with LLMs
+## Issues with LLMs {.smaller}
 - Carbon footprint
     - on quantifying ML's carbon footprint see @lacoste2019quantifying
 
 - LLMs hardly solve the problem of bias in AI
-    
+- GPU dependent
+- Data privacy:
+    - without personal GPU, you will have to think a lot about your data and whether it ought to be protected
+    - some corpora (e.g. copyrighted data) should not be seen by third parties (Google Colab)
 
 
-## What use-cases other than classification tasks? 
+## Poli-sci examples
+- Measure populist frames in text: @bonikowski2022politics
+- Anti-elite rhetoric: @licht2024measuring
+- Social groups: @licht2024they
+
+## What other use-cases for Transformers? 
+- This leaves the realm of 
 - Image generation
     - Dall-E
     - Midjourney
@@ -155,13 +228,20 @@ editor_options:
     
 - speech-to-text
     - Whisper
-
-- 
     
 ## Whisper
+- For the GitHub tutorial click [here](https://github.com/openai/whisper)
+
+![Developed by OpenAI](images/05_whisper.png)
+
+# Furhter ressources
+- [Lena Voita's blog on NLP](https://lena-voita.github.io/nlp_course.html)
+- [Natural Language Inference]() (NLI)
+    - paper by @laurer2024less
+    - GitHub tutorial [here](https://github.com/MoritzLaurer/summer-school-transformers-2023/blob/main/4_tune_bert_nli.ipynb)
 
 
-
+## Bibliography
 
 
 
