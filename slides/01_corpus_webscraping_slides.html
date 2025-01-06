@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="01_webscraping_files/libs/clipboard/clipboard.min.js"></script>
-<script src="01_webscraping_files/libs/quarto-html/tabby.min.js"></script>
-<script src="01_webscraping_files/libs/quarto-html/popper.min.js"></script>
-<script src="01_webscraping_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="01_webscraping_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="01_webscraping_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="01_webscraping_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="01_webscraping_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="01_corpus_webscraping_slides_files/libs/clipboard/clipboard.min.js"></script>
+<script src="01_corpus_webscraping_slides_files/libs/quarto-html/tabby.min.js"></script>
+<script src="01_corpus_webscraping_slides_files/libs/quarto-html/popper.min.js"></script>
+<script src="01_corpus_webscraping_slides_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="01_corpus_webscraping_slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="01_corpus_webscraping_slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="01_corpus_webscraping_slides_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="01_corpus_webscraping_slides_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.41">
 
-  <meta name="author" content="Malo Jan">
-  <meta name="dcterms.date" content="2024-12-23">
-  <title>Collecting online data</title>
+  <meta name="author" content="Malo Jan &amp; Luis Sattelmayer">
+  <meta name="dcterms.date" content="2025-01-05">
+  <title>Corpus selection and online data collection</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="01_webscraping_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="01_webscraping_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="01_corpus_webscraping_slides_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="01_corpus_webscraping_slides_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -31,11 +31,11 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="01_webscraping_files/libs/revealjs/dist/theme/quarto.css">
-  <link href="01_webscraping_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="01_webscraping_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="01_webscraping_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="01_webscraping_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="01_corpus_webscraping_slides_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="01_corpus_webscraping_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="01_corpus_webscraping_slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="01_corpus_webscraping_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="01_corpus_webscraping_slides_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -327,18 +327,107 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Collecting online data</h1>
-  <p class="subtitle">Introduction on webscraping</p>
+  <h1 class="title">Corpus selection and online data collection</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Malo Jan 
+Malo Jan &amp; Luis Sattelmayer 
 </div>
 </div>
 </div>
 
-  <p class="date">2024-12-23</p>
+  <p class="date">2025-01-05</p>
+</section>
+<section>
+<section id="corpus-selection" class="title-slide slide level1 center">
+<h1>Corpus selection</h1>
+
+</section>
+<section id="what-is-a-corpus" class="slide level2 smaller">
+<h2>What is a corpus ?</h2>
+<ul>
+<li>Every project involving text analysis starts with a corpus</li>
+<li>Choose documents to analyze</li>
+<li>A corpus is a collection of texts</li>
+<li>Crucial task and often overlooked</li>
+<li>Corresponds to identifying the population of interest</li>
+</ul>
+</section>
+<section id="corpus-selection-1" class="slide level2 smaller">
+<h2>Corpus selection</h2>
+<ul>
+<li>Start a research interest about a social phenomena</li>
+<li>What would be a corpus that would help me answer this question ?</li>
+<li>Eg. twitter data is fun but not useful for everything</li>
+<li>Corpus and metadata</li>
+</ul>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<ul>
+<li>How exhaustive is the corpus ? Is it only a sample or not</li>
+<li>Think about data generation process : how these texts were produced</li>
+<li>Important to explore, read some of the texts</li>
+<li>Think about quantity of interest : what could you derive as a measure from those texts : eg. How much a given topic is discussed in these texts</li>
+</ul>
+</section>
+<section id="finding-or-creating-a-corpus" class="slide level2 smaller">
+<h2>Finding or creating a corpus</h2>
+<ul>
+<li>Existing corpora vs creating original corpora</li>
+<li>Existing corpora :
+<ul>
+<li>Texs datasets already available in such format : eg. Manifesto corpus, UNGA corpus, corpus that other researchers have collected, Open data</li>
+</ul></li>
+<li>Collecting texts
+<ul>
+<li>API</li>
+<li>Web scraping</li>
+</ul></li>
+</ul>
+</section>
+<section id="api" class="slide level2 smaller">
+<h2>API</h2>
+<ul>
+<li>Application Programming Interface</li>
+<li>One important way to access data online</li>
+<li>Access to data through
+<ul>
+<li>Authentication with an API key</li>
+<li>Querying the API with specific requests</li>
+<li>Receiving data in a structured format (JSON, XML)</li>
+</ul></li>
+</ul>
+</section>
+<section id="advantages-of-apis" class="slide level2 smaller">
+<h2>Advantages of APIS</h2>
+<ul>
+<li>Allows for easy &amp; legal access to data</li>
+<li>Get structured data</li>
+<li>In many cases, someone has already created a package facilitating the access to the API : <a href="https://github.com/news-r/nytimes">NY Times</a>, <a href="https://manifesto-project.wzb.eu/information/documents/api">Manifesto project</a>, <a href="https://github.com/JBGruber/atrrr">Bluesky</a>, <a href="https://www.rcharlie.com/spotifyr/">Spotify</a>, <a href="https://developers.google.com/youtube/v3?hl=fr">Youtube</a> <a href="https://github.com/cjbarrie/academictwitteR">Twitter (RIP)</a></li>
+</ul>
+</section>
+<section id="limits-of-apis" class="slide level2 smaller">
+<h2>Limits of APIs</h2>
+<ul>
+<li>Access only to the data that the API provider wants to share</li>
+<li>Often limited in the number of requests you can make</li>
+<li>Some APIs are not free</li>
+<li>Apicalypse : APIs can be closed or modified at any time
+<ul>
+<li>Facebook, or Twitter that had before extensive API access for researchers but now closed (see <a href="https://github.com/medialab/minet">minet</a> for some workarounds)</li>
+</ul></li>
+</ul>
+</section>
+<section id="learning-how-to-use-an-api" class="slide level2 smaller">
+<h2>Learning how to use an API</h2>
+<ul>
+<li>This course will not cover how to use APIs</li>
+<li>But there are many resources online</li>
+<li>httr package in R</li>
+<li></li>
+</ul>
 </section>
 <section id="what-is-web-scraping" class="slide level2 smaller">
 <h2>What is web scraping?</h2>
@@ -364,29 +453,129 @@ Malo Jan
 <li>Automatically download hundreds of pdfs from a website</li>
 <li>Collect meta data from a website</li>
 </ul>
+</section></section>
+<section>
+<section id="how-the-web-is-written" class="title-slide slide level1 center">
+<h1>How the web is written</h1>
+
+</section>
+<section id="how-the-web-is-written-1" class="slide level2 smaller">
+<h2>How the web is written</h2>
+<ul>
+<li>Web scraping involves a minimum understanding of how the web is written: what is a web page?
+<ul>
+<li>Code: interpreted by a browser (ex: Chrome, Mozilla)</li>
+</ul></li>
+<li>The code of a web page can be written in:
+<ul>
+<li>HTML (<strong>Hypertext markup language</strong>): structure and content</li>
+<li>CSS: style (ex: font, color)</li>
+<li>Javascript: functionalities, dynamic content, search, drop-down menus etc.</li>
+</ul></li>
+<li>Exemple from the press release of the <a href="https://press.un.org/en/content/secretary-general/press-release">UN Secretary General</a></li>
+</ul>
+</section>
+<section id="html" class="slide level2 smaller">
+<h2>HTML</h2>
+<ul>
+<li>HTML is a markup language</li>
+<li>The content of the web is written in tags, which can have attributes</li>
+<li>Most common tags in html
+<ul>
+<li>div</li>
+<li>p</li>
+<li>h1, h2, h3</li>
+</ul></li>
+<li>Web scraping consists in extracting the content of the html source code to get certain information</li>
+<li>CTRL + U /Selector Gadget</li>
+</ul>
+</section></section>
+<section>
+<section id="web-scraping-ethics" class="title-slide slide level1 center">
+<h1>Web scraping ethics</h1>
+
+</section>
+<section id="ethics-on-data-access" class="slide level2 smaller">
+<h2>Ethics on data access</h2>
+<ul>
+<li>Web scraping is about collecting data not intended for you
+<ul>
+<li>May be illegal but also exceptions for <a href="(https://www.ouvrirlascience.fr/la-fouille-de-textes-et-de-donnees-a-des-fins-de-recherche-une-pratique-confirmee-et-desormais-operationnelle-en-droit-francais/)">research purposes</a></li>
+<li>Access to private data, overload servers</li>
+<li>Websites can block you/track you</li>
+</ul></li>
+<li>Good practices :
+<ul>
+<li>API first</li>
+<li>Check permissions (robot.txt)</li>
+<li>Slow down scraping</li>
+</ul></li>
+</ul>
+</section>
+<section id="ethics-on-data-use" class="slide level2 smaller">
+<h2>Ethics on data use</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li>Web scraping can be used to collect personal and sensitive data</li>
+<li>Eg. Old twitter API: possibility to download all tweets of a user in 2 lines of code</li>
+<li>Data protection laws (GDPR) apply to web scraping</li>
+<li>Need to think about the use of the data</li>
+</ul>
+</div><div class="column" style="width:40%;">
+<p><img data-src="images/01_scrap.png" class="absolute" style="top: 100px; right: 10px; width: 400px; height: 400px; "></p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="web-scraping-challenges" class="title-slide slide level1 center">
+<h1>Web scraping challenges</h1>
+
+</section>
+<section id="complex-and-dynamic-pages" class="slide level2 smaller">
+<h2>Complex and dynamic pages</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li>Web pages are sometimes complex and dynamic (javascript)</li>
+<li>More complex scraping strategies are needed</li>
+<li>Selenium: allows to simulate clicks on a browser from a script</li>
+<li>Web pages are also changed, updated: your program can work one day and not the next, good practice to download the hmtl pages on your computer</li>
+</ul>
+</div><div class="column" style="width:40%;">
+<p><img data-src="images/01_scrap_2.jpg" class="absolute" style="top: 100px; right: 0px; width: 300px; height: 300px; "></p>
+</div>
+</div>
+</section>
+<section id="dirty-data" class="slide level2 smaller">
+<h2>Dirty data</h2>
+<ul>
+<li>Web scraping is often just the first step and can involve a lot of cleaning, text manipulation, parsing to get structured information</li>
+<li>Requires additional skills and tools like <em>regular expressions</em> (regex) : see the package <a href="https://stringr.tidyverse.org/">stringr</a> in R</li>
+</ul>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p>Collecting online data</p>
 </div>
 </div>
-</section>
+</section></section>
     </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="01_webscraping_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="01_webscraping_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="01_webscraping_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="01_webscraping_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="01_webscraping_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="01_webscraping_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="01_webscraping_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="01_webscraping_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="01_webscraping_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="01_webscraping_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="01_corpus_webscraping_slides_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

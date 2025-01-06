@@ -1,7 +1,6 @@
 ---
-title: "Collecting online data"
-subtitle: "Introduction on webscraping"
-author: "Malo Jan"
+title: "Corpus selection and online data collection"
+author: "Malo Jan & Luis Sattelmayer"
 date: today
 format: 
   revealjs:
@@ -12,6 +11,70 @@ format:
     incremental: false
 
 ---
+
+# Corpus selection
+
+## What is a corpus ? {.smaller}
+
+- Every project involving text analysis starts with a corpus
+- Choose documents to analyze
+- A corpus is a collection of texts
+- Crucial task and often overlooked
+- Corresponds to identifying the population of interest
+
+## Corpus selection {.smaller}
+
+- Start a research interest about a social phenomena
+- What would be a corpus that would help me answer this question ?
+- Eg. twitter data is fun but not useful for everything
+- Corpus and metadata
+
+##
+
+- How exhaustive is the corpus ? Is it only a sample or not
+- Think about data generation process : how these texts were produced
+- Important to explore, read some of the texts
+- Think about quantity of interest : what could you derive as a measure from those texts : eg. How much a given topic is discussed in these texts
+
+
+## Finding or creating a corpus {.smaller}
+
+-  Existing corpora vs creating original corpora
+- Existing corpora : 
+    - Texs datasets already available in such format : eg. Manifesto corpus, UNGA corpus, corpus that other researchers have collected, Open data 
+- Collecting texts
+    - API
+    - Web scraping
+    
+## API {.smaller}
+
+- Application Programming Interface
+- One important way to access data online
+- Access to data through
+    - Authentication with an API key
+    - Querying the API with specific requests
+    - Receiving data in a structured format (JSON, XML)
+
+## Advantages of APIS {.smaller}
+
+- Allows for easy & legal access to data
+- Get structured data
+- In many cases, someone has already created a package facilitating the access to the API :  [NY Times](https://github.com/news-r/nytimes), [Manifesto project](https://manifesto-project.wzb.eu/information/documents/api), [Bluesky](https://github.com/JBGruber/atrrr),  [Spotify](https://www.rcharlie.com/spotifyr/), [Youtube](https://developers.google.com/youtube/v3?hl=fr)  [Twitter (RIP)](https://github.com/cjbarrie/academictwitteR)
+
+## Limits of APIs {.smaller}
+
+- Access only to the data that the API provider wants to share
+- Often limited in the number of requests you can make
+- Some APIs are not free
+- Apicalypse : APIs can be closed or modified at any time
+    - Facebook, or Twitter that had before extensive API access for researchers but now closed (see [minet](https://github.com/medialab/minet) for some workarounds)
+
+## Learning how to use an API {.smaller}
+
+- This course will not cover how to use APIs
+- But there are many resources online
+- httr package in R
+- 
 
 ## What is web scraping? {.smaller}
 
