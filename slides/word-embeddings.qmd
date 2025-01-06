@@ -18,12 +18,66 @@ editor_options:
 ---
 ## Outline
 1. What is unsupervised learning? 
-2. 
+2. Topic Modeling
+3. Word Embeddings
 
 
 # Unsupervised Learning
+## What is unsupervised learning?
+- Unsupervised learning is a type of machine learning that is used to find hidden patterns in data
+- Unlike supervised learning, unsupervised learning does not require labeled data, i.e. no human intervention (at first)
+- Example applications: clustering, dimensionality reduction, anomaly detection, and topic modeling
+
+## Clustering & Dimensionality Reduction {.smaller}
+- Clustering is a type of unsupervised learning that is used to group similar data points together
+    - kNN, k-means, hierarchical clustering
+    - relies on assumption that data points relate to latent groups
+- Dimensionality reduction is a technique used to reduce the number of features in a dataset while preserving the most important information
+    - PCA, t-SNE, UMAP
+    - relies on assumption that data points lie on a lower-dimensional manifold
 
 
+## Unsupervised Learning as induction
+- Inductive reasoning starts with specific observations (e.g., raw data points) and moves toward a broader understanding or model of the data
+- Unsupervised learning is a form of inductive reasoning that is used to discover patterns in data without human intervention
+- A posteriori, we have to interpret the unsupervised classification(s)
+    - clustering: what do the clusters represent?
+    - dimensionality reduction: what are the most important features?
+    
+
+## How does this relate to ML?
+- Unsupervised learning is a crucial part of the machine learning pipeline
+    - preprocess data, identify patterns, and reduce the dimensionality of data
+- Unsupervised learning is often used in combination with supervised learning to improve the performance of predictive models
+    - topic modeling can be used to identify topics in a collection of documents, which can then be used as labels in a supervised learning model
+    - word embeddings can be used to represent words as dense vectors, which can then be used as input to a supervised learning model
+
+
+# Topic Modeling
+## What is topic modeling?
+- Topic modeling is a type of unsupervised learning that is used to discover hidden patterns in a collection of documents
+- It is used to identify topics that frequently occur in a collection of documents
+- The most common topic modeling technique is Latent Dirichlet Allocation (LDA) [@blei2003latent]
+
+## Latent Dirichlet Allocation (LDA)
+- LDA is a generative probabilistic model that assumes that 
+    a) each document is a mixture of topics
+    b) each topic is a distribution over words
+- Goal:infer the topics that best explain the observed documents
+- LDA widely used in text mining, information retrieval, and natural language processing
+
+
+## LDA
+![](images/03_lda.png)
+
+## LDA as a BoW approach
+- LDA still remains a Bag of Words approach
+- It ignores: 
+    - word order
+    - context
+    - syntax
+    
+- LDA enhances the basic BoW model by assuming that documents are mixtures of topics, and topics are distributions over words
 
 
 
@@ -82,9 +136,7 @@ editor_options:
 ![](images/04_we_queen_king.png)
 
 - Example from [Jay Alammar's GitHub](https://jalammar.github.io/illustrated-word2vec/)
-- This algorithm was trained to detect the word embeddings of the word king and relating words
-- What dimensionalities could we see? We do not know...
-  - What are the latent measurements?
+
 
 
 ## Three main algorithms
@@ -103,15 +155,6 @@ editor_options:
 
 ## WE decision tree
 ![](images/04_word_embeddings_decision_tree.png)
-## Shortcomings
-- The embeddings are *static*: words have a unique meaning regardless of their context
-- For instance, ”climate” will still have the same representation in different contexts
-  1. ”Foreign investors know what a favourable climate the United Kingdom provides for manufacturing enterprise.”
-  2. ”The Prime Minister signed the Rio convention on climate change last June.”
-- Word order still does not matter
-  1. ”The government serves the people.”
-  2. ”The people serve the government.”
-- Dimensonality and embedding might be hard to understand
 
 ## Textual biases working against WEs {.smaller}
 - **Bias**: although used to detect biases and social structure, word embeddings can also reflect and reinforce said biases
@@ -130,7 +173,6 @@ editor_options:
 | My name is Shaniqua                     | -0.47048131775890656  |
 
 
-
 ## Applications of word embeddings
 - However, these biases can also intentionally be used for research purposes
 - Word embeddings are mathematical representations of words
@@ -138,9 +180,27 @@ editor_options:
     - thus, corpora reflect social structure and dynamics
 - Word embeddings can be used to analyze these biases
 
+
 ## @garg2018word
 - Analyze how social attitudes towards women and minorities have changed over time
-- 
+
+
+
+## Shortcomings {.smaller}
+- One step away from BoW
+- The embeddings are *static*: words have a unique meaning regardless of their context
+- For instance, ”climate” will still have the same representation in different contexts
+  1. ”Foreign investors know what a favourable climate the United Kingdom provides for manufacturing enterprise.”
+  2. ”The Prime Minister signed the Rio convention on climate change last June.”
+- Word order still does not matter
+  1. ”The government serves the people.”
+  2. ”The people serve the government.”
+- Dimensonality and embedding might be hard to understand
+
+
+
+## Named Entity Recognition (NER)
+
 
 ## References
 
