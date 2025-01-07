@@ -348,26 +348,54 @@ Malo Jan &amp; Luis Sattelmayer
 <h2>What is a corpus ?</h2>
 <ul>
 <li>Every project involving text analysis starts with a corpus</li>
-<li>A corpus is a collection of texts, along with metadata</li>
+<li>A collection of texts, along with metadata</li>
 <li>Corpus selection is a crucial task and often overlooked</li>
 <li>Corresponds to identifying the population of interest, choosing documents to analyze according to research questions and interests</li>
 <li>What would be a corpus that would help me answer my research question ?</li>
-<li>Eg. twitter data is fun but not useful for everything</li>
+<li>E.g.: Twitter data is fun but not useful for everything</li>
 </ul>
 </section>
 <section id="corpus-selection-and-bias" class="slide level2 smaller">
 <h2>Corpus selection and bias</h2>
 <ul>
 <li>Several aspects to consider when selecting a corpus</li>
-<li>How exhaustive is the corpus ? Is it only a sample or not</li>
-<li>Think about data generation process : how these texts were produced, how does it affect the corpus
+<li>How exhaustive is the corpus ?
 <ul>
-<li>Eg. Censorship <span class="citation" data-cites="king2013censorship">[@king2013censorship]</span></li>
+<li>Can I obtain the entirety of a document type/collection?</li>
+</ul></li>
+<li>Think about data generation process
+<ul>
+<li>How were these texts produced?</li>
+<li>How could this affect the corpus?</li>
 </ul></li>
 <li>Important to explore, read some of the texts</li>
 <li>Think about quantity of interest, what could you derive as a measure from those texts :
 <ul>
 <li>eg. How much a given topic is discussed in these texts</li>
+<li>eg. How much a given sentiment is expressed in these texts</li>
+</ul></li>
+</ul>
+</section>
+<section id="four-biases-in-text-selection" class="slide level2 smaller">
+<h2>Four biases in text selection</h2>
+<ul>
+<li><strong>Resource Bias</strong>
+<ul>
+<li>“texts often better reflect populations with more ressources to produce, record, and store documents” <span class="citation" data-cites="grimmer2022text">[@grimmer2022text]</span></li>
+<li>social groups are marginalized and invisible in all societies, thus also in text</li>
+<li>eg. Twitter data is not representative of the general population; it can only speak for behavior <em>on Twitter</em></li>
+</ul></li>
+<li><strong>Incentive Bias</strong>
+<ul>
+<li>(self-)censoring on Social Media or in official government documents is an issue <span class="citation" data-cites="king2013censorship">[@king2013censorship]</span></li>
+</ul></li>
+<li><strong>Medium Bias</strong>
+<ul>
+<li>Twitter only allowed 140 characters until 2017 or meeting transcripts/speeches do not necessarily reflect the tonality of the actual communication</li>
+</ul></li>
+<li><strong>Retrieval Bias</strong>
+<ul>
+<li>errors or skewed queries in text mining, intransparent APIs</li>
 </ul></li>
 </ul>
 </section>
@@ -483,9 +511,9 @@ Malo Jan &amp; Luis Sattelmayer
 <ul>
 <li>Collecting social media data</li>
 <li>Collecting press releases from an organization, speeches from actors</li>
-<li>Extracting data from wikipedia pages</li>
-<li>Automatically download hundreds of pdfs from a website</li>
-<li>Collect meta data from a website</li>
+<li>Extracting data from Wikipedia pages</li>
+<li>Automatically download hundreds of PDFs from a website</li>
+<li>Collect metadata from a website</li>
 </ul>
 </section>
 <section id="how-the-web-is-written" class="slide level2 smaller">
@@ -516,7 +544,8 @@ Malo Jan &amp; Luis Sattelmayer
 <li>h1, h2, h3</li>
 </ul></li>
 <li>Web scraping consists in extracting the content of the html source code to get certain information</li>
-<li>CTRL + U /Selector Gadget</li>
+<li>CTRL + U</li>
+<li><a href="https://chromewebstore.google.com/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb?hl=de&amp;pli=1">Selector Gadget</a></li>
 </ul>
 </section>
 <section id="ethics-on-data-access" class="slide level2 smaller">
@@ -542,7 +571,7 @@ Malo Jan &amp; Luis Sattelmayer
 <div class="column" style="width:60%;">
 <ul>
 <li>Web scraping can be used to collect personal and sensitive data</li>
-<li>Eg. Old twitter API: possibility to download all tweets of a user in 2 lines of code</li>
+<li>E.g.: Old twitter API: possibility to download all tweets of a user in 2 lines of code</li>
 <li>Data protection laws (GDPR) apply to web scraping</li>
 <li>Need to think about the use of the data</li>
 </ul>
