@@ -21,13 +21,14 @@ collect_vox_pr_urls <- function(url) {
 
 # Collect press release URLs from the first two pages for demonstration purposes
 
-vox_pr_urls <- map(vox_page_urls[1:2], safely(collect_vox_pr_urls), .progress = TRUE) |> 
+vox_pr_urls <- map(vox_page_urls, safely(collect_vox_pr_urls), .progress = TRUE) |> 
     map("result") |> 
     unlist()
 
 # Display the collected press release URLs
 
-vox_pr_urls
+vox_pr_urls |> 
+    w
 
 # Function to collect the content of a VOX press release
 collect_vox_pr_content <- function(url) {
