@@ -242,7 +242,7 @@ Compare to dictionnary : context of words matters
 ::: {.column width="50%"}
 
 
-![](images/O3_voita.png)
+![](images/03_voita.png)
 
 :::
 ::::
@@ -364,7 +364,7 @@ $$
  
 # Inference and validation
 
-# Inference {.smaller}
+## Inference {.smaller}
 
 - Once a model is trained and evaluated, it can be used for inference
 - For a supervised learning model, the inference is the prediction of the categories for new (unseen) texts
@@ -376,12 +376,17 @@ $$
 
 ## Measurement validity {.smaller}
 
-- Face validity
-- Convergence validity
+- Face validity : does the measure look like it is measuring what it is supposed to measure ?
+- Convergence validity : to what extent our measure is correlated with other measures of the same concept ? 
 
-## Benchmark with other methods
+![Convergence validy of measure of populism](images/03_licht_ches.png)
 
-- Dictionnary-based methods
+## Benchmark with other methods {.smaller}
+
+- In addition to human annotation, may be important to compare the performance of the model with other methods such as :
+    - Other supervised learning models
+    - Dictionary-based methods
+
 
 # What to do with classification outputs ? 
 ## What to do classification outputs ? {.smaller}
