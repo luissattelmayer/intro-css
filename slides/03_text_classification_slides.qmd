@@ -142,6 +142,7 @@ Compare to dictionnary : context of words matters
 ## {.smaller}
 
 ![@do2024augmented : Policy vs Politics classification task](images/03_do_supervised.png)
+
 # Getting a clean corpus of labelled texts
 
 ## Getting a clean corpus of labelled texts {.smaller}
@@ -159,12 +160,15 @@ Compare to dictionnary : context of words matters
 
 - From a corpus of texts, we need to select a sample to annotate
 - Series of decisions to make
-- Text unitization : documents, paragraphs, sentences ? 
+- Text unitization : documents, paragraphs, sentences, tokens ? 
 - Sample size : how many texts to annotate ?
-    - Usually the more the better
+    - Usually the more the better, to a certain extent
     - But depends on number of categories, complexity of the task
 - Sampling strategy : random, stratified ?
     - Important to have a representative sample 
+- Active learning : select algorithmically the most informative texts to annotate
+
+
 
 ## *How* to annotate ? {.smaller}
 
@@ -172,20 +176,59 @@ Compare to dictionnary : context of words matters
 - Quality of annotation is super important : garbage in, garbage out
 - Has to be systematic, replicable
 - Get to know the data
+- Ideal case (often needed to publish) : several annotators, inter-coder reliability tests (Cohen's Kappa, Krippendorf alpha, etc.)
 
 ## *Who* annotates ? {.smaller}
 
+
+:::: {.columns}
+::: {.column width="50%"}
+
+
 - Most of text classification projects rely on RAs or crowdworkers
     - Trained on the codebook and paid for their work
-    - Quality of annotations checked with inter-coder reliability (ICR) tests
 - As phd students, we often do it ourselves
     - Time consuming, but we know the data better
-    - But if you want to publish, you need to show ICR
-- More and more use of LLms to annotate texts : highly discussed in the literature
+:::
+
+::: {.column width="50%"}
+
+![](https://dagshub.com/blog/content/images/2022/06/Grad-Student.jpg)
+![](images/03_benoit.png)
+
+:::
+::::
+
+## Can LLms annotate for you ? {.smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+
+![@gilardi2023chatgpt](images/03_gilardi.png)
+
+![@ollion2023chatgpt](images/03_ollion.png)
+
+:::
+
+::: {.column width="50%"}
+
+![@tan2024large](images/03_tan.png)
+
+![@alizadeh2025open](images/03_gilardi2.png)
+:::
+::::
+
+
+
 
 # Transforming texts into numerical features
 
 ## Transforming texts into numerical features {.smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+
 
 - Texts are not directly usable by machine learning algorithms
 - Need to convert them into numerical features
@@ -194,16 +237,32 @@ Compare to dictionnary : context of words matters
     - Term frequency-inverse document frequency (TF-IDF)
     - Static word embeddings (Word2Vec, GloVe) 
     - Contextual word embeddings (eg. BERT)
+:::
+
+::: {.column width="50%"}
+
+
+![](images/03_voita.png)
+
+:::
+::::
+
+
 
 # Model training
 
 ## Supervised learning models {.smaller}
 
 - Split the annotated sample into a training set and a test set (70/30 rule)
-- Train a model on the training set that learns the relationship between the text features and the labels
+- A supervised learning model is a model that learns a mapping function from input features to output labels based on a training set
+- The model "learns" the underlying relationship between the input features and the labels by minimizing a loss function that measures the difference between the predicted labels and the true labels
+- During the training phase, the model adjusts its parameters to minimize the loss function and make better predictions
+- Models differ in the way they learn this mapping function
+- Function then used to predict the labels of the test set
 - Return the probability of a text belonging to a category
 
 ## Different types of models {.smaller}
+
 
 - Classical models : Logistic regression, Naive Bayes, SVM, Random Forest
     - Simple and fast
@@ -271,6 +330,7 @@ $$
 \text{f1-score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
 \
 $$
+
 ## Recall and precision trade-offs {.smaller}
 
 - Recall and precision are often in trade-off
@@ -304,7 +364,7 @@ $$
  
 # Inference and validation
 
-# Inference {.smaller}
+## Inference {.smaller}
 
 - Once a model is trained and evaluated, it can be used for inference
 - For a supervised learning model, the inference is the prediction of the categories for new (unseen) texts
@@ -316,30 +376,49 @@ $$
 
 ## Measurement validity {.smaller}
 
-- Face validity
-- Convergence validity
+- Face validity : does the measure look like it is measuring what it is supposed to measure ?
+- Convergence validity : to what extent our measure is correlated with other measures of the same concept ? 
 
-## Benchmark with other methods
+![Convergence validy of measure of populism](images/03_licht_ches.png)
 
-- Dictionnary-based methods
+## Benchmark with other methods {.smaller}
 
+- In addition to human annotation, may be important to compare the performance of the model with other methods such as :
+    - Other supervised learning models
+    - Dictionary-based methods
+
+
+# What to do with classification outputs ? 
 ## What to do classification outputs ? {.smaller}
 
-- It is all about measurement !
-- Often used as to measure previously unmeasured concepts
-- Often some aggregated measure of the categories is used
-- Descriptives : variation over time, across countries, groups
-- Downstream tasks : 
-    - Use measurement as DV in a regression
-    - Use measurement as IV in a regression
-- But careful because : measurement error can bias the results
+- It is (mostly) all about measurement of previously unmeasured concepts
+- 4 main uses of classification outputs :
+    - Descriptive variation of concept prevalence across time, countries, groups
+    - Use of prediction quality as a measure of concepts
+    - Use of classification output as dependent variable in a regression
+    - Use of classification output as independent variable in a regression
 
-## What to do with classification outputs ? {.smaller}
+## Descriptive variation of concept prevalence {.smaller}
 
-![@licht2024measuring : use of classification output as DV](images/03_licht_populism.png)
-## Challenges in supervised text classification
+![@do2024augmented](images/03_do_politics.png)
 
-- Only the first step
-- Still a lot of manual work
-- Imbalanced classes : active learning
-- Limit of bag of words representations
+## Use prediction quality as a measure of the concept {.smaller}
+
+<br>
+
+
+![@peterson2018classification : accuracy as a measure of polarization](images/03_peterson.png)
+
+
+
+
+## Classification output as DV  {.smaller}
+
+![@licht2024measuring : predicting the use of anti-elite strategies](images/03_licht_populism.png)
+
+## Classification output as IV {.smaller}
+
+![Sattelmayer forthcoming : the effect of party position on immigration on vote switching to the far right](images/03_sattelmayer.png)
+
+## References
+

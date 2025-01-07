@@ -9,7 +9,7 @@ format:
     theme: simple
     echo: true
     incremental: false
-
+bibliography: references.bib
 ---
 
 # Corpus selection
@@ -17,11 +17,12 @@ format:
 ## What is a corpus ? {.smaller}
 
 - Every project involving text analysis starts with a corpus 
-- A collection of texts, along with metadata
+- A collection of *machine readable* texts, along with metadata
 - Corpus selection is a crucial task and often overlooked
-- Corresponds to identifying the population of interest, choosing documents to analyze according to research questions and interests
+- Corpus selection is sampling : identifying the population of interest
+- Corpus selection is case selection : choosing documents to analyze according to research questions and interests
 - What would be a corpus that would help me answer my research question ?
-- E.g.: Twitter data is fun but not useful for everything
+    - E.g.: Twitter data is fun but not useful for everything
 
 
 ## Corpus selection and bias {.smaller}
@@ -53,19 +54,27 @@ format:
   - errors or skewed queries in text mining, intransparent APIs
 
     
-## Finding or creating a corpus {.smaller}
+## Acquiring a corpus {.smaller}
 
 - Existing corpora vs creating original corpora
 - Existing corpora 
     - Texts available in open data : eg. [French parliament speeches](https://data.assemblee-nationale.fr/travaux-parlementaires/debats) 
-    - Texts released by other researchers : eg. [Manifesto corpus](https://manifesto-project.wzb.eu/information/documents/corpus), [UNGA corpus](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0TJX8Y), [Parlspeech](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L4OAKN), [EU commissioners press releases](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UGGXUF)
+    - Texts released by other researchers : eg. [Manifesto corpus](https://manifesto-project.wzb.eu/information/documents/corpus), [UNGA corpus](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0TJX8Y), [Parlspeech](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L4OAKN), [EU commissioners press releases](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UGGXUF), SOTU corpus
 
 - Collecting digital texts
-    - Digitizing texts : through Optical Character Recognition (OCR) 
+    - Image to text : digitization of images  through Optical Character Recognition (OCR) 
+    - Audio/video to text : automatic transcription
     - Application programming interface (API)
     - Web scraping
 
-# Text digitization
+
+# Transforming videos, audios and images into text
+
+## Transcribing audio and video files {.smaller}
+
+- A lot of data is in audio/video format such as interviews, radio shows, speeches, podcasts, etc.
+- This data can be analyzed with text analysis tools through transcription
+- Potential pipeline : download videos from youtube and transcribe audio with whisper
 
 ## Corpus creation with digitized texts {.smaller}
 
