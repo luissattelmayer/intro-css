@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.5.41">
 
   <meta name="author" content="Malo Jan &amp; Luis Sattelmayer">
-  <meta name="dcterms.date" content="2025-01-06">
+  <meta name="dcterms.date" content="2025-01-07">
   <title>Corpus selection and online data collection</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -30,7 +30,27 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="01_corpus_webscraping_slides_files/libs/revealjs/dist/theme/quarto.css">
   <link href="01_corpus_webscraping_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="01_corpus_webscraping_slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -337,7 +357,7 @@ Malo Jan &amp; Luis Sattelmayer
 </div>
 </div>
 
-  <p class="date">2025-01-06</p>
+  <p class="date">2025-01-07</p>
 </section>
 <section>
 <section id="corpus-selection" class="title-slide slide level1 center">
@@ -348,11 +368,14 @@ Malo Jan &amp; Luis Sattelmayer
 <h2>What is a corpus ?</h2>
 <ul>
 <li>Every project involving text analysis starts with a corpus</li>
-<li>A collection of texts, along with metadata</li>
+<li>A collection of <em>machine readable</em> texts, along with metadata</li>
 <li>Corpus selection is a crucial task and often overlooked</li>
-<li>Corresponds to identifying the population of interest, choosing documents to analyze according to research questions and interests</li>
-<li>What would be a corpus that would help me answer my research question ?</li>
+<li>Corpus selection is sampling : identifying the population of interest</li>
+<li>Corpus selection is case selection : choosing documents to analyze according to research questions and interests</li>
+<li>What would be a corpus that would help me answer my research question ?
+<ul>
 <li>E.g.: Twitter data is fun but not useful for everything</li>
+</ul></li>
 </ul>
 </section>
 <section id="corpus-selection-and-bias" class="slide level2 smaller">
@@ -381,13 +404,13 @@ Malo Jan &amp; Luis Sattelmayer
 <ul>
 <li><strong>Resource Bias</strong>
 <ul>
-<li>“texts often better reflect populations with more ressources to produce, record, and store documents” <span class="citation" data-cites="grimmer2022text">[@grimmer2022text]</span></li>
+<li>“texts often better reflect populations with more ressources to produce, record, and store documents” <span class="citation" data-cites="grimmer2022text">(<a href="#/dirty-data" role="doc-biblioref" onclick="">Grimmer, Roberts, and Stewart 2022</a>)</span></li>
 <li>social groups are marginalized and invisible in all societies, thus also in text</li>
 <li>eg. Twitter data is not representative of the general population; it can only speak for behavior <em>on Twitter</em></li>
 </ul></li>
 <li><strong>Incentive Bias</strong>
 <ul>
-<li>(self-)censoring on Social Media or in official government documents is an issue <span class="citation" data-cites="king2013censorship">[@king2013censorship]</span></li>
+<li>(self-)censoring on Social Media or in official government documents is an issue <span class="citation" data-cites="king2013censorship">(<a href="#/dirty-data" role="doc-biblioref" onclick="">King, Pan, and Roberts 2013</a>)</span></li>
 </ul></li>
 <li><strong>Medium Bias</strong>
 <ul>
@@ -399,27 +422,36 @@ Malo Jan &amp; Luis Sattelmayer
 </ul></li>
 </ul>
 </section>
-<section id="finding-or-creating-a-corpus" class="slide level2 smaller">
-<h2>Finding or creating a corpus</h2>
+<section id="acquiring-a-corpus" class="slide level2 smaller">
+<h2>Acquiring a corpus</h2>
 <ul>
 <li>Existing corpora vs creating original corpora</li>
 <li>Existing corpora
 <ul>
 <li>Texts available in open data : eg. <a href="https://data.assemblee-nationale.fr/travaux-parlementaires/debats">French parliament speeches</a></li>
-<li>Texts released by other researchers : eg. <a href="https://manifesto-project.wzb.eu/information/documents/corpus">Manifesto corpus</a>, <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0TJX8Y">UNGA corpus</a>, <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L4OAKN">Parlspeech</a>, <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UGGXUF">EU commissioners press releases</a></li>
+<li>Texts released by other researchers : eg. <a href="https://manifesto-project.wzb.eu/information/documents/corpus">Manifesto corpus</a>, <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0TJX8Y">UNGA corpus</a>, <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L4OAKN">Parlspeech</a>, <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UGGXUF">EU commissioners press releases</a>, SOTU corpus</li>
 </ul></li>
 <li>Collecting digital texts
 <ul>
-<li>Digitizing texts : through Optical Character Recognition (OCR)</li>
+<li>Image to text : digitization of images through Optical Character Recognition (OCR)</li>
+<li>Audio/video to text : automatic transcription</li>
 <li>Application programming interface (API)</li>
 <li>Web scraping</li>
 </ul></li>
 </ul>
 </section></section>
 <section>
-<section id="text-digitization" class="title-slide slide level1 center">
-<h1>Text digitization</h1>
+<section id="transforming-videos-audios-and-images-into-text" class="title-slide slide level1 center">
+<h1>Transforming videos, audios and images into text</h1>
 
+</section>
+<section id="transcribing-audio-and-video-files" class="slide level2 smaller">
+<h2>Transcribing audio and video files</h2>
+<ul>
+<li>A lot of data is in audio/video format such as interviews, radio shows, speeches, podcasts, etc.</li>
+<li>This data can be analyzed with text analysis tools through transcription</li>
+<li>Potential pipeline : download videos from youtube and transcribe audio with whisper</li>
+</ul>
 </section>
 <section id="corpus-creation-with-digitized-texts" class="slide level2 smaller">
 <h2>Corpus creation with digitized texts</h2>
@@ -595,7 +627,7 @@ Malo Jan &amp; Luis Sattelmayer
 </div>
 </div>
 </section>
-<section id="dirty-data" class="slide level2 smaller">
+<section id="dirty-data" class="slide level2 smaller scrollable">
 <h2>Dirty data</h2>
 <ul>
 <li>Web scraping is often just the first step and can involve a lot of cleaning, text manipulation, parsing to get structured information</li>
@@ -604,6 +636,14 @@ Malo Jan &amp; Luis Sattelmayer
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p>Collecting online data</p>
+</div>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-grimmer2022text" class="csl-entry" role="listitem">
+Grimmer, Justin, Margaret E Roberts, and Brandon M Stewart. 2022. <em>Text as Data: A New Framework for Machine Learning and the Social Sciences</em>. Princeton University Press.
+</div>
+<div id="ref-king2013censorship" class="csl-entry" role="listitem">
+King, Gary, Jennifer Pan, and Margaret E Roberts. 2013. <span>“How Censorship in China Allows Government Criticism but Silences Collective Expression.”</span> <em>American Political Science Review</em> 107 (2): 326–43.
 </div>
 </div>
 </section></section>

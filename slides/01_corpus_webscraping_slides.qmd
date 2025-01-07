@@ -9,7 +9,7 @@ format:
     theme: simple
     echo: true
     incremental: false
-
+bibliography: references.bib
 ---
 
 # Corpus selection
