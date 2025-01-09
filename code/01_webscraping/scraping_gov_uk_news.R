@@ -1,11 +1,27 @@
+## Script Documentation: Scraping UK Government News Articles from the GOV.UK Website
+## Author : Malo Jan
+# Overview:
+# This script scrapes news articles from the GOV.UK website (https://www.gov.uk/). 
+# It extracts URLs of individual news articles from search result pages, collects detailed 
+# information (such as article type, title, subtitle, publication date, source, body text, and topic) 
+# from each article, and saves the results in CSV files for further analysis or use.
+# 
+# The script performs the following steps:
+# 1. Generates a list of URLs for multiple pages of UK government news search results.
+# 2. Scrapes the URLs of individual news articles from the search result pages.
+# 3. Collects detailed content from each news article, including its type, title, subtitle, date, source, text, and topic.
+# 4. Saves the URLs and the detailed content into separate CSV files.
+# 
+# This script is designed to work with large sets of news results (up to 6591 pages). For demonstration, 
+# it collects data from the first 10 pages and 10 articles.
+#
+# Dependencies:
+# - tidyverse: A collection of R packages for data manipulation and visualization.
+# - rvest: A package for web scraping, specifically for reading HTML pages and extracting data.
 
-
-## Scraping UK Government News Articles from the GOV.UK Website
-## Author: Malo JAN
 
 # Load required libraries
-library(tidyverse)
-library(rvest)
+needs(tidyverse, rvest)
 
 # Generate a list of URLs for the UK government news pages
 # These URLs correspond to multiple pages of search results
@@ -13,7 +29,6 @@ library(rvest)
 gov_uk_news <-
     str_c("https://www.gov.uk/search/news-and-communications?page=",
           1:6591)
-
 # Function to collect the URLs of individual news articles from a given page
 
 collect_gov_uk_news_urls <- function(url) {
@@ -38,7 +53,7 @@ gov_uk_news_urls <-
 gov_uk_news_urls
 
 # Save the collected news URLs to a CSV file for further use
-write_csv(gov_uk_news_urls, "data/gov_uk_news_urls.csv")
+#write_csv(gov_uk_news_urls, "data/gov_uk_news_urls.csv")
 
 # Function to collect detailed content from an individual news article
 collect_gov_uk_news_content <- function(url) {
@@ -99,4 +114,4 @@ gov_uk_news_content <-
 gov_uk_news_content
 
 # Save the collected news article content to a CSV file for further use
-write_csv(gov_uk_news_content, "data/gov_uk_news_content.csv")
+#write_csv(gov_uk_news_content, "data/gov_uk_news_content.csv")

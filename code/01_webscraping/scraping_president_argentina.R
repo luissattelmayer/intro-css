@@ -1,6 +1,29 @@
 
-library(tidyverse)
-library(rvest)
+## Script Documentation: Scraping Discursos (Speeches) from the Casa Rosada Website
+## Author : Malo Jan 
+# Overview:
+# This script scrapes speeches (discursos) from the official website of the Argentine government (Casa Rosada). 
+# The script extracts the URLs of individual speeches from multiple pages, collects detailed content from each speech,
+# and processes the data to include the title, publication date, and main text of each speech.
+# 
+# The script performs the following steps:
+# 1. Generates a list of URLs for pages of speeches, based on the pagination system on the website.
+# 2. Scrapes the URLs of individual speeches from the generated page URLs.
+# 3. Extracts detailed content from each speech, including the title, date, and the speech's main text.
+# 4. Converts the Spanish month names in the date to numerical values and standardizes the date format.
+# 
+# This script is designed to handle a series of pages containing up to 40 speeches each. For demonstration, 
+# the script processes the first 5 pages of speeches, but this can be extended to cover all available pages.
+#
+# Dependencies:
+# - tidyverse: A collection of R packages for data manipulation and visualization.
+# - rvest: A package for web scraping, specifically for reading HTML pages and extracting data.
+#
+# Before running this script, ensure that both of these packages are installed and loaded into the R environment.
+
+# Load required libraries
+
+needs(tidyverse, rvest)
 
 arg_main_page <- "https://www.casarosada.gob.ar/informacion/discursos"
 
@@ -20,15 +43,16 @@ collect_arg_discursos_urls <- function(x) {
     ) 
 }
 
-arg_discursos_urls  <- map(arg_pages_urls, safely(collect_arg_discursos_urls), .progress = TRUE) |> 
+arg_discursos_urls  <- map(arg_pages_urls[1:5], safely(collect_arg_discursos_urls), .progress = TRUE) |> 
     map("result") 
 
 arg_discursos_urls <- arg_discursos_urls |> 
     unlist() |> 
     as_tibble()
+
 arg_discursos_urls
 
-write_csv(arg_discursos_urls, "arg_discursos_urls.csv")
+#write_csv(arg_discursos_urls, "arg_discursos_urls.csv")
 # Extract the content
 
 # Create a function that convert spanish month names to numbers
@@ -45,7 +69,7 @@ collect_arg_discursos_content <- function(x) {
     )
 }
 
-arg_discursos <- map(arg_discursos_urls$value, safely(collect_arg_discursos_content), .progress = TRUE) |> 
+arg_discursos <- map(arg_discursos_urls$value[1:5], safely(collect_arg_discursos_content), .progress = TRUE) |> 
     map_df("result")
 
-
+arg_discursos

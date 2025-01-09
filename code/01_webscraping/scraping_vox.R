@@ -1,5 +1,5 @@
 # Script Documentation: VOX Press Release Scraping and Processing
-
+## Author : Malo Jan 
 # Overview:
 # This script scrapes press releases from the VOX Spain website (https://www.voxespana.es/noticias/). 
 # It extracts URLs of individual press releases from multiple news pages, collects relevant data 
