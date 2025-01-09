@@ -61,7 +61,7 @@ Let's take a random -- and pretty bad -- guess of 10 topics. The LDA function wi
 
 ```{r}
 #| eval: false
-sotu_lda_k10 <- LDA(sotu_dtm, k = 10, control = list(seed = 1312))
+sotu_lda_k10 <- LDA(sotu_dtm, k = 10, control = list(seed = 123))
 
 sotu_lda_k10_tidied <- tidy(sotu_lda_k10)
 ```
@@ -69,7 +69,7 @@ sotu_lda_k10_tidied <- tidy(sotu_lda_k10)
 
 ```{r}
 #| include: false
-sotu_lda_k10_tidied <- read_csv("data/sotu_lda_k10_tidied.csv")
+sotu_lda_k10_tidied <- read_csv("/Users/luissattelmayer/Desktop/intro-css/data/sotu_lda_k10_tidied.csv")
 ```
 
 ```{r}
@@ -89,7 +89,6 @@ top_terms_k10 |>
   ggplot(aes(term, beta, fill = topic)) +
   geom_bar(stat = "identity", show.legend = FALSE) +
   scale_x_reordered() +
-  scale_fill_brewer(palette = "Set2") +
   facet_wrap(~topic, scales = "free", ncol = 2) +
   coord_flip()
 ```
@@ -98,6 +97,7 @@ top_terms_k10 |>
 This is a pretty crude output and it is not very easy to make sense out of the different topics that the package found based on the forced number *k = 10*. Fortunately, you can finetune the hyperparameters of the LDA. Be careful as the code below will take quite some time to run:
 
 ```{r}
+#| eval: false
 determine_k <- FindTopicsNumber(
   sotu_dtm,
   topics = seq(from = 2, to = 30, by = 2),
@@ -112,7 +112,7 @@ determine_k <- FindTopicsNumber(
 
 ```{r}
 #| include: false
-determine_k <- read_rds("data/determine_k.rds")
+determine_k <- read_rds(here::here("data/determine_k.rds"))
 ```
 
 
@@ -171,6 +171,7 @@ out <- list(documents = processed$documents,
 Below we finally fit the STM model. The `K` parameter specifies the number of topics we want to fit. I choose 15 as the result of the `ldatuning` function was around that value. The `prevalence` parameter specifies the metadata that we want to include in the model. We suppose that the prevalence of a topic depends on the party affiliation of the speaker and the point in time. The `content` parameter specifies the metadata that we want to include in the model. We only set it to party affiliation. The `max.em.its` parameter specifies the number of iterations that the EM algorithm should run. The `data` parameter specifies the metadata that we want to include in the model. The `init.type` parameter specifies the type of initialization that we want to use. The `verbose` parameter specifies whether we want to print out the progress of the model fitting.
 
 ```{r}
+#| eval: false
 sotu_content_fit <- stm(documents = prepped_docs$documents, 
                         vocab = prepped_docs$vocab, 
                         K = 15, 
@@ -186,7 +187,7 @@ write_rds(sotu_content_fit, "data/sotu_content_fit.rds")
 
 ```{r}
 #| include: false
-sotu_content_fit <- read_rds("data/sotu_content_fit.rds")
+sotu_content_fit <- read_rds(here::here("data/sotu_content_fit.rds"))
 ```
 
 
@@ -212,13 +213,10 @@ ggplot(topic_prevalence, aes(x = factor(topic), y = prevalence)) +
 labelTopics(sotu_content_fit, n = 10)
 ```
 
-
-
-
 The question is where does this leave us with Topic Models and what should we do with them? Well, the answer probably is that it is hard so say. On the one hand, they are a fun and relatively quick method to inductively explore a corpus of text. On the other hand, they are not very robust and the results are often hard to interpret. Granted, the results in this example are relatively non-sensical but a better hyperparameter finetuning would probably yield a better fit. You could also now use these results in some way for inferential classical statistical models but in light of the interpretability and robustness issues, this might not be the best idea. Topic models might rather be used as a first (exploratory) step in a more comprehensive text analysis pipeline. 
 
 
 
-
+# Word Embeddings
 
 
