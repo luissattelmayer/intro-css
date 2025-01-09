@@ -28,7 +28,7 @@ editor_options:
     - 3rd year PhD student at the CEE working on Party Competition, Partisan Strategies, Immigration Politics, Quantitative and computational methods
     - [luis.sattelmayer@sciencespo.fr](luis.sattelmayer@sciencespo.fr)
 
-## Goal of the course
+## Goal of the course {.smaller}
 
 - Introduction to Computational Social Sciences
 - From data collection to analysis
@@ -37,20 +37,23 @@ editor_options:
 - Prerequisites: solid command of RStudio
 - Goal is to provide a non-technical introduction, focus on *use cases*
 
-## Outline of the course
+## Outline of the course {.smaller}
 
-- Day 1 : Introduction to CSS + Web scraping
-- Day 2 : Manipulating textual data
-- Day 3 : Supervised learning for text classification
-- Day 4 : Unsupervised learning
-- Day 5 : Large language models
+| Day | Session 1 | Session 2 | Session 3 |
+| - | ---- | ---- | ---- |
+| 1 | Intro to CSS + Corpus selection | Web scraping in R  | Coding session |
+| 2 | Manipulating textual data | From text to numbers | Coding session |
+| 3 | Supervised machine learning (SML) for text classification | SML in R | Coding session |
+| 4 | Unsupervised machine learning (UML) | UML in R | Coding session |
+| 5 | Large language models (LLMs) | LLMs in Python | Open |
 
-## Course structure
 
-- Lecture session in the morning
-- 1 "lab" lecture in the afternoon
-- 1 session for applying what you learned
-- Ressources and additional scripts for methods not covered in the course are available on the [Github repository](https://github.com/luissattelmayer/intro-css/tree/main)
+## Course material {.smaller}
+
+- Slides and code will be available on the course's [Github repository](https://github.com/luissattelmayer/intro-css/tree/main)
+- If you are not familiar with Git and Github, have a look at this [tutorial](https://happygitwithr.com/)
+
+ 
 
 # Computational Social Sciences {.smaller}
 
@@ -64,16 +67,17 @@ editor_options:
     - Networks : eg. SICCS
     - Positions : Assistant professor in CSS, postdocs...
 
-## Evolution over last decades {.smaller}
+## More data, computing power and methods {.smaller}
 
 CSS from two main developments : 
 
 - New and more data
     - Data on the web : digitization of text, historical archives, administrative records, open data
     - Data from the web : social media, websites
+    - Unstructured data : text, images, videos, not produced by researchers
 - New methods and computing power 
     - More powerful computers and hardware
-    - More powerful algorithms, models, IA
+    - More powerful algorithms, methods, models, IA
     
 ## More data, computing power and methods {.smaller}
 
