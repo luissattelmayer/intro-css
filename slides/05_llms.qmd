@@ -197,6 +197,8 @@ editor_options:
 
 ## Evolution of LLMs
 ![](images/05_evolutionary_tree.jpg)
+## Multilinguak Models
+![](images/05_multilingual_embeddings.jpg)
 
 ## Multilingual Models
 ![](images/05_translation.png)
@@ -212,6 +214,7 @@ editor_options:
 - Data privacy:
     - without personal GPU, you will have to think a lot about your data and whether it ought to be protected
     - some corpora (e.g. copyrighted data) should not be seen by third parties (Google Colab)
+- What is the training data? Where does it come from?
 
 
 ## Poli-sci examples
@@ -220,21 +223,23 @@ editor_options:
 - Social groups: @licht2024they
 
 ## What other use-cases for Transformers? 
-- This leaves the realm of 
+- This leaves the realm of textual analysis
 - Image generation
     - Dall-E
     - Midjourney
     - Stable diffusion
     
 - speech-to-text
-    - Whisper
-    
+    - [Whisper](https://github.com/openai/whisper)
+- Machine translation
+    - [NMT](https://github.com/UKPLab/EasyNMT)
+
 ## Whisper
 - For the GitHub tutorial click [here](https://github.com/openai/whisper)
 
 ![Developed by OpenAI](images/05_whisper.png)
 
-# Furhter ressources
+# Further ressources
 - [Lena Voita's blog on NLP](https://lena-voita.github.io/nlp_course.html)
 - [Natural Language Inference]() (NLI)
     - paper by @laurer2024less

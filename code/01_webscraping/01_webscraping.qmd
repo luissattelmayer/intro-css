@@ -41,6 +41,8 @@ url_test
 
 # Read html code of the page with read_html()
 page_html <- read_html(url_test)
+
+page_html
 ```
 
 Next, we extract the different elements of the page using `html_element()` with the corresponding CSS selector and then extract the text with `html_text()`. Here, we extract the title, text, date, keywords, and ID of the press release, saving each in an object and creating a data frame.
@@ -51,36 +53,42 @@ Next, we extract the different elements of the page using `html_element()` with 
 
 title <- page_html %>% 
   html_element(".page-header") |> 
-  html_text()
+  html_text2()
 
+title
 # Extract press release text with .css selector .field--type-text-with-summary
 
 text <- page_html |> 
   html_element(".field--type-text-with-summary") |>  
-  html_text()
+  html_text2()
 
+text
 # Extract press release date with .css selector time
 
 date <- page_html |>  
   html_element("time") |>  
-  html_text()
+  html_text2()
 
+date
 # Extract keywords
 
 keywords <- page_html |> 
         html_elements(".field__items a") |> 
-        html_text() |>
+        html_text2() |>
         str_c(collapse = "|")
 
+keywords
 # Extract id, always useful
 
 id <- page_html |> 
     html_element(".field--name-field-symbol") |>
-    html_text()
+    html_text2()
 
 # Create a data frame
 
 un_pr <- tibble(title, text, date, keywords, id)
+
+un_pr
 ```
 
 # Step 3 : Collect urls of all press releases
@@ -134,6 +142,7 @@ collect_unsg_pr_urls <- function(x) {
 unsg_pr_urls <- map(unsg_page_urls[1:10], safely(collect_unsg_pr_urls), .progress = T) |> 
     map_df("result") 
 
+unsg_pr_urls
 #write_csv(unsg_pr_urls, "data/unsg_urls.csv")
 ```
 
@@ -170,7 +179,8 @@ unsg_df <- map(unsg_pr_urls$link, safely(collect_unsg_pr_content), .progress = T
 
 unsg_df
 
-# Write the dataframe to a csv file
+# Step 5 : Enhance dataframe
+
 
 unsg_df <- unsg_df |> 
     mutate(year = str_sub(date, 1, 4) |> as.numeric(),
@@ -180,31 +190,22 @@ unsg_df <- unsg_df |>
                date >= "1997-01-01" ~ "Kofi Annan",
                date >= "1992-01-01" ~ "Boutros Boutros-Ghali"))
 
-write_csv(unsg_df, "data/unsg_dataset.csv")
+# Write the dataframe to a csv file
+#write_csv(unsg_df, "data/unsg_dataset.csv")
 
 # If you run this for all the press releases, it will take several hours
 
 ```
 
-# Step 5 : Enhance dataframe
+# Step 6 : Explore the data
 
+Once we have collected the data, we can explore the corpus a bit with the metadata we have. Here, I import the full corpus I have saved and look at the evolution of the number of press releases over time, according to the different secretaries general.
 
 ```{r}
-
 unsg_df <- read_csv("data/unsg_dataset.csv")
 
 
-
-
-```
-
-# Step 6 : Explore the data
-
-```{r}
-
 # Evolution of the number of press releases over time
-
-# Evolution du nombre de communiqués de presse par année et par secrétaire général
 
 unsg_df |>
     ggplot(aes(date)) +
@@ -234,13 +235,11 @@ unsg_df |>
     scale_y_continuous("Number of press releases")  +
     scale_x_date("Date", date_breaks = "5 year", date_labels = "%Y") +
     theme_light()  
-
-
 ```
 
+Next, as we have extracted the keywords from the metadata press releases, we can look at the most common keywords used in the press releases. As the keywords are separated by a | character, we can use the separate_rows() function from the tidyr package to separate them and count the occurrences of each keyword. I then filter out the empty keywords and plot the most common ones.
 
 ```{r}
-
 unsg_keywords_counts <- unsg_df |> 
     separate_rows(keywords, sep = "\\|") |> 
     count(keywords) |> 
@@ -254,52 +253,8 @@ unsg_keywords_counts |>
     geom_col() +
     coord_flip() +
     theme_minimal()
-
-# Keyword search
-
-unsg_df <- unsg_df |> 
-    mutate(
-        palestine = str_detect(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"),
-        israel = str_detect(text, "[Ii]srael|[Tt]el aviv|Netanyahu")
-    )
-
-palestine_shares <- unsg_df |> 
-    group_by(year) |> 
-    count(palestine) |> 
-    mutate(prop_palestine = n / sum(n)*100) |> 
-    filter(palestine == TRUE)
-
-palestine_shares |> view()
-
-israel_shares <- unsg_df |> 
-    group_by(year) |> 
-    count(israel) |>
-    mutate(prop_israel = n/sum(n)*100) |> 
-    filter(israel == TRUE)
-
-
-palestine_shares |>
-    left_join(israel_shares, by = "year") |>
-    pivot_longer(
-        cols = c(prop_israel, prop_palestine),
-        names_to = "Keywords",
-        values_to = "prop"
-    ) |>
-    ggplot(aes(year, prop, color = Keywords)) +
-    geom_line(size = 1) +
-    geom_point()+
-     # Color by israel and palestine color code
-    scale_color_manual(values = c("#0038B8", "#007A33")) +
-    theme_minimal() +
-    scale_y_continuous("Proportion of press releases") +
-    scale_x_continuous("Year")
-
-unsg_df |>
-    filter(year == 2024, palestine == TRUE) |>
-    select(title, text, keywords) |> view()
-
-
 ```
+
 
 # Going further
 
@@ -316,7 +271,7 @@ Now that you have learned how to scrape data from the web, you can apply this kn
 - [Spanish radical right party VOX's press releases](https://www.voxespana.es/noticias)
 - [UK Gov news](https://www.gov.uk/search/news-and-communications)
 - [Speeches of the President of Argentina](https://www.casarosada.gob.ar/informacion/discursos)
-
+- [Tageschau (German news website)](https://www.tagesschau.de/archiv?)
 
 
 

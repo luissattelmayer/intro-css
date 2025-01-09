@@ -123,6 +123,7 @@ bibliography: references.bib
 - APIcalypse/Post-API Age : APIs can be closed or modified at any time
     - Facebook, or Twitter that had before extensive API access for researchers but now closed (see [minet](https://github.com/medialab/minet) for some workarounds)
 
+
 ## Learning how to use an API {.smaller}
 
 - This course will not cover how to use APIs
@@ -238,6 +239,7 @@ bibliography: references.bib
 - Requires additional skills and tools like *regular expressions* (regex) : see the package [stringr](https://stringr.tidyverse.org/) in R
 
 
+## References
 
 
 

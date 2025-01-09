@@ -1,9 +1,26 @@
+# Script Documentation: VOX Press Release Scraping and Processing
+## Author : Malo Jan 
+# Overview:
+# This script scrapes press releases from the VOX Spain website (https://www.voxespana.es/noticias/). 
+# It extracts URLs of individual press releases from multiple news pages, collects relevant data 
+# from each press release, processes the content (including dates), and saves the results in a CSV file.
+# The data includes the press release title, subtitle, publication date, main text, and associated tags.
+#
+# The script performs the following steps:
+# 1. Generates a list of URLs for news pages on the VOX website.
+# 2. Scrapes the URLs of individual press releases from the news pages.
+# 3. Collects the content of each press release, including title, subtitle, date, text, and tags.
+# 4. Converts the Spanish date format to a standard date format (YYYY-MM-DD).
+# 5. Saves the extracted and processed content to a CSV file for further analysis or use.
 
+# Dependencies:
+# - tidyverse: A collection of R packages for data manipulation and visualization.
+# - rvest: A package for web scraping, specifically for reading HTML pages and extracting data.
+#
 
 
 # Load required libraries
-library(tidyverse)
-library(rvest)
+needs(tidyverse, rvest)
 
 # Generate a list of URLs for VOX news pages
 vox_page_urls <- str_c("https://www.voxespana.es/noticias/page/", 1:1051)
@@ -110,3 +127,6 @@ vox_pr_content <- vox_pr_content |>
 # Display the processed content
 vox_pr_content
 
+# Save the collected press release content to a CSV file
+
+write_csv(vox_pr_content, "data/vox_press_releases.csv")
