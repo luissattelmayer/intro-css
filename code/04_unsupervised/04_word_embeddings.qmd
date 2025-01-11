@@ -1,10 +1,12 @@
 ---
 title: "Word Embeddings"
+author: "Luis Sattelmayer"
+date: "2025-01-08"
 format: html
 ---
 
 ```{r}
-needs(gutenbergr, wordsalad, tidymodels, tidyverse, textrecipes, data.table, ggrepel, tidytext, text2map, text2vec)
+needs(wordsalad, tidymodels, tidyverse, textrecipes, data.table, ggrepel, tidytext, text2map, text2vec)
 ```
 
 # Word Embeddings in R
@@ -39,7 +41,7 @@ Here are two ways of accessing them. Be aware before running the lines below tha
 
 ### FastText Embeddings
 
-To download FastText, you can check out their [website](https://fasttext.cc/docs/en/crawl-vectors.html). They have off-the-shelf embeddings that you can download in 157 languages. To simply download embeddings in English, click [on this link](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.vec.gz). Download your embeddings of choice to your own machine, preferably into the environment of your R-project. You can then import it. Since they are huge, I will do this step from my own hard drive. I use `data.table::fread()` here, because it is faster than `read_csv()`. Again, these are very large files, so be prepared to wait a while, when downloading and importing the data. 
+To download FastText, you can check out their [website](https://fasttext.cc/docs/en/crawl-vectors.html). They have off-the-shelf embeddings that you can download in 157 languages. To simply download embeddings in English, click [on this link](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.vec.gz). Download your embeddings of choice to your own machine, preferably into the environment of your R-project. You can then import it. Since they are huge, I will do this step from my own hard drive. I use `data.table::fread()` here, because it is faster than `read_csv()`. Be prepared to wait a while, when downloading and importing the data. 
 
 ```{r}
 fasttext <- data.table::fread("/Users/luissattelmayer/Downloads/cc.en.300.vec", 
@@ -51,20 +53,22 @@ fasttext <- data.table::fread("/Users/luissattelmayer/Downloads/cc.en.300.vec",
 
 
 ### GloVe Embeddings
-To download GloVe, you will need to first install the `text2map.pretrained` package directly from github using the `install_gitlab()` function from the `remotes` package. While this might seem a bit cumbersome, it is the only way to access the GloVe embeddings in R. But also, it is a good point to start using GitHub, to create an account, and eventually also a GitHub access token that allows you to install packages from GitHub. Without a Personal Access Token (PAT), you will not be able to install the `text2map.pretrained` package. Here is a [tutorial](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) on how to create a PAT. I recommend you store it in your `.Renviron` file. Here is a [tutorial](https://laurenilano.com/posts/api-keys/) on what that is and how to use it. Otherwise, I have also written a short tutorial on how to store tokens, access keys, and other confidential passwords in your `.Renviron` file in the script concerning the Spotify API. 
+In this example it is a bit easier to work with GloVe. To download the embeddings, you will need to first install the `text2map.pretrained` package directly from github using the `install_gitlab()` function from the `remotes` package. While this might seem a bit cumbersome, it is the only way to access the GloVe embeddings in R. But also, it is a good point to (finally) start using GitHub, to create an account, and eventually also a GitHub access token that allows you to install packages from GitHub. Without a Personal Access Token (PAT), you will not be able to install the `text2map.pretrained` package. Here is a [tutorial](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) on how to create a PAT. I recommend you store it in your `.Renviron` file. Here is a [tutorial](https://laurenilano.com/posts/api-keys/) on what that is and how to use it. Otherwise, I have also written a short tutorial on how to store tokens, access keys, and other confidential passwords in your `.Renviron` file in the script concerning the Spotify API. 
 
 Now let's turn to the code. After you have installed the `text2map.pretrained` package, you can download the GloVe embeddings, you can use the following code to download the GloVe embeddings. 
 
 ```{r}
-# remotes::install_gitlab("culturalcartography/text2map.pretrained")
+# remotes::install_gitlab("culturalcartography/text2map.pretrained", force = TRUE)
+# library(text2map.pretrained)
+# text2map.pretrained::download_pretrained("vecs_glove300_wiki_gigaword", force = TRUE)
 
 
-text2map.pretrained::download_pretrained("vecs_glove300_wiki_gigaword")
 
 data("vecs_glove300_wiki_gigaword")
+
 ```
 
-The GloVe embeddings should be a large matrix with 120000000 elements. However, the name is very long and not very hand, which is why I renamed it to `glove_wiki`. Lastly, I removed the original object to save memory.
+The GloVe embeddings should be a large matrix with 120000000 elements. The name is very long and I rename it to `glove_wiki`. Lastly, I removed the original object to save memory.
 
 ```{r}
 glove_wiki <- vecs_glove300_wiki_gigaword
@@ -77,7 +81,7 @@ The `text2vec` package provides a function to calculate the cosine similarity be
 ```{r}
 cos_sim <- sim2(
   x = glove_wiki,
-  y = glove_wiki["immigration", , drop = FALSE],
+  y = glove_wiki["climate", , drop = FALSE],
   method = "cosine"
 ) |> 
   enframe(name = "token", value = "cosine_sim") |> 
@@ -85,43 +89,33 @@ cos_sim <- sim2(
   arrange(-cosine_sim) |> 
   slice_max(cosine_sim, n = 10)
 
+# give lowest cosine_sim
+
 cos_sim
 ```
 
-
-
-
-
+Don't hesitate to play around with different words that you put into the `sim2()` function and see what the highest cosine similarities are.
 
 
 ## Word Algebra
-```{r}
-set.seed(123)
-
-fasttext <- data.table::fread("/Users/luissattelmayer/Downloads/cc.en.300.vec", 
-                              quote ="", 
-                              skip = 1, 
-                              data.table = F, 
-                              nrows = 5e5)
-```
-
-
+One of the most fascinating things (in theory) about word embeddings is that they allow us to do word algebra. I added *in theory* in parentheses, because the results are not always as clear-cut as the logic of word embeddings promises. 
+For that, we first need to transform the fasttext object into a more handy format. After transforming it into a tibble, we can rename the columns to `d1`, `d2`, ..., `d300`. This is because the fasttext embeddings have 300 dimensions. We can then transform the tibble into a matrix, where the rownames are the words.
 
 ```{r}
 fasttext_tbl <- fasttext |> 
   as_tibble() |> 
   rename_with(\(x) str_c("d", 1:300), where(is.numeric))
-```
 
 
-
-```{r}
 fasttext_mat <- as.matrix(fasttext[, -1])
 rownames(fasttext_mat) <- fasttext$V1
 ```
 
 
+Below I create a function that shows the best match for a given term. The function takes two arguments: the term in question and the number of best matches you want to see. It then calculates the cosine similarity between the term in question and all the other terms in the fasttext matrix. Lastly, it extracts the $n$ highest cosine similarities and returns them in a tibble.
+
 ```{r}
+## Function to get best matches
 norms <- sqrt(rowSums(fasttext_mat^2)) # calculate length of vectors for normalization
 
 best_match <- function(term, n = 5){
@@ -136,6 +130,8 @@ best_match <- function(term, n = 5){
 ```
 
 
+Now we can test the embeddings by comparing different terms. For this demonstration, I chose the name "Theodor" and its variations in different languages to illustrate how embeddings can capture the similarity between different spellings of the same name while also reflecting language-specific nuances. This highlights the fascinating, yet static nature of word embeddings. Unlike Transformer models like BERT, which dynamically adjust the meaning of words based on their context, word embeddings are fixed and reflect the patterns present in the dataset they were trained on. A Transformer model might capture the similarity between the names more effectively because it accounts for contextual relationships. However, BERT is more complex to use and requires additional computational resources. With static embeddings like FastText or GloVe, each variation of "The/éodor/e" produces distinct results that depend on the original language context in which the word vector was created. This underscores both the strengths and limitations of static embeddings when dealing with language-specific or contextual subtleties.
+
 ```{r}
 best_match("Theodor", 10)
 best_match("Theodore", 10)
@@ -143,41 +139,33 @@ best_match("Théodore", 10)
 ```
 
 
-```{r}
-semantic_algebra_addition <- function(term_1, term_2, n = 5){
-  x <- fasttext_mat[term_1, ] + fasttext_mat[term_2, ]
-  cosine <- (fasttext_mat %*% as.matrix(x)) / (norms * sqrt(sum(x^2))) # calculate cosine similarities between term in question and all the others
-  best_n <- order(cosine, decreasing = T)[1:n] #extract highest n cosines
-  tibble(
-    word = rownames(fasttext_mat)[best_n], 
-    cosine = cosine[best_n]
-    )
-}
-
-semantic_algebra_addition("Man", "Crown")
-```
-
-What about the famous: 
+What about the famous example of word embeddings?
 
 $King - Man + Woman = Queen$
 
 
 ```{r}
 semantic_algebra <- function(term_1, term_2, term_3, n = 5){
-  x <- fasttext_mat[term_1, ] - fasttext_mat[term_2, ] + fasttext_mat[term_3, ]
-  cosine <- (fasttext_mat %*% as.matrix(x)) / (norms * sqrt(sum(x^2))) # calculate cosine similarities between term in question and all the others
-  best_n <- order(cosine, decreasing = T)[1:n] #extract highest n cosines
-  tibble(
-    word = rownames(fasttext_mat)[best_n], 
-    cosine = cosine[best_n]
-    )
+  search_vec <- glove_wiki[term_1, , drop = FALSE] - glove_wiki[term_2, , drop = FALSE] + glove_wiki[term_3, , drop = FALSE]
+  sim2(x = glove_wiki, y = search_vec, method = "cosine") |> 
+    enframe(name = "token", value = "cosine_sim") |> 
+    mutate(cosine_sim = cosine_sim[,1]) |> 
+    arrange(-cosine_sim) |> 
+    filter(!token %in% c(term_1, term_2, term_3)) |> 
+    slice_max(cosine_sim, n = n)
 }
 
 semantic_algebra("king", "man", "woman")
 ```
 
+
+
 ```{r}
-semantic_algebra("Paris", "France", "Germany")
+semantic_algebra("paris", "france", "germany")
+```
+
+```{r}
+semantic_algebra("sea", "water", "sand")
 ```
 
 Why does this not work?
@@ -189,8 +177,13 @@ semantic_algebra("Paris", "France", "ugadevinewvs")
 
 
 ## How to train embeddings yourself?
+As mentioned earlier, you can also train your own word embeddings, which generally involves two approaches. The first is to train embeddings entirely from scratch using your own corpus. The second is to use pre-trained embeddings and fine-tune them on your specific dataset.
 
+For training embeddings from scratch, having access to a very large and high-quality corpus is absolutely essential. While it is technically possible to train embeddings on a smaller corpus, the resulting embeddings would likely have low quality and limited utility. The effectiveness of word embeddings strongly depends on the size and quality of the training data.
 
+If your focus is on a specific domain—such as the language used in certain newspapers, a particular professional field, or even niche topics—you might consider training your own embeddings. This would allow the embeddings to better capture domain-specific vocabulary, context, and nuances that may not be well-represented in general-purpose pre-trained models.
+
+In the following code, I use the `wordsalad` package to train embeddings on the UK manifestos. For demonstration purposes, I use a small corpus, but in practice, it is recommended to use a much larger corpus to ensure the quality of the embeddings. Keep in mind that training embeddings on a large corpus can be computationally intensive and time-consuming.
 
 ```{r}
 uk_manifestos <- read_csv(here::here("data/gbr_manifesto_corpus_clean.csv"))
@@ -209,6 +202,10 @@ uk_ukip_reform <- uk_manifestos |>
     mutate(partyname = "UKIP/Reform UK")
 
 ```
+
+
+The `glove` function from the `wordsalad` package takes a character vector as input and returns a matrix with the embeddings. The `dim` argument specifies the dimension of the embeddings. Here, I only use 50 dimensions to speed up the process. The `wordsalad` package is a wrapper around the `text2vec` package. It provides access to various word embedding methods (GloVe, fasttext and word2vec) to extract word vectors using a unified framework to increase reproducibility and correctness.
+
 
 ```{r}
 green_emb <- wordsalad::glove(uk_greens$text |> 
@@ -242,28 +239,24 @@ ukip_reform_emb_mat <- as.matrix(ukip_reform_emb[, 2:51])
 rownames(ukip_reform_emb_mat) <- ukip_reform_emb$tokens
 ```
 
-You could now use these pre-trained embeddings for a variety of tasks. Most interestingly probably, you could use these embeddings in a supervised machine learning model like a Random Forest or a Neural Network to predict party affiliation based on the text of the manifesto. You would need labeled data for this.
+Once you have trained these word embeddings, you can use them for a variety of tasks. One particularly interesting application is to incorporate the embeddings into a supervised machine learning model, such as a Random Forest or a Neural Network, to predict party affiliation based on the text of the manifesto.
 
-
-
-
+To do this, you would need labeled data where each manifesto text is associated with its respective party. The embeddings can be used to represent the text as input features for the model, capturing the semantic information encoded in the trained vectors. This approach enables the model to leverage the linguistic patterns and contextual relationships learned by the embeddings to improve its predictions.
 
 ## Concept Mover's Difference
+Concept Mover's Distance classifies documents of any length along a continuous measure of engagement with a given concept of interest using word embeddings. The `text2map` package provides a function (`CMDist`). 
+
+I calculate a conceptual closeness score for each manifesto document by comparing its term-document matrix (DTM) to pre-trained word vectors (in this case, GloVe Wiki) that define the semantic space for the chosen concepts. These scores quantify the semantic alignment of each document with the selected concepts.
+
+
 
 ```{r}
-needs(textclean,
-      gutenbergr,
-      stringi,
-      ggrepel,
-      tidyverse,
-      text2map)
-
 # text2map.pretrained::download_pretrained("vecs_glove300_wiki_gigaword")
 # data("vecs_glove300_wiki_gigaword")
 
 
-glove_wiki <- vecs_glove300_wiki_gigaword
-rm(vecs_glove300_wiki_gigaword)
+# glove_wiki <- vecs_glove300_wiki_gigaword
+# rm(vecs_glove300_wiki_gigaword)
 
 df_text <- uk_manifestos |>
     filter(partyname %in% c("Green", "Lab", "Tories", "UKIP", "Reform UK")) |>
@@ -275,11 +268,17 @@ df_text <- uk_manifestos |>
     summarize(text = paste(text, collapse = ", "))
 
 dtm_manifestos <- bind_rows(uk_greens, uk_labour, uk_tories, uk_ukip_reform) |> 
-    tidytext::unnest_tokens(token, text) |>
+    unnest_tokens(token, text) |>
     count(token, doc_id) |> 
-    tidytext::cast_dtm(document = doc_id, term = token, value = n)
+    cast_dtm(document = doc_id, term = token, value = n)
+```
+
+The boxplots below illustrate the distribution of Concept Mover's Distance (CMD) scores for each concept across different parties, highlighting the degree to which party manifestos emphasize or align with these concepts. By grouping and comparing CMD scores, the analysis sheds light on both inter-party and intra-party variability in manifesto focus.
+
+However, the results should be interpreted with caution. CMD scores are relative, not absolute, measures of concept alignment and are influenced by the embeddings used. Additionally, the embeddings derived from the manifesto corpus are low-dimensional, which may limit the quality of the results and their ability to fully capture complex semantic relationships.
 
 
+```{r}
 doc_closeness <- CMDist(dtm = dtm_manifestos, 
                         cw = c("immigration", "economy", "environment"), 
                         wv = glove_wiki)
@@ -292,8 +291,9 @@ doc_closeness |>
     ggplot() +
     geom_boxplot(aes(cmd)) +
     facet_wrap(vars(concept, partyname))
-
 ```
+
+
 
 
 
