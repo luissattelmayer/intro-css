@@ -272,6 +272,7 @@ Now that you have learned how to scrape data from the web, you can apply this kn
 - [UK Gov news](https://www.gov.uk/search/news-and-communications)
 - [Speeches of the President of Argentina](https://www.casarosada.gob.ar/informacion/discursos)
 - [Tageschau (German news website)](https://www.tagesschau.de/archiv?)
+- [XR France press releases](https://extinctionrebellion.fr/actualites/all/)
 
 
 

@@ -233,10 +233,7 @@ bibliography: references.bib
 
 ::::
 
-## Dirty data {.smaller}
 
-- Web scraping is often just the first step and can involve a lot of cleaning, text manipulation, parsing to get structured information
-- Requires additional skills and tools like *regular expressions* (regex) : see the package [stringr](https://stringr.tidyverse.org/) in R
 
 
 ## References

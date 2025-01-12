@@ -199,7 +199,7 @@ Compare to dictionnary : context of words matters
 :::
 ::::
 
-## Can LLms annotate for you ? {.smaller}
+## Can LLMs annotate for you ? {.smaller}
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -348,8 +348,12 @@ $$
 - A "good" performance depends on the complexity of the task
     - Conceptual complexity 
     - Task complexity : multi-class, imbalanced classes
-- Performance also vary across class
-- But, sometimes we do not want our model to be too good neither : overfitting 
+- Performance also vary across classes
+- But, sometimes we do not want our model to be too good either : overfitting 
+
+## Overfitting and underfitting {.smaller}
+
+![](https://larevueia.fr/wp-content/uploads/2020/09/overfiting-1-1024x356.png)
 
 ## How to improve performance {.smaller}
 
@@ -387,11 +391,13 @@ $$
     - Other supervised learning models
     - Dictionary-based methods
 
+![](images/03_benchmark.png)
 
 # What to do with classification outputs ? 
 ## What to do classification outputs ? {.smaller}
 
 - It is (mostly) all about measurement of previously unmeasured concepts
+- Derive a quantity of interest from the classification output
 - 4 main uses of classification outputs :
     - Descriptive variation of concept prevalence across time, countries, groups
     - Use of prediction quality as a measure of concepts
