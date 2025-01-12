@@ -4,9 +4,12 @@ author: "Malo Jan & Luis Sattelmayer"
 date: today
 format: 
   revealjs:
+    highlight-style: breeze
+    theme: simple
+    pdf-separate-fragments: false
+    self-contained: true
     slide-number: c/t
     footer: "Collecting online data"
-    theme: simple
     echo: true
     incremental: false
 bibliography: references.bib
