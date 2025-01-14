@@ -1,0 +1,294 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+In this document, we will learn how to manipulate text data in R using the *stringr* package. It provides a set of functions that make it easier to work with strings in R. The package is part of the tidyverse. All functions in stringr start with *str_*, making it easy to identify them. They are designed to work with regular expressions to manipulate strings and match patterns. To learn more about the package, you can visit the [official documentation](https://stringr.tidyverse.org/) and its presentation in Hadley Wickham's R for Data Science [book](https://r4ds.hadley.nz/strings).  
+
+```{r}
+needs(tidyverse, rvest) # Will load stringr
+```
+
+## Creating and combining strings
+
+In R, text is represented as a string of characters, which are stored as character vectors. To create a string in R, we can use either single or double quotes.
+
+```{r}
+text <- "Some facts about US presidents: Donald Trump was elected president in 2016. Joe Biden won the presidency in 2020. Now, in 2025, Trump is president again."
+
+class(text)
+```
+
+It is also possible to have vectors of strings in R, "character vectors", that are created using the c() function. 
+
+```{r}
+texts <- c("Some facts about US presidents:", 
+          "Donald Trump was elected president in 2016.", 
+            "Joe Biden won the presidency in 2020.", 
+            "Now, in 2025, Trump is president again.")
+
+texts
+
+```
+
+## Concatenating strings
+
+Stringr provides a set a function to manipulate these strings and vectors. For instance, you can concatenate strings using `str_c()`. 
+
+```{r}
+str_c("Obama was president in 2016. ", text) # Concatenate strings
+
+presidents <- c("Obama", "Trump", "Biden")
+party <- c("Democrat", "Republican", "Democrat")
+
+str_c(presidents, "is", party, sep = " " ) # Concatenate strings
+```
+
+## Changing case
+
+Stringr functions can be used to change the case of strings. This can be useful when you want to standardize the format of text data.
+
+```{r}
+str_to_lower(texts) # Convert to lower case
+str_to_upper(texts) # Convert to upper case
+str_to_title(texts) # Convert to title case
+str_to_sentence(texts) # Convert to sentence case
+```
+
+## Detecting and counting patterns
+
+You can also detect whether a given pattern is present in a string using `str_detect()`. This function returns a logical vector indicating whether the pattern is present in each element of the input vector. Similarly, you can count the number of occurrences of a pattern in a string using `str_count()`. These functions will be useful later when developing dictionaries of words or phrases to match in text data. 
+
+```{r}
+str_detect(text, "Trump") # Detect the word Trump in the text
+str_detect(texts, "Trump") # Detect the word Trump in the texts
+str_count(text, "Trump") # Count the number of occurrences of Trump in the text
+str_count(texts, "Trump") # Count the number of occurrences of Trump in the texts
+```
+
+## Replace, remove, and extract patterns
+
+Stringr provides functions to replace, remove, locate and extract patterns from strings. This is especially useful when you want to clean up text data or extract specific information from it.
+
+```{r}
+str_replace(text, "Donald Trump", "Trump") # Replace Donald Trump by Trump
+str_extract(text, "Trump") # Extract Donald Trump
+str_locate(text, "Trump") # Locate the position of Trump
+str_remove(text, "Donald") # Remove Trump
+```
+
+But these functions will only match the first occurrence of a pattern. In the example below, we will replace the first occurrence of "Trump" by "J Trump" but not the second one.
+
+```{r}
+str_replace(text, "Trump", "J Trump") # Replace the first occurrence of Trump by J Trump
+```
+
+To match all occurrences of a pattern, you can use the str_*_all() functions. 
+
+```{r}
+str_replace_all(text, "Trump", "J Trump") # Replace all occurrences of Trump by J Trump
+str_extract_all(text, "Trump") # Extract all occurrences of Trump
+str_locate_all(text, "Trump") # Locate all occurrences of Trump
+str_remove_all(text, "Trump") # Remove all occurrences of Trump
+```
+
+It is possible to extract substrings from a string using `str_sub()`. The function takes three arguments: the string, the starting position, and the ending position of the substring. 
+
+Stringr allows us to easily remove whitespace from strings using str_squish(). This is often useful to clean up text data after web scraping. 
+
+```{r}
+text_with_whitespace <- "  Donald  Trump was elected.   president in 2016.                    Joe Biden won the presidency in 2020. Now, in 2025, Donald    Trump is president again.            "
+
+str_squish(text_with_whitespace) # Remove whitespace
+```
+
+# Regular expressions
+
+Behind the scenes, stringr uses regular expressions to manipulate strings.  You can use str_view() to highlight the matches in a string. 
+
+
+### Literal characters
+
+The patterns matched by regular expressions are exacts, they will only match the exact sequence of characters specified. For instance here, we will match the word "Trump" in the text, but "trump" will not be matched. So far, we only used these functions to match literal characters. 
+
+```{r}
+str_view(text, "Trump") # Highlight the word "Trump" in the text
+```
+
+Regex contains also a set of metacharacters that are special character that has a specific meaning and can be used to match patterns. 
+
+The most common metacharacters is the dot `.`
+
+```{r}
+str_view(text, "Trum.") # Highlight the word "Trump" in the text
+```
+
+An important metacharacter is the backslash `\`, which is used to escape metacharacters. For instance, if you want to match a dot, you need to escape it with a backslash. In R you need to escape the backslash itself, so you need to use two backslashes. If you want to match a literal '\', you need to use \\\\'. 
+
+```{r}
+str_view(text, ".") # Highlight the word "Trump" in the text
+str_view(text, "\\.") # Highlight the word "Trump" in the text
+```
+
+Other important metacharacters are the character classes, which are used to match specific types of characters. For instance, the character class `\\d` is used to match digits or \\w to match word characters, "\\s" to match whitespace characters.
+
+```{r}
+str_view(text, "\\d") # Highlight digits in the text
+str_view(text, "\\w") # Highlight word characters in the text
+str_view(text, "\\s") # Highlight whitespace characters in the text
+```
+
+## Quantifiers
+
+Quantifiers are used to match a specific number of occurrences of a pattern. For instance, the quantifier `+` is used to match one or more occurrences of a pattern. 
+
+```{r}
+str_view(text, "\\d+") # Highlight word characters in the text
+str_extract_all(text, "\\d+") # Extract all digits in the text
+```
+
+The quantifier `*` is used to match zero or more occurrences of a pattern. In the eemple below, we will match the word "president" followed by zero or more "s". 
+
+```{r}
+str_view(text, "presidents*") 
+```
+
+You can create a range of occurrences using the quantifier `{}`. For instance, if you want to match exactly 4 digits, you can use the pattern "\\d{4}". 
+
+```{r}
+str_view(text, "\\d{4}") 
+str_view(text, "\\d{2}") 
+```
+
+You can capture a range of characters using the quantifier `[]`. For instance, if you want to match any character between "a" and "z", you can use the pattern "[a-z]". This will match any lowercase letter. To match any uppercase letter, you can use the pattern "[A-Z]".
+
+```{r}
+str_view(text, "[a-z]") # Highlight word characters in the text
+str_view(text, "[A-Z]") 
+str_view(text, "[abc]") # Will match a, b, or c
+str_view(text, "[^abc]") # Will match everything except abc
+```
+
+## Alternation
+
+The metacharacter '|' is used to match alternatives. For instance, if you want to match either "Trump" or "Biden", you can use the pattern "Trump|Biden".
+
+```{r}
+str_view(text, "Trump|Biden") # Highlight Trump or Biden in the text
+
+texts
+
+str_detect(texts, "Trump|Biden") # Detect Trump or Biden in the text
+
+```
+
+## Anchors
+
+Anchors are used to match the position of a pattern in a string. For instance, the caret `^` is used to match the start of a string, while the dollar sign `$` is used to match the end of a string. 
+
+```{r}
+str_view(text, "S")
+str_view(text, "^S") 
+str_view(text, "n") 
+str_view(text, "n$") 
+```
+
+## Lookarounds
+
+Lookarounds are used to match a pattern only if it is followed or preceded by another pattern :
+
+- Positive lookbehind `(?<=...)` : match a pattern only if it is preceded by another pattern
+- Negative lookbehind `(?<!...)` : match a pattern only if it is not preceded by another pattern
+- Positive lookahead `(?=...)` : match a pattern only if it is followed by another pattern
+- Negative lookahead `(?!...)` : match a pattern only if it is not followed by another pattern
+
+```{r}
+str_view(text, "(?<=Donald) Trump") # Match Trump only if it is preceded by Donald
+
+str_view(text, "president (?=again)") # Match president only if it is followed by again
+```
+
+
+# Using stringr and regex for keywords detection
+
+```{r}
+unsg_df <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/unsg_dataset.csv")
+```
+
+```{r}
+# Subset a corpus based on a set of keywords
+
+unsg_palestine <- unsg_df |> 
+    filter(str_detect(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"))
+```
+
+
+```{r}
+# Add a column to the dataframe if a text contains a keyword and count the number of keywords in the text
+
+unsg_df <- unsg_df |> 
+    mutate(palestine_keywords_dummy = str_detect(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"), 
+           palestine_keywords_count = str_count(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"))
+
+unsg_df
+```
+
+
+```{r}
+# Compute the proportion of texts containing a set of keyword by year
+
+unsg |>
+    group_by(year) |>
+    summarise(prop_peace = mean(
+        str_detect(text, "\\bpeace(?:keeping|building)?\\b"), na.rm = T
+    )) |>
+    ggplot(aes(year, prop_peace)) +
+    geom_line(size = 1) +
+    geom_point() +
+    theme_light()
+
+unsg |>
+    group_by(year) |>
+    summarise(count_peace = sum(
+        str_count(text, "\\bpeace(?:keeping|building)?\\b"), na.rm = T
+    )) |>
+    ggplot(aes(year, count_peace)) +
+    geom_line(size = 1) +
+    geom_point() +
+    theme_light()
+        
+```
+
+# Cleaning and splitting unstructured text
+
+
+```{r}
+
+scrape_congreso <- function(x) {
+    page <- read_html(x)
+    tibble(
+        raw_text = page |> html_element(".publicaciones") |> html_text2(),
+    )
+}
+
+congreso <- scrape_congreso("https://www.congreso.es/es/busqueda-de-publicaciones?p_p_id=publicaciones&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_publicaciones_mode=mostrarTextoIntegro&_publicaciones_legislatura=XIV&_publicaciones_texto=&_publicaciones_id_texto=DSCD-14-PL-30.CODI.#1")
+
+congreso
+
+
+congreso <- congreso |>
+    mutate(
+        date = str_extract(raw_text, "(?<=de) \\d{2}\\/\\d{2}\\/\\d{4}") |>  dmy(),
+        session = str_extract(raw_text, "Sesión.+\\d+"),
+        year = str_extract(raw_text, "(?<=A[Ññ][Oo])(.+?)\\d+") %>% str_squish() %>% as.numeric(),
+        text = str_extract(raw_text, "(?<=ORDEN DEL DÍA:)[\\s\\S]*") # Include all text after "ORDEN DEL DÍA"
+        )
+
+congreso_long <- congreso %>% 
+  separate_longer_delim(text, delim = regex("El señor (?=[ÁA-Z]{2})|La señora (?=[ÁA-Z]{2})")) # A Verifier ne marche pas forcément tout le temps bien
+
+congreso_long |> view()
+
+```
+

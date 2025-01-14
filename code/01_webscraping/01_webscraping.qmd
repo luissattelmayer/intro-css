@@ -202,7 +202,7 @@ unsg_df <- unsg_df |>
 Once we have collected the data, we can explore the corpus a bit with the metadata we have. Here, I import the full corpus I have saved and look at the evolution of the number of press releases over time, according to the different secretaries general.
 
 ```{r}
-unsg_df <- read_csv("data/unsg_dataset.csv")
+unsg_df <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/unsg_dataset.csv")
 
 
 # Evolution of the number of press releases over time

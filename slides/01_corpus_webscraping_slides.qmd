@@ -178,6 +178,12 @@ bibliography: references.bib
 
 - HTML is a markup language
 - The content of the web is written in tags, which can have attributes
+
+
+![The tree-like structure of an HTML document](https://www.w3schools.com/js/pic_htmltree.gif)
+
+## HTML {.smaller}
+
 - Most common tags in html
     - div
     - p
