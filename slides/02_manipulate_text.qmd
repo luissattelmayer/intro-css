@@ -131,6 +131,7 @@ data
 - For this, we use string matching and regular expressions
 - Regular expressions (regex) are a powerful tool for detecting patterns in unstructured text
 - [Regexr](https://regexr.com/)
+- Example of use-case in forms : email, phone number, date validation and so on.  
 
 :::
 
