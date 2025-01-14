@@ -205,6 +205,7 @@ unsg_tf_idf %>%
 
 ```{r}
 sotu_tf_if <- sotu_tokens_word |> 
+    filter(!str_detect(word, "[:digit:]")) |> 
     count(party, word) |> 
     bind_tf_idf(word, party, n)
 
