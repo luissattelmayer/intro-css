@@ -1,6 +1,6 @@
 ---
-title : "From text to numbers"
-subtitle: "Bag of Words"
+title : "Bag of Words"
+subtitle: "From text to numbers"
 author: "Luis Sattelmayer"
 date : today
 css: styles.css  # Link to your custom CSS file
@@ -22,15 +22,14 @@ editor_options:
 
 - Text as data consists in transforming text into numbers
 - Different ways to do this
-- Start with bag of words representation
+- Start with *Bag of Words* representation
 
 
 ## Bag of Words (BoW)
-> Bag of words featurization quantifies the frequency of words in text documents for processing in machine learning models (IBM)
+> Bag of words featurization quantifies the frequency of words in text documents for processing in machine learning models
 
 - An unstructured assortment of all words present in a text
-- Rely heavily on word frequency counts
-- 
+- Rely on word frequency counts
 
 
 ## Bag of Words
@@ -47,7 +46,7 @@ editor_options:
     - "White House" treated as equal to "white" + "house"/"Donald Trump" will be treated as "donald" + "trump"
     - solution: n_grams
     
-## Limits of BoW {.smaller}
+## Limits of BoW 
 - **Polysemous words**: 
     - multiple meanings: climate (global warming) $\neq$ climate (tense, climate of a debate)
     - CON-tent $\neq$ con-TENT
@@ -78,13 +77,15 @@ editor_options:
 | **4-gram**        | Sequence of four consecutive words         | "Natural language processing tasks"           |
 
 
-## Zipf's Law {.smaller}
+## Zipf's Law 
 > When we rank observations by their frequency, the frequency of a specific observation occurrring is inversely proportional to its rank. 
 
 - The most common words in a language appear twice as often as the next common one 
 - *the* appears 7% of the time in the Brown Corpus of American English, while *of* accounts for 3.5%
 - This means: the most common, are the least informative words
 
+
+## Zipf's Law 
 ![](images/02_zipfs_law.png)
 
 ## Preprocessing/Normalizing {.smaller}
@@ -132,6 +133,25 @@ editor_options:
 
 - Very sparse, when large vocabulary size
 
+## {.smaller}
+
+| **Term**     | **Doc1** | **Doc2** | **Doc3** |
+|--------------|----------|----------|----------|
+| climate      | 5        | 2        | 0        |
+| president    | 3        | 0        | 1        |
+| immigration  | 2        | 4        | 6        |
+| economy      | 1        | 1        | 3        |
+: **Here is a TDM**
+
+
+| **Document** | **climate** | **president** | **immigration** | **economy** |
+|--------------|-------------|---------------|------------------|-------------|
+| Doc1         | 5           | 3             | 2                | 1           |
+| Doc2         | 2           | 0             | 4                | 1           |
+| Doc3         | 0           | 1             | 6                | 3           |
+: **Here is a DTM**
+
+
 ## TDM vs. DTM {.smaller}
 | Feature                  | Term-Document Matrix (TDM)                         | Document-Term Matrix (DTM)                         |
 |--------------------------|---------------------------------------------------|---------------------------------------------------|
@@ -143,26 +163,24 @@ editor_options:
 | **Example Structure**   | Row = "climate," Column = "Doc1," Value = 5       | Row = "Doc1," Column = "climate," Value = 5       |
 | **Dimensionality**      | Wide structure for large vocabularies             | Tall structure for large document collections     |
 
-## tf-idf
+## tf-idf {.smaller}
 - In standard bag of words models, semantically irrelevant words have the highest term frequency, and so greatest weight in a model
-- Term frequency-inverse document frequency can correct this
+- **Term frequency-inverse document frequency** can correct this
 - TF-IDF accounts for the word’s prevalence throughout every document in a text set
 
 ![](images/02_tf_idf.png)
 
 ## tf-idf {.smaller}
-- High tf-idf: frequent term in the document but rare in the overall corpus --> more unique or important for that document
-- Low tf-idf: term is either frequent across the corpus (e.g., stopwords like "the," "and") or infrequent in the document, meaning it has less distinguishing power
+- *High tf-idf*: frequent term in the document but rare in the overall corpus --> more unique or important for that document
+- *Low tf-idf*: term is either frequent across the corpus (e.g., stopwords like "the," "and") or infrequent in the document, meaning it has less distinguishing power
 
-- Input for ML models: 
-    - text classification (e.g., spam detection, sentiment analysis)
+- Input for machine learning models: 
+    - text classification (e.g., spam detection, sentiment analysis, random forests)
     - document clustering
 - Information Retrieval: 
     - search engines
     - document matching (using cosine similarity --> Thursday)
 - Anomaly Detection
-
-
 
 ## Use cases of BoW
 1. Scaling
@@ -170,11 +188,27 @@ editor_options:
 3. Text classification
 
 ## Scaling
+> Quantify and compare the positions of documents (e.g., texts, articles, speeches) along one or more dimensions based on their linguistic content
 
+- Use cases in Political Science: Map political speeches or manifestos along ideological dimensions (e.g., left-right, liberal-conservative)
+    - Wordscores [@benoit2003estimating] or Wordfish 
+    
+    
+## Scaling application
+![An uninformed scaling application by myself a couple of years ago](images/02_wordscores.png)
 
+## Summary: Bag of Words {.smaller}
+- **Definition**: Represents text as an unordered collection of words, ignoring grammar and word order
+  - focuses on **word frequency**.
+  - treats documents as a "bag" of individual terms
+- **Strengths**:
+  - Simple and intuitive for feature extraction
+  - Effective for basic text analysis tasks like classification and clustering
+- **Limitations**: context blind, sparse representation, polysemy, compound words
+  - apply **preprocessing**: tokenization, stopword removal, stemming, lemmatization
 
-## Lemmatizing and spaCy
-
+- **Applications**:
+  - **n-grams**, **TF-IDF**,Scaling documents along dimensions (e.g., ideology), Topic modeling and clustering
 
 
 

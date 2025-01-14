@@ -144,6 +144,23 @@ unsg_tf_idf %>%
 ```
 
 
-## DTM
+## DTM 
 
 <!-- Collocations, bigrams and so on-->
+
+
+
+
+
+## Stemming/Lemmatizing & Stopwords
+
+
+
+## n_grams
+
+
+
+## Some first BoW methods
+
+- tf-idf 
+
