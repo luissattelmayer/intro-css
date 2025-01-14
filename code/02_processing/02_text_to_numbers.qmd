@@ -228,7 +228,7 @@ sotu_tf_if %>%
 
 3. Create a keyword dictionary yourself for abortion related issues.
 
-4. Preprocess the corpus (tokenization, removing the stopwords, stemming).
+4. Preprocess the corpus (tokenization, removing the stopwords, stemming etc.).
 
 5. Subset the corpus to only include tweets that contain the keywords you have defined.
 
