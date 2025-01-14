@@ -1,7 +1,7 @@
 ---
 output: html_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 In this document, we will learn how to manipulate text data in R using the *stringr* package. It provides a set of functions that make it easier to work with strings in R. The package is part of the tidyverse. All functions in stringr start with *str_*, making it easy to identify them. They are designed to work with regular expressions to manipulate strings and match patterns. To learn more about the package, you can visit the [official documentation](https://stringr.tidyverse.org/) and its presentation in Hadley Wickham's R for Data Science [book](https://r4ds.hadley.nz/strings).  
@@ -37,12 +37,12 @@ texts
 Stringr provides a set a function to manipulate these strings and vectors. For instance, you can concatenate strings using `str_c()`. 
 
 ```{r}
-str_c("Obama was president in 2016. ", text) # Concatenate strings
+str_c(text, "Obama was president in 2016. ") # Concatenate strings
 
 presidents <- c("Obama", "Trump", "Biden")
 party <- c("Democrat", "Republican", "Democrat")
 
-str_c(presidents, "is", party, sep = " " ) # Concatenate strings
+str_c(presidents, "is", party, sep = "-") # Concatenate strings
 ```
 
 ## Changing case
@@ -55,7 +55,6 @@ str_to_upper(texts) # Convert to upper case
 str_to_title(texts) # Convert to title case
 str_to_sentence(texts) # Convert to sentence case
 ```
-
 ## Detecting and counting patterns
 
 You can also detect whether a given pattern is present in a string using `str_detect()`. This function returns a logical vector indicating whether the pattern is present in each element of the input vector. Similarly, you can count the number of occurrences of a pattern in a string using `str_count()`. These functions will be useful later when developing dictionaries of words or phrases to match in text data. 
@@ -74,6 +73,8 @@ Stringr provides functions to replace, remove, locate and extract patterns from 
 ```{r}
 str_replace(text, "Donald Trump", "Trump") # Replace Donald Trump by Trump
 str_extract(text, "Trump") # Extract Donald Trump
+str_length(text)
+text
 str_locate(text, "Trump") # Locate the position of Trump
 str_remove(text, "Donald") # Remove Trump
 ```
@@ -100,6 +101,7 @@ Stringr allows us to easily remove whitespace from strings using str_squish(). T
 ```{r}
 text_with_whitespace <- "  Donald  Trump was elected.   president in 2016.                    Joe Biden won the presidency in 2020. Now, in 2025, Donald    Trump is president again.            "
 
+text_with_whitespace
 str_squish(text_with_whitespace) # Remove whitespace
 ```
 
@@ -107,13 +109,13 @@ str_squish(text_with_whitespace) # Remove whitespace
 
 Behind the scenes, stringr uses regular expressions to manipulate strings.  You can use str_view() to highlight the matches in a string. 
 
-
 ### Literal characters
 
 The patterns matched by regular expressions are exacts, they will only match the exact sequence of characters specified. For instance here, we will match the word "Trump" in the text, but "trump" will not be matched. So far, we only used these functions to match literal characters. 
 
 ```{r}
 str_view(text, "Trump") # Highlight the word "Trump" in the text
+str_view(text, "trump")
 ```
 
 Regex contains also a set of metacharacters that are special character that has a specific meaning and can be used to match patterns. 
@@ -159,6 +161,10 @@ You can create a range of occurrences using the quantifier `{}`. For instance, i
 ```{r}
 str_view(text, "\\d{4}") 
 str_view(text, "\\d{2}") 
+
+date <- "2025-01-01"
+
+str_extract(date, "\\d{4}-\\d{2}-\\d{2}") 
 ```
 
 You can capture a range of characters using the quantifier `[]`. For instance, if you want to match any character between "a" and "z", you can use the pattern "[a-z]". This will match any lowercase letter. To match any uppercase letter, you can use the pattern "[A-Z]".
@@ -166,7 +172,7 @@ You can capture a range of characters using the quantifier `[]`. For instance, i
 ```{r}
 str_view(text, "[a-z]") # Highlight word characters in the text
 str_view(text, "[A-Z]") 
-str_view(text, "[abc]") # Will match a, b, or c
+str_view(text, "[adz]") # Will match a, b, or c
 str_view(text, "[^abc]") # Will match everything except abc
 ```
 
@@ -191,7 +197,7 @@ Anchors are used to match the position of a pattern in a string. For instance, t
 str_view(text, "S")
 str_view(text, "^S") 
 str_view(text, "n") 
-str_view(text, "n$") 
+str_view(text, "n\\.$") 
 ```
 
 ## Lookarounds
@@ -214,13 +220,15 @@ str_view(text, "president (?=again)") # Match president only if it is followed b
 
 ```{r}
 unsg_df <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/unsg_dataset.csv")
+
+unsg_df
 ```
 
 ```{r}
 # Subset a corpus based on a set of keywords
 
 unsg_palestine <- unsg_df |> 
-    filter(str_detect(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"))
+    filter(str_detect(text, "[Pp]alestine|[Gg]aza|[Ww]est [Bb]ank|Hamas"))
 ```
 
 
@@ -231,14 +239,15 @@ unsg_df <- unsg_df |>
     mutate(palestine_keywords_dummy = str_detect(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"), 
            palestine_keywords_count = str_count(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"))
 
-unsg_df
+unsg_df |> 
+    filter(palestine_keywords_count > 10)
 ```
 
 
 ```{r}
 # Compute the proportion of texts containing a set of keyword by year
 
-unsg |>
+unsg_df |>
     group_by(year) |>
     summarise(prop_peace = mean(
         str_detect(text, "\\bpeace(?:keeping|building)?\\b"), na.rm = T
@@ -247,8 +256,11 @@ unsg |>
     geom_line(size = 1) +
     geom_point() +
     theme_light()
+```
 
-unsg |>
+
+```{r}
+unsg_df |>
     group_by(year) |>
     summarise(count_peace = sum(
         str_count(text, "\\bpeace(?:keeping|building)?\\b"), na.rm = T
@@ -285,10 +297,12 @@ congreso <- congreso |>
         text = str_extract(raw_text, "(?<=ORDEN DEL DÍA:)[\\s\\S]*") # Include all text after "ORDEN DEL DÍA"
         )
 
+congreso |> head() |> view()
+
 congreso_long <- congreso %>% 
   separate_longer_delim(text, delim = regex("El señor (?=[ÁA-Z]{2})|La señora (?=[ÁA-Z]{2})")) # A Verifier ne marche pas forcément tout le temps bien
 
-congreso_long |> view()
+congreso_long |> head(10) |> view()
 
 ```
 

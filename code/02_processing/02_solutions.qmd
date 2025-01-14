@@ -4,22 +4,40 @@ format: html
 ---
 
 ## Exercises
+
 1. Import the data from this link "https://www.dropbox.com/s/dpu5m3xqz4u4nv7/tweets_house_rep_party.csv?dl=1"
 
 2. Create a keyword dictionary yourself for abortion related issues.
 
-3. Preprocess the corpus (tokenization, removing the stopwords, stemming).
+3. Plot the evolution of keyword mentions over time. 
 
-4. Plot the evolution of keyword mentions over time. 
+4. Subset the corpus to only include tweets that contain the keywords you have defined.
 
-5. Create a tf-idf per party to show which words distinguish the parties in their abortion related discourse.
+5. Find regular expressions to remove all the links, and mentions from the tweets.
 
-6. Plot the tf-idf per party.
+6. Preprocess the corpus (tokenization, removing the stopwords, stemming).
 
+7. Create a tf-idf per party to show which words distinguish the parties in their abortion related discourse.
+
+8. Plot the tf-idf per party.
 
 
 ```{r}
+
+needs(tidyverse, tidytext, SnowballC, stopwords)
+
 timelines <- read_csv("https://www.dropbox.com/s/dpu5m3xqz4u4nv7/tweets_house_rep_party.csv?dl=1") |> filter(!is.na(party))
+
+timelines
+```
+```{r}
+# Remove links and mentions from the tweets
+
+timelines <- timelines |> 
+  mutate(text = str_remove_all(text, "http\\S+")) |> 
+  mutate(text = str_remove_all(text, "@\\S+"))
+
+timelines
 ```
 
 
