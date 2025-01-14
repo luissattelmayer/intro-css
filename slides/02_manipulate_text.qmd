@@ -1,0 +1,345 @@
+---
+title : "Manipulating text and detecting patterns"
+author: "Malo Jan & Luis Sattelmayer"
+css: styles.css  # Link to your custom CSS file
+execute: 
+  echo: false
+  warning: false
+date: today
+format: 
+  revealjs:
+    highlight-style: breeze
+    theme: simple
+    pdf-separate-fragments: false
+    self-contained: true
+    slide-number: c/t
+    footer: "Collecting online data"
+    echo: true
+    incremental: false
+bibliography : references.bib
+editor_options: 
+  chunk_output_type: console
+---
+
+## Outline {.smaller}
+
+- Yesterday : learn what is a corpus and how extract text from the web
+- This morning : learn how to manipulate text and detect patterns in text
+    - Manipulate text with string manipulation
+    - Build and use dictionnaries
+    - Mix of lecture and practice
+
+# Manipulating text 
+
+## Cleaning texts {.smaller}
+
+- Web scraping is often just the first step and can involve a lot of cleaning, text manipulation, parsing to get structured information
+- Text we collect in the web is not always "clean" : 
+    - Removing unwanted information : eg. ads, navigation links, html tags, markup characters (eg. \n, \t, etc.)
+    - Replace characters : eg. accents, special characters, encoding issues
+    - Segmenting unstructured texts into paragraphs, sentences, words
+    - Segmenting unstructured texts by groups : eg. parliamentary speeches by speaker
+    - Extracting specific information from texts to get metadata : eg. date, author, title, etc.
+
+## Example 1 : parliamentary speeches {.smaller}
+
+
+![](images/02_parliament.png)
+
+```{r}
+#| echo: false
+
+
+library(tibble)
+
+
+# Create the tibble
+data <- tibble(
+  speaker = c(
+    "President", 
+    "Barbara Pompili",
+    "Geneviève Gaillard",
+    "Daniel Fasquelle",
+    "Philippe Plisson"
+  ),
+  gender = c(
+    "Male",
+    "Female",
+    "Female",
+    "Male",
+    "Male"
+  ),
+  role = c(
+    "Chair", 
+    "Secretary of State",
+    "Rapporteur",
+    "Deputy",
+    "Deputy"
+  ),
+  text = c(
+    "Je suis saisi de deux amendements identiques, nos 413 et 257.",
+    "Cet amendement vise à rétablir, à l’alinéa 2 de l’article 59 bis B, le principe selon lequel, lors d’une fusion de communes, les associations communales de chasse agréées peuvent fusionner à titre volontaire, et non obligatoire...",
+    "Il est identique à l’amendement du Gouvernement, auquel je donne donc un avis favorable.",
+    "Pour une fois, je soutiens le Gouvernement. Tout arrive ! Il aura fallu attendre la fin de la discussion de ce texte… Pour une fois, le Gouvernement a été à l’écoute des acteurs de terrain, en particulier des chasseurs.",
+    "Les amendements viennent d’être adoptés : j’arrive donc après la bataille ! Je me réjouis que les associations communales de chasse agréées ne soient pas démembrées en cas de fusion de communes..."
+  )
+)
+
+data
+```
+
+
+## Example 2 : press releases {.smaller}
+
+
+![](images/02_press_release.png)
+
+<br>
+<br>
+
+
+| text | date | location | title | 
+|-------|-----|------|---------|
+| The Progressive Future Alliance...  | 2025-01-09  | London    | A Brighter Tomorrow: Our vision for 2030   |
+
+## Example 3 : Applauses in parliamentary speeches {.smaller}
+
+:::: {.columns}
+
+
+::: {.column width="60%"}
+
+![](images/02_applauses.png){width=100%}
+:::
+
+::: {.column width="40%"}
+
+![](images/02_applause2.png)
+:::
+
+
+
+::::
+
+##  Regular expressions {.smaller}
+
+:::: {.columns}
+
+
+::: {.column width="60%"}
+- Good skills to have to be able to detect patterns in text to be able to clean it
+- For this, we use string matching and regular expressions
+- Regular expressions (regex) are a powerful tool for detecting patterns in unstructured text
+- [Regexr](https://regexr.com/)
+
+:::
+
+::: {.column width="40%"}
+![](images/02_regex.png)
+
+:::
+
+
+
+::::
+
+
+## Regular expressions {.smaller}
+
+:::: {.columns}
+
+
+::: {.column width="60%"}
+
+- A programming language for pattern matching, really powerful and common 
+- Quite complex but only a few basic concepts are needed to get started
+- A lot of resources available online to learn regex and test them
+- Now, ChatGPT can help you to find the right regular expressions
+
+:::
+
+::: {.column width="40%"}
+
+![](images/02_regex2.png)
+:::
+
+
+
+::::
+
+
+## Regex syntax {.smaller}
+
+![](images/02_regex_stringr1.png){width=100%}
+
+## Regex syntax {.smaller}
+
+![](images/02_regex_stringr2.png){width=100%}
+
+# Dictionnary methods
+
+## Keywords based methods {.smaller}
+
+- One of the most common tasks and "easy" task in quantitative text analysis is to detect the presence of specific patterns in a text, rule-based methods
+- To measure concepts prevalence, we can use dictionnaries
+- We are all used to use keywords to search for information on the web, but different issues
+- Two main uses of keywrods in text analysis : 
+    - To measure the prevalence of a concept in a corpora based on the presence of specific words 
+    - To collect data, subset the population of texts of interest from a larger corpus : eg. Factiva
+
+## Dictionaries
+
+:::: {.columns}
+::: {.column width="50%"}
+
+
+![](images/02_ex1.png)
+
+![](images/02_ex2.png)
+
+:::
+
+::: {.column width="50%"}
+
+![](images/02_ex3.png)
+
+![](images/02_ex4.png)
+![](images/02_ex5.png)
+
+:::
+::::
+
+
+
+## Dictionnaries {.smaller}
+
+- A dictionnary is a list of words or expressions that are used to detect the presence of a concept in a text
+- Binary dictionnaries : presence/absence of a word in a text
+- Frequency dictionnaries : count the number of times a word appears in a text 
+- Weighted dictionnaries : assign a weight to each word in the dictionnary : eg. sentiment analysis
+
+
+## Keywords based methods {.smaller}
+
+```{r}
+#| echo: false
+#| fig-cap: "Example of a dictionnary : Proportion of press releases of the UNSG containing the word Palestine or Israel"
+
+needs(tidyverse)
+
+unsg <- read_csv(here::here("data/unsg_dataset.csv"))
+
+# Keyword search
+
+unsg_df <- unsg
+
+unsg_df |> 
+    group_by(year) |> 
+    summarise(
+        palestine_dummy = mean(str_detect(text, "Palestine|Gaza|Hamas|West Bank"), na.rm = T), 
+        israel_dummy = mean(str_detect(text, "Israel|Mossad|Netanyahu"), na.rm = T), 
+        palestine_count = sum(str_count(text, "Palestine|Gaza|Hamas|West Bank"), na.rm = T), 
+        israel_count = sum(str_count(text, "Israel|Mossad|Netanyahu"), na.rm = T)) |> 
+    pivot_longer(
+        cols = c(-year), names_to = "Keywords", values_to = "prop") |> 
+    separate_wider_delim(Keywords, names = c("Keywords", "Type"), delim = "_") |> 
+    ggplot(aes(year, prop, color = Keywords)) +
+    geom_line(size = 1) +
+    facet_wrap(~Type, scales = "free_y") +
+    theme_light() +
+    # Color by israel and palestine color code
+    scale_color_manual(values = c("#0038B8", "#007A33"), labels = c("Israel|Mossad|Netanyahu", "Palestine|Gaza|Hamas"))
+```
+
+## Advantages of dictionnary methods {.smaller}
+
+- Straightforward to implement
+- Fast : no need to train a model, allows to quickly measure the prevalence of a concept in a text
+- Easy understandable
+- Fixable : you can easily add or remove words from the dictionnary to refine dictionnary
+
+## Limits of dictionnaries : example on climate change {.smaller}
+
+- Let's say we want to measure the prevalence of texts related to climate change in a corpus of texts
+- What words would you include in your dictionnary?
+
+## Limits of dictionnaries : example on climate change {.smaller}
+
+```{r}
+#| echo: false
+
+unsg_df |>
+    group_by(year) |>
+    summarise(
+        climate_dict_two = mean(str_detect(text, "climate|global warming|greenhouse gas"), na.rm = T),
+        climate_dict_one = mean(str_detect(text, "climate change|global warming|greenhouse gas"), na.rm = T),
+    ) |>
+    pivot_longer(
+        cols = c(climate_dict_one, climate_dict_two),
+        names_to = "Dictionnary",
+        values_to = "prop"
+    ) |>
+    ggplot(aes(year, prop, color = Dictionnary)) +
+    geom_line(size = 1)  +
+    scale_color_manual(values = c("#0038B8", "#007A33"), labels = c("climate*|global warming|greenhouse gas", "climate change|global warming|greenhouse gas")) +
+    theme_light() +
+    scale_x_continuous("Year") +
+    scale_y_continuous("Proportion of press releases") +
+    # Legend at bottom
+    theme(legend.position = "bottom")
+```
+
+
+## Limits of dictionnaries : measurement issues {.smaller}
+
+- Difficult to accurately measure the prevalence of a concept through a dictionnary
+- Find all the relevant words to include in a dictionnary is really hard
+
+>  Although humans perform very poorly in the task of recalling large numbers of words from memory, they excel at recognizing whether any given word is an appropriate representation of a given concept. [@king2017computer, The Unreliability of Human Keyword Selection]
+
+> That is, two human users familiar with the subject area, given the same task, usually select keyword lists that overlap very little, and the list from each is a very small subset of those they would each recognize as useful after the fact. The unreliability is exacerbated by the fact that users may not even be aware of many of the keywords that could be used to select a set of documents. And attempting to find keywords by reading large numbers of documents is likely to be logistically infeasible in a reasonable amount of time.
+
+## @king2017computer experiment {.smaller}
+
+- Ask 43 undergraduates to recall keywords from a sample of twitter posts contaning "healthcare" from the time period surrounding a Supreme Court decision on Obamacare with goal with providing a list of keywords selecting posts related to Obamaware and will not select posts related to Obamacare. 
+- Repeat experiment with Boston Marathon bombing
+
+## @king2017computer experiment {.smaller}
+
+- Median number of words recalled 8 for Obamacare and 7 for Boston Marathon
+
+![](images/02_King_al1.png)
+
+## Consequences for statistical bias {.smaller}
+
+- Different keywords can lead to different document sets and to different inferences/conclusion
+
+![](images/02_king_al_2.png)
+
+## Limits of dictionnaries {.smaller}
+
+
+- Hard to find what are the most relevant words to include in the dictionnary
+- No knowledge of all the texts
+- Semantic :No context at all : we do not know in which context the words are used (along with other words)
+- Hard to build a dictionnary that is exhaustive
+- Simple and conservative dictionnary : 
+    - All words matched will are likely to be relevant/ But will miss some relevant texts
+- More flexible dictionnary :
+    - Will match more relevant texts / But will also match more irrelevant texts
+- Scunthrope problem : 
+    - Words that are not relevant but are matched by the dictionnary
+    - Spam filter : people from Scunthorpe could not register on web portal because of the word "cunt"
+
+## How to build dictionnaries {.smaller}
+
+- Domain and context knowledge
+- Reading sample of texts
+- Chatgpt building
+- Word embeddings
+
+## References
+
+
+
+
