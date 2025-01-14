@@ -1,0 +1,300 @@
+---
+title: "From Text to Numbers"
+author: "Luis Sattelmayer"
+format: html
+---
+
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(here)
+library(SnowballC)
+library(sotu)
+library(stopwords)
+```
+
+## Create a DTM
+
+```{r}
+unsg <- read_csv(here("data/unsg_dataset.csv"))
+
+unsg
+```
+
+
+```{r}
+sotu_raw <- sotu_meta |> 
+  mutate(text = sotu_text) |> 
+  distinct(text, .keep_all = TRUE)
+
+sotu_raw |> glimpse()
+```
+
+
+```{r}
+sotu_raw |> slice(1) |> pull(text) |> str_sub(1, 500)
+```
+
+```{r}
+sotu_20cent_raw <- sotu_raw |> 
+  filter(between(year, 1900, 2000))
+
+glimpse(sotu_20cent_raw)
+```
+
+The `unnest_tokens()` function comes from the tidytext package. It splits a column into token and thus flattens the table into one-token-per-row. The tokenization is not limited to only words. You could for example tokenize into characters, n_grams, sentences, paragraphs and so on. This really depends on what your quantity of interest and analysis is. Below in `unsg_tokens`, I split the text column into words. The word argument, which comes first in the `unnest_tokens` is the name that the new column, into which our tokens will be put, is going to be called.
+
+```{r}
+toy_example <- tibble(
+  text = "Look, this is a brief example for how tokenization works."
+)
+
+toy_example |> 
+  unnest_tokens(output = token, 
+                input = text)
+```
+
+
+
+```{r}
+unsg_tokens <- sotu_20cent_raw |> 
+  unnest_tokens(word, text, token = "words")
+unsg_tokens |> 
+    count(word, sort = TRUE)
+```
+
+
+Here I do the same thing but I split the text column into sentences. However, when looking at the counted output, we can see that there are issues as the `unnest_tokens()` function assumes that every dot `.` makes the end of a sentence. However, language elements like `Mr. ` will be put into a cell. 
+
+```{r}
+sotu_tokens_word <- sotu_20cent_raw |> 
+  unnest_tokens(word, text, token = "words")
+
+sotu_tokens_word |> 
+    count(word, sort = TRUE)
+
+
+sotu_tokens_sentence <- sotu_20cent_raw |> 
+  unnest_tokens(sentence, text, token = "sentences")
+
+sotu_tokens_sentence |> 
+    count(sentence, sort = TRUE)
+```
+
+
+```{r}
+sotu_20cent_tokenized <- sotu_20cent_raw |> 
+  unnest_tokens(output = token, input = text)
+glimpse(sotu_20cent_tokenized)
+```
+
+## Preprocessing: Stopwords
+
+```{r}
+stopwords_vec <- stopwords(language = "en")
+stopwords(language = "de") # the german equivalent
+stopwords(language = "fr")
+```
+
+```{r}
+# find the languages that are available
+stopwords_getlanguages(source = "snowball")
+```
+
+```{r}
+# find the dictionaries that are available
+stopwords_getsources()
+```
+
+```{r}
+sotu_20cent_tokenized_nostopwords <- sotu_20cent_tokenized |> 
+  filter(!token %in% stopwords_vec)
+
+sotu_20cent_tokenized_nostopwords$token
+```
+
+
+```{r}
+sotu_20cent_tokenized_nostopwords_nonumbers <- sotu_20cent_tokenized_nostopwords |> 
+  filter(!str_detect(token, "[:digit:]"))
+```
+
+The corpus now contains 19263 different tokens, the so-called “vocabulary.” 1848 tokens were removed from the vocuabulary. This translates to a signifiant reduction in corpus size though, the new tibble only consists of 464271 rows, basically a 50 percent reduction. 
+
+
+## Preprocessing: Stemming
+
+```{r}
+sotu_20cent_tokenized_nostopwords_nonumbers_stemmed <- sotu_20cent_tokenized_nostopwords_nonumbers |> 
+  mutate(token_stemmed = wordStem(token, language = "en"))
+
+sotu_20cent_tokenized_nostopwords_nonumbers_stemmed$token_stemmed
+
+```
+
+
+```{r}
+SnowballC::getStemLanguages() # if you want to know the abbreviations for other languages as well
+```
+
+
+
+Below I also filter for words that appear less than 0.05 percent of the time. Be aware that this is an important but questionable step. Especially rare words might be very informative for the context of a word. Here, it is also to accelerate calculations below but every preprocessing step alters your corpus and the vocabulary you include in your analysis. These steps should and must be informed and reported! 
+
+```{r}
+n_rows <- nrow(sotu_20cent_tokenized_nostopwords_nonumbers_stemmed)
+sotu_20cent_tokenized_nostopwords_nonumbers_stemmed |> 
+  group_by(token_stemmed) |> 
+  filter(n() > n_rows/2000)
+```
+
+All the things we have seen above could also simply be put into one beautiful long pipeline: 
+
+```{r}
+sotu_20cent_clean <- sotu_raw |> 
+  filter(between(year, 1900, 2000)) |> 
+  unnest_tokens(output = token, input = text) |> 
+  anti_join(get_stopwords(), by = c("token" = "word")) |> 
+  filter(!str_detect(token, "[0-9]")) |> 
+  mutate(token = wordStem(token, language = "en")) |> 
+  group_by(token) |> 
+  filter(n() > n_rows/2000)
+```
+
+
+## tf-idf
+
+
+Tf-idf : decrease the weight of common words and increase the weight of rare words.
+
+```{r}
+unsg_tokens <- unsg |> 
+  unnest_tokens(word, text, token = "words")
+
+unsg_tf_idf <- unsg_tokens |> 
+    count(secretary_general, word) |> 
+    bind_tf_idf(word, secretary_general, n)
+
+unsg_tf_idf
+```
+
+```{r}
+unsg_tf_idf %>%
+  group_by(secretary_general) %>%
+  slice_max(tf_idf, n = 20) %>%
+  ungroup() %>%
+  ggplot(aes(tf_idf, fct_reorder(word, tf_idf), fill = secretary_general)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~secretary_general, ncol = 2, scales = "free") +
+  labs(x = "tf-idf", y = NULL)
+```
+
+
+```{r}
+sotu_tf_if <- sotu_tokens_word |> 
+    count(party, word) |> 
+    bind_tf_idf(word, party, n)
+
+sotu_tf_if %>%
+  group_by(party) %>%
+  slice_max(tf_idf, n = 20) %>%
+  ungroup() %>%
+  ggplot(aes(tf_idf, fct_reorder(word, tf_idf), fill = party)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~party, ncol = 2, scales = "free") +
+  labs(x = "tf-idf", y = NULL)
+```
+
+
+
+
+## Exercises
+
+
+1. Import the data from this link "https://www.dropbox.com/s/dpu5m3xqz4u4nv7/tweets_house_rep_party.csv?dl=1"
+
+2. Create a keyword dictionary yourself for abortion related issues.
+
+3. Preprocess the corpus (tokenization, removing the stopwords, stemming).
+
+4. Plot the evolution of keyword mentions over time. 
+
+5. Create a tf-idf per party to show which words distinguish the parties in their abortion related discourse.
+
+6. Plot the tf-idf per party.
+
+```{r}
+timelines <- read_csv("https://www.dropbox.com/s/dpu5m3xqz4u4nv7/tweets_house_rep_party.csv?dl=1") |> filter(!is.na(party))
+```
+
+
+
+```{r}
+keywords <- c("abortion", "prolife", " roe ", " wade ", "roevswade", "baby", "fetus", "womb", "prochoice", "leak")
+
+preprocessed <- timelines |> 
+  rowid_to_column("doc_id") |> 
+  filter(str_detect(text, str_c(keywords, collapse = "|"))) |> 
+  unnest_tokens(word, text) |> 
+  anti_join(get_stopwords()) |> 
+  mutate(stemmed = wordStem(word))
+
+keyword_counts <- timelines |> 
+  rowid_to_column("doc_id") |> 
+  mutate(keyword_count = str_count(text, str_c(keywords, collapse = "|"))) |> 
+  unnest_tokens(word, text, drop = FALSE) |>  # Retain the original text column
+  anti_join(get_stopwords(), by = "word") |> 
+  mutate(stemmed = wordStem(word)) |> 
+  group_by(doc_id, party, date) |>                 # Group by doc_id and party
+  summarise(
+    text = first(text),                      # Explicitly keep the original text
+    total_keywords = first(keyword_count),    # Total count of keywords
+    unique_keywords = n_distinct(stemmed)    # Count of unique stemmed keywords
+  ) |> 
+  ungroup()
+
+
+keyword_counts |> 
+    group_by(party, date) |>
+    summarise(
+        mean_keywords = mean(total_keywords)
+    ) |>
+    ggplot(aes(x = date, y = mean_keywords, color = party)) +
+    # change color to red and blue
+    scale_color_manual(values = c("blue", "red")) +
+    geom_line() +
+    facet_wrap(~party) +
+    theme_minimal() 
+
+
+# Calculate TF-IDF by Party
+tf_idf_by_party <- preprocessed |> 
+  count(party, stemmed) |>  # Count occurrences of stemmed words by party
+  bind_tf_idf(stemmed, party, n) |>  # Calculate TF-IDF
+  arrange(desc(tf_idf))  # Sort by TF-IDF in descending order for convenience
+
+# Visualize TF-IDF by Party
+tf_idf_by_party |> 
+  group_by(party) |> 
+  slice_max(tf_idf, n = 20) |>  # Take the top 20 words by TF-IDF for each party
+  ungroup() |> 
+  ggplot(aes(tf_idf, fct_reorder(stemmed, tf_idf), fill = party)) +
+    scale_fill_manual(values = c("blue", "red")) +
+  geom_col(show.legend = FALSE) +  # Bar plot without legend
+  facet_wrap(~party, ncol = 2, scales = "free") +  # Separate facets for each party
+  labs(
+    title = "Top Words by TF-IDF for Each Party",
+    x = "TF-IDF",
+    y = NULL
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+preprocessed
+```
+
+
