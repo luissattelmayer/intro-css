@@ -1,5 +1,7 @@
 ---
-title : "Text processing"
+title : "From text to numbers"
+subtitle: "Bag of Words"
+author: "Luis Sattelmayer"
 date : today
 css: styles.css  # Link to your custom CSS file
 execute: 
@@ -16,101 +18,163 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Manipulating text
-
-## Dictionnaries and pattern detection
-
-- "Easiest" method to work with text
-- Measurement approach : if a word is in the text, then the text is about this topic
-
-## Limit of dictionnaries
-
 ## Converting text to numbers
 
 - Text as data consists in transforming text into numbers
 - Different ways to do this
 - Start with bag of words representation
 
-## Document feature matrix {.smaller}
 
-```{r}
+## Bag of Words (BoW)
+> Bag of words featurization quantifies the frequency of words in text documents for processing in machine learning models (IBM)
 
-library(tidyverse)
-library(tidytext)
-library(here)
-
-
-uk_manifesto <- read_csv(here("data", "gbr_manifesto_corpus.csv")) |> 
-    filter(partyname %in% c("Conservative Party", "Labour Party")) |> 
-    # Shorten names
-    mutate(partyname = case_when(
-        partyname == "Conservative Party" ~ "Conservative",
-        partyname == "Labour Party" ~ "Labour"
-    )) 
-
-set.seed(123)
-
-uk_manifesto |> 
-    slice_sample(n = 10)  |> 
-    # Keep only first 5 words
-    unnest_tokens(word, text) |> 
-    count(text_id,  partyname, word) |> 
-    pivot_wider(names_from = word, values_from = n, values_fill = 0) |> 
-    select(text_id, partyname, we, understand, these, feelings, of, our, country) |> 
-    kableExtra::kable()
-
-```
-
-## Sparse matrix : a lot of zeros {.smaller}
-
-```{r}
-# Zipf's law
-
-uk_manifesto |> 
-    unnest_tokens(word, text) |> 
-    count(word, sort = TRUE) |> 
-    mutate(rank = row_number()) |> 
-    ggplot(aes(x = rank, y = n)) +
-    geom_point() +
-    scale_x_log10("Rank") +
-    scale_y_log10("N") +
-    theme_minimal() + 
-    # Add some labels with texts
-    geom_text(aes(label = word), nudge_x = 0.5, nudge_y = 0.5, check_overlap = TRUE)
+- An unstructured assortment of all words present in a text
+- Rely heavily on word frequency counts
+- 
 
 
-```
+## Bag of Words
+![](images/02_bag_of_words.png)
+
+## Limits of BoW {.smaller}
+- **Word correlation**:
+    - context blind
+    - election and president co-ocurr more often than president and poet
+    - a simple individual term frequency omits this relationship
+    
+- **Compound words**: 
+    - without accounting for words that belong together, every word will be judged individually 
+    - "White House" treated as equal to "white" + "house"/"Donald Trump" will be treated as "donald" + "trump"
+    - solution: n_grams
+    
+## Limits of BoW {.smaller}
+- **Polysemous words**: 
+    - multiple meanings: climate (global warming) $\neq$ climate (tense, climate of a debate)
+    - CON-tent $\neq$ con-TENT
+
+- **Sparsity**: 
+    - each word is a feature or dimension of the model
+    - inefficient for computing
+
+## Limits of BoW
+![](images/02_limits_bow.png)
+
+## Solutions for the Limitations
+- **Bag of n-grams**:
+    - minimum a bi-gram: "New York", "Eiffel Tower", "Donald Trump", "White House"
+    - still not 100% informative: "on the", "will be"
+
+- **Normalization*/*Preprocessing** (see later slides): 
+    - stemming
+    - removing punctuation
+    - removing stopwords
+    
+## N-grams {.smaller}
+| **n-gram Size** | **Description**                             | **n-gram Examples**                            |
+|------------------|---------------------------------------------|-----------------------------------------------|
+| **Unigram (1-gram)** | Single word                               | "Natural," "language," "processing"           |
+| **Bigram (2-gram)**  | Sequence of two consecutive words         | "Natural language," "language processing"     |
+| **Trigram (3-gram)** | Sequence of three consecutive words       | "Natural language processing"                 |
+| **4-gram**        | Sequence of four consecutive words         | "Natural language processing tasks"           |
+
+
+## Zipf's Law {.smaller}
+> When we rank observations by their frequency, the frequency of a specific observation occurrring is inversely proportional to its rank. 
+
+- The most common words in a language appear twice as often as the next common one 
+- *the* appears 7% of the time in the Brown Corpus of American English, while *of* accounts for 3.5%
+- This means: the most common, are the least informative words
+
+![](images/02_zipfs_law.png)
+
+## Preprocessing/Normalizing {.smaller}
+- **Tokenization**
+    - splitting text in smaller units of analysis
+    - eg.: sentences, quasi-sentences, words can each be tokens
+- **Lowercasing**
+    - "Cat" and "cat" are not the same for Bag of Words
+- **Removing Stopwords**
+    - common words that carry little semantic meaning: "is", "of", "the," "and"
+    - focuses on meaningful words and reduces the dimensionality of the BoW representation
+- **Removing Punctuation**
+    - stripping commas, dots and so on
+- **Stemming**
+    - Reducing words to their root or base form by removing suffixes: "running" --> "run"
+
+## Stemming vs Lemmatizing {.smaller}
+| **Aspect**      | **Lemmatization**                         | **Stemming**                              |
+|------------------|-------------------------------------------|-------------------------------------------|
+| **Process**      | Context-aware, dictionary-based          | Rule-based, heuristic chopping           |
+| **Output**       | Produces valid dictionary words          | May produce non-words (eg, "running" → "runn") |
+| **Context**      | Considers grammatical structure          | Ignores grammatical context              |
+| **Accuracy**     | High (linguistically accurate)           | Lower (prone to errors)                  |
+| **Speed**        | Slower due to dictionary lookup          | Faster because it's rule-based           |
+| **Examples**     | "running" → "run", "better" → "good"      | "running" → "run", "better" → "better"    |
+
+
+## Term-Document Matrix {.smaller}
+> A matrix where rows represent terms (e.g., words, phrases, or n-grams) and columns represent documents.
+
+- Each cell contains a value representing the occurrence or importance of the term in the corresponding document
+- **Common Values in Cells**:
+    - *Raw Term Frequency* (TF): Counts how often a term appears in a document
+    - *Binary Presence*: 1 if the term appears in the document, otherwise 0
+    - *Weighted Measures*: TF-IDF (Term Frequency-Inverse Document Frequency)
+
+- Sparse matrix, inefficient for large corpora
+
+
+## Document-Term Matrix
+> A matrix where rows represent documents and columns represent terms (e.g., words, phrases, or n-grams)
+
+- Each cell contains a value that represents the occurrence or importance of the term in the document
+- Can be used for same purposes as TDF
+
+- Very sparse, when large vocabulary size
+
+## TDM vs. DTM {.smaller}
+| Feature                  | Term-Document Matrix (TDM)                         | Document-Term Matrix (DTM)                         |
+|--------------------------|---------------------------------------------------|---------------------------------------------------|
+| **Rows**                | Terms (words or phrases)                          | Documents                                         |
+| **Columns**             | Documents                                         | Terms (words or phrases)                          |
+| **Primary Use**         | Explore term trends across documents              | Explore document trends across terms              |
+| **Transposition**       | Can be transposed to form a DTM                   | Can be transposed to form a TDM                   |
+| **Applications**        | Topic modeling, text mining                       | Text classification, semantic analysis            |
+| **Example Structure**   | Row = "climate," Column = "Doc1," Value = 5       | Row = "Doc1," Column = "climate," Value = 5       |
+| **Dimensionality**      | Wide structure for large vocabularies             | Tall structure for large document collections     |
+
+## tf-idf
+- In standard bag of words models, semantically irrelevant words have the highest term frequency, and so greatest weight in a model
+- Term frequency-inverse document frequency can correct this
+- TF-IDF accounts for the word’s prevalence throughout every document in a text set
+
+![](images/02_tf_idf.png)
+
+## tf-idf {.smaller}
+- High tf-idf: frequent term in the document but rare in the overall corpus --> more unique or important for that document
+- Low tf-idf: term is either frequent across the corpus (e.g., stopwords like "the," "and") or infrequent in the document, meaning it has less distinguishing power
+
+- Input for ML models: 
+    - text classification (e.g., spam detection, sentiment analysis)
+    - document clustering
+- Information Retrieval: 
+    - search engines
+    - document matching (using cosine similarity --> Thursday)
+- Anomaly Detection
 
 
 
+## Use cases of BoW
+1. Scaling
+2. Topic Modeling
+3. Text classification
+
+## Scaling
 
 
-## Tokenization {.smaller}
 
-```{r}
-#| echo: true
+## Lemmatizing and spaCy
 
-
-
-
-set.seed(1)
-sentence_demo <- uk_manifesto |> 
-    slice_sample(n = 1) 
-
-sentence_demo |> pull(text)
-
-
-```
-
-
-## Creating DTMs
-
-- Creation of corpus : getting texts
-- Tokenization
-- Standardization
-- Filtering : stopwords, counts, only nound
-- Computation
-- Weighting
 
 
 
