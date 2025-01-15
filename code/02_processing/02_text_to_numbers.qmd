@@ -58,9 +58,9 @@ toy_example |>
 
 
 ```{r}
-unsg_tokens <- sotu_20cent_raw |> 
+sotu_tokens <- sotu_20cent_raw |> 
   unnest_tokens(word, text, token = "words")
-unsg_tokens |> 
+sotu_tokens |> 
     count(word, sort = TRUE)
 ```
 
@@ -129,7 +129,7 @@ sotu_20cent_tokenized_nostopwords |>
 sotu_20cent_tokenized_nostopwords_nonumbers <- sotu_20cent_tokenized_nostopwords |> 
   filter(!str_detect(token, "[:digit:]"))
 
-sotu_20cent_tokenized_nostopwords
+sotu_20cent_tokenized_nostopwords$token
 ```
 
 The corpus now contains 19263 different tokens, the so-called “vocabulary.” 1848 tokens were removed from the vocuabulary. This translates to a signifiant reduction in corpus size though, the new tibble only consists of 464271 rows, basically a 50 percent reduction. 
@@ -228,13 +228,13 @@ sotu_tf_if %>%
 
 3. Create a keyword dictionary yourself for abortion related issues.
 
-4. Preprocess the corpus (tokenization, removing the stopwords, stemming).
+4. Preprocess the corpus (tokenization, removing the stopwords, stemming etc.).
 
 5. Subset the corpus to only include tweets that contain the keywords you have defined.
 
 6. Plot the evolution of keyword mentions over time. 
 
-7. Create a tf-idf per party to show which words distinguish the parties in their abortion related discourse.
+7. Create a tf-idf per party to show which words are most intrinsic to each party.
 
 8. Plot the tf-idf per party.
 
