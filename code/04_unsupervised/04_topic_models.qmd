@@ -2,12 +2,10 @@
 title: "Topic Modeling in R"
 format: html
 author: "Luis Sattelmayer"
-
 ---
 
-In this script [^1], we are going to take a look at topic modeling. More precisely, we are going to implement model based on the Latent Dirichlet Allocation (LDA) and Structural Topic Models (STM). The advantage of STMs is that they can incorporate metadata into the model, which can be used to explain the topics. 
+In this script, we are going to take a look at topic modeling. More precisely, we are going to implement model based on the Latent Dirichlet Allocation (LDA) and Structural Topic Models (STM). The advantage of STMs is that they can incorporate metadata into the model, which can be used to explain the topics. 
 
-[^1]: This script is inspired by [Felix Lennert](https://felix-lennert.netlify.app/)
 
 Broadly speaking, topic models assume two things: 
 
