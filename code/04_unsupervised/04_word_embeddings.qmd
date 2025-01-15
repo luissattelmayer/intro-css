@@ -6,7 +6,7 @@ format: html
 ---
 
 ```{r}
-needs(wordsalad, tidymodels, tidyverse, textrecipes, data.table, ggrepel, tidytext, text2map, text2vec)
+needs(wordsalad, tidymodels, tidyverse, textrecipes, data.table, ggrepel, tidytext, text2map, text2vec, ggrepel)
 ```
 
 # Word Embeddings in R
@@ -174,6 +174,127 @@ Why does this not work?
 semantic_algebra("Paris", "France", "ugadevinewvs")
 ```
 
+
+
+
+## Investigating Bias
+As I have explained in the lecture, word embeddings have been used to investigate biases in corpora. Let's look at how a simple example of this might look like. I use the gloVe embeddings that I have worked with above. Keep in mind that this is trained on Wikipedia and the Common Crawl dataset. This means that our corpus consists of Wikipedia entries and websites. The biases we are therefore investigating are "only" the biases you can find in these texts. If you were interested in studying for example gender or ethnic biases in the literature as [Laura Nelson](https://www.sciencedirect.com/science/article/pii/S0304422X21000115) has done, you would have to construct this corpus first. If you want to know how gender biases pan out in the newspapers reporting [see Benoît de Courson for a more sophisticated but great approach](https://osf.io/j7ydu), you would need newspaper*S* and train embeddings on this corpus. If you only take one newspaper in your corpus, you will also "only" investigate the gender bias in this specific newspaper.
+
+Below I create a tibble that contains two columns. First `words_describing_men` contains words that clearly designate people as being of the male gender. The same applies for `words_describing_women` and the words this column contains. Next, using the `get_direction()` function of the `text2map` package I feed it an anchor which will be compared to the `glove_wiki` embeddings. This anchor is the tibble I have just created. The columns you want to use as anchors, should be solid juxtapositions. In our case we oppose two genders. Below, I use another example to detect associations between classes where I oppose words that are associated with wealth to words associated with poverty. Lastly, I create an object with different jobs of which I would like to know whether they are closer (in the embedding space and thus more associated in the corpus) to either words describing men or women. The closer they are to one end of the anchors, the harder the bias would be. The `sim2` function that we have seen above gives us the cosine similarity.  
+
+
+```{r}
+gender <- tibble(
+  words_describing_men = c("man", "boy", "grandfather", "gentleman", "husband"),
+  words_describing_women = c("woman", "girl", "grandmother", "lady", "wife")
+)
+
+sem_dir <- get_direction(anchors = gender, wv = glove_wiki)
+
+jobs <- c("secretary", "carpenter", "nurse", "ceo", "doctor")
+
+job_gender_bias <- sim2(sem_dir, glove_wiki[jobs, ], method = "cosine")
+
+bias_tbl <- tibble(direction = job_gender_bias[1, ],
+                   term = colnames(job_gender_bias))
+
+bias_tbl
+```
+Negative values indicate that a word is more closely associated with words describing women, while positive values correspond to more "male" words. 
+
+Below I reproduce the same thing with something relating to class. Admittedly, this is not the best operationalization of class but in a simple binary logic of juxtaposing words associated to wealth and poverty, we can already find something interesting.
+
+```{r}
+# Define socioeconomic anchor pairs
+socioeconomic <- tibble(
+  add = c("rich", "wealthy", "affluent", "luxurious", "elite"),
+  subtract = c("poor", "impoverished", "destitute", "needy", "working-class")
+)
+
+# Calculate the socioeconomic direction
+socio_dir <- get_direction(anchors = socioeconomic, wv = glove_wiki)
+
+# Terms to analyze
+terms <- c("banker", "teacher", "janitor", "entrepreneur", "plumber", "artist")
+
+# Calculate cosine similarity to the socioeconomic direction
+term_socio_bias <- sim2(socio_dir, glove_wiki[terms, ], method = "cosine")
+
+# Create a bias table
+bias_tbl_socio <- tibble(direction = term_socio_bias[1, ],
+                         term = colnames(term_socio_bias))
+
+bias_tbl_socio
+
+```
+
+
+
+```{r}
+# Define socioeconomic anchor pairs
+left_right <- tibble(
+  add = c("socialdemocratic"),
+  subtract = c("conservative")
+)
+
+
+# Calculate the socioeconomic direction
+left_right_dir <- get_direction(anchors = socioeconomic, wv = glove_wiki)
+
+# Terms to analyze
+terms <- c("economy", "social", "environment", "climate", "immigration")
+
+# Calculate cosine similarity to the socioeconomic direction
+term_socio_bias <- sim2(socio_dir, glove_wiki[terms, ], method = "cosine")
+
+# Create a bias table
+bias_tbl_socio <- tibble(direction = term_socio_bias[1, ],
+                         term = colnames(term_socio_bias))
+
+bias_tbl_socio
+```
+
+
+
+## Reducing embedding dimensionality
+Apart from cosine similarities, we are still wrangling with embeddings that are in multidimensional spaces that the human mind is unable to comprehend. For that, we need to reduce the dimensionalities. The simplest way would be to run *Principal Component Analyses* (PCA) on our vectors to reduce them two a two-dimensional -- and thus comprehensible -- space. 
+
+
+Here I use composers, rappers, and jazz musicians to 
+```{r}
+music_query <- c("Bach", "Mozart", "Wagner", "Mahler",
+                 "Kendrick", "Eminem", "Drake", 
+                 "Coltrane", "Davis", "Ellington") |> 
+  str_to_lower()
+
+music_pca <- prcomp(glove_wiki[music_query, ]) |> 
+  pluck("x") |> 
+  as_tibble(rownames = NA) |> 
+  rownames_to_column("name")
+
+music_pca |> 
+  ggplot() +
+  geom_label_repel(aes(PC1, PC2, label = name))
+```
+
+
+```{r}
+job_query <- c("Economist", "Sociologist", "Psychologist", "Anthropologist", 
+               "Historian", "Geographer", "Archeologist", "Theologist", "Pastor",
+               "Priest") |> 
+  str_to_lower()
+
+
+job_pca <- prcomp(glove_wiki[job_query, ]) |> 
+  pluck("x") |> 
+  as_tibble(rownames = NA) |> 
+  rownames_to_column("name")
+
+job_pca |> 
+  ggplot() +
+  geom_label_repel(aes(PC1, PC2, label = name))
+
+```
 
 
 ## How to train embeddings yourself?
