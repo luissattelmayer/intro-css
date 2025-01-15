@@ -21,10 +21,7 @@ df |>
 
 Since the labels in the dataset are coded from 1 to 3, we recode them as 0 and 1, respectively, to make the classification task binary. In practice, such a classification task may not require this many labels to train a model. However, the larger the training set, the longer the model takes to train. For the sake of this example, I randomly reduce the number of labels to 3,000.
 
-
 ```{r}
-
-
 df <- df |> 
     mutate(
         label = case_when(
@@ -71,6 +68,7 @@ Once we have the training and testing sets, we can begin the preprocessing steps
 ```{r}
 economy_recipe <- recipe(label ~ text, data = df_train) |> 
   step_tokenize(text) |>
+    step_stopwords(text) |>
   step_tfidf(text) 
 
 economy_recipe
@@ -79,7 +77,10 @@ economy_dfm <- economy_recipe |>
   prep() |> 
   bake(new_data = NULL)
 
-economy_dfm
+economy_dfm 
+
+
+
 ```
 
 ## Modelling
@@ -267,7 +268,12 @@ econ_rf_resampled <- fit_resamples(
   control = control_resamples(save_pred = TRUE),
   metrics = metric_set(accuracy, recall, precision, f_meas)
 )
+
+#write_rds(econ_rf_resampled, "data/econ_rf_resampled.rds")
+
+#econ_rf_resampled <- read_rds("data/econ_rf_resampled.rds")
 ```
+
 
 ```{r}
 econ_cv_metrics <- collect_metrics(econ_rf_resampled)
@@ -312,13 +318,37 @@ tune_rf_rs <- tune_grid(
 
 tune_rf_rs
 
+#write_rds(tune_rf_rs, "data/tune_rf_rs.rds")
+# tune_rf_rs <- read_rds("data/tune_rf_rs.rds")
+
+
+
+```
+
+Once we have tuned the hyperparameters, we can select the best model based on the F1-score and finalize the workflow with the optimal hyperparameters. The `show_best()` function displays the best model based on the F1-score, and the plot shows the performance of the models with different hyperparameters. Finally, we finalize the workflow with the best hyperparameters and fit the model on the training data with `last_fit()`.
+
+```{r}
+show_best(tune_rf_rs, "f_meas")
+
 collect_metrics(tune_rf_rs) |> 
     ggplot(aes(x = trees, y = mean, color = as.factor(max_tokens))) +
-    geom_line()
+    geom_line() +
+    theme_light()
 
-collect_metrics(tune_rf_rs) |> 
-    filter(mean == max(mean))
+final_rf_wf <- finalize_workflow(econ_wf_rf_tune, select_best(tune_rf_rs, metric = "f_meas"))
 
+final_rf_wf
+
+final_fitted <- last_fit(final_rf_wf, split)
+```
+
+After fitting the model, we can evaluate its performance on the test data using the `collect_predictions()` function to get the predicted class and probabilities. We can then compute the accuracy, recall, precision, and F1-score using the `compute_metrics()` function. Here we obtain a f1 score of 0.883 on the test set, that is actually not better than the one that we had without...
+
+```{r}
+predictions_last_fit <- collect_predictions(final_fitted)
+predictions_last_fit
+
+compute_metrics(predictions_last_fit, truth = label, estimate = .pred_class)
 ```
 
 

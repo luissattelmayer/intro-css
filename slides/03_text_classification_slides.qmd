@@ -59,13 +59,18 @@ editor_options:
 Compare to dictionnary : context of words matters
 -->    
 
-## Let the machine come in {.smaller}
+## Let the machine come in and make it "learn" {.smaller}
 
-- Text classification can be automated with supervised machine learning
+- Text classification can be (partially) automated with supervised machine learning
 - One of the main use cases of text analysis in social sciences
 - "Augment" the human, does not replace it
 - Rather than coding all the texts manually, we can train a model to predict the categories based on a sample that we have coded 
-- *Supervised* : we need a labeled dataset to train the model
+
+## Machine learning : a quick reminder {.smaller}
+
+- Machine learning is about using algorithms to learn from data
+- In contrast to standard statistical methods, machine learning is more about prediction than statistical inference
+- *Supervised learning* : we need a labeled dataset to train the model
 - *Unsupervised* : we do not need a labeled dataset, the model will learn the categories by itself
 - The model will learn the text features that are associated with the categories
 
@@ -275,6 +280,18 @@ Compare to dictionnary : context of words matters
     - No need for extensive preprocessing
     - Transfer-learning paradigm : models have already language knowledge
     - Computationally intensive
+
+## Random forests {.smaller}
+
+- One popular model for text classification, based on decision trees
+- Decision trees are a series of binary decisions based on the input features
+- Random forests are an ensemble of decision trees 
+    - Each tree is trained on a random subset of the training data, with replacement (bagging)
+    - Each tree is trained on a random subset of the features
+    - The final prediction is the majority vote of all the trees
+
+
+![](https://images.squarespace-cdn.com/content/v1/5acbdd3a25bf024c12f4c8b4/1595966947020-S5K62U9VB451NX3KOA9C/Random+Forest.jpg)
 
 # Model evaluation
 
