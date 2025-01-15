@@ -202,7 +202,7 @@ The goal of supervised text classification is to train a model on a small sample
 ```{r}
 # Import UK manifestos
 
-manifestos <- read_csv("data/gbr_manifesto_corpus_clean.csv")
+manifestos <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/gbr_manifesto_corpus_clean.csv")
 ```
 
 
@@ -271,7 +271,7 @@ econ_rf_resampled <- fit_resamples(
 
 #write_rds(econ_rf_resampled, "data/econ_rf_resampled.rds")
 
-#econ_rf_resampled <- read_rds("data/econ_rf_resampled.rds")
+#econ_rf_resampled <- read_rds("https://github.com/luissattelmayer/intro-css/raw/refs/heads/main/data/econ_rf_resampled.rds")
 ```
 
 
@@ -319,7 +319,7 @@ tune_rf_rs <- tune_grid(
 tune_rf_rs
 
 #write_rds(tune_rf_rs, "data/tune_rf_rs.rds")
-# tune_rf_rs <- read_rds("data/tune_rf_rs.rds")
+# tune_rf_rs <- read_rds("https://github.com/luissattelmayer/intro-css/raw/refs/heads/main/data/tune_rf_rs.rds")
 
 
 
