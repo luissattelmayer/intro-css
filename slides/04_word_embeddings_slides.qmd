@@ -204,9 +204,31 @@ editor_options:
 - Dimensonality and embedding might be hard to understand
 
 
+# End of Unsupervised models
 
 ## Named Entity Recognition (NER)
+- **Attention**: NER does not count as an unsupervised approach!
+- They are trained on *labeled* data (human intervention)
 
+- But the method is in my Top 3 of ML methods
+
+
+## Named Entity Recognition (NER) {.smaller}
+- An NLP task to identify and classify entities in text
+- Depends on the NER model but here are the typical entities they detect:
+
+| **Entity Type**  | **Examples**                                     |
+|-------------------|-------------------------------------------------|
+| Person/Names      | John Doe                                        |
+| Organizations     | United Nations, Google                         |
+| Locations         | Paris, Mount Everest                           |
+| Dates/Times       | January 15, 2025                               |
+| Miscellaneous     | Product names, monetary values, percentages    |
+
+
+
+## Named Entity Recignition (NER)
+![](images/04_named_entity_recognition.png)
 
 ## References
 
