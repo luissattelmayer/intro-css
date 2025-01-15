@@ -228,7 +228,7 @@ bias_tbl_socio
 
 ```
 
-
+Let's do the same thing below but with some political terms to investigate to what extent certain policy fields are associated with certain ideological concepts. 
 
 ```{r}
 # Define socioeconomic anchor pairs
@@ -255,6 +255,7 @@ bias_tbl_socio
 ```
 
 
+One of the downsides of using GloVe for this is that we cannot use subwords or n_grams. In these cases, you would have to do something very similar but using the FastText embeddings. 
 
 ## Reducing embedding dimensionality
 Apart from cosine similarities, we are still wrangling with embeddings that are in multidimensional spaces that the human mind is unable to comprehend. For that, we need to reduce the dimensionalities. The simplest way would be to run *Principal Component Analyses* (PCA) on our vectors to reduce them two a two-dimensional -- and thus comprehensible -- space. 
