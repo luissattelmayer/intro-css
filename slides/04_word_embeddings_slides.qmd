@@ -45,7 +45,7 @@ editor_options:
     - dimensionality reduction: what are the most important features?
     
 
-## How does this relate to ML?
+## How does this relate to ML? {.smaller}
 - Unsupervised learning is a crucial part of the machine learning pipeline
     - preprocess data, identify patterns, and reduce the dimensionality of data
 - Unsupervised learning is often used in combination with supervised learning to improve the performance of predictive models
@@ -187,8 +187,8 @@ editor_options:
 - Word embeddings can be used to analyze these biases
 
 ## @garg2018word
-![]
-(images/05_garg_3.png)
+![](images/05_garg_3.png)
+
 ## @garg2018word
 ![](images/05_garg_1.png)
 
@@ -231,8 +231,10 @@ editor_options:
 
 
 
-## Named Entity Recignition (NER)
+## Named Entity Recignition (NER) 
+
 ![](images/04_named_entity_recognition.png)
+
 ## Use Cases {.smaller}
 
 | Entity Type | Entity        |     n |

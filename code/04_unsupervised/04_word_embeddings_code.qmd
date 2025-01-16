@@ -58,9 +58,11 @@ In this example it is a bit easier to work with GloVe. To download the embedding
 Now let's turn to the code. After you have installed the `text2map.pretrained` package, you can download the GloVe embeddings, you can use the following code to download the GloVe embeddings. 
 
 ```{r}
-# remotes::install_gitlab("culturalcartography/text2map.pretrained")
-# library(text2map.pretrained)
-# text2map.pretrained::download_pretrained("vecs_glove300_wiki_gigaword")
+remotes::install_gitlab("culturalcartography/text2map.pretrained")
+text2map.pretrained::download_pretrained("vecs_glove300_wiki_gigaword")
+
+library(text2map.pretrained)
+
 
 
 
@@ -171,7 +173,7 @@ semantic_algebra("sea", "water", "sand")
 Why does this not work?
 
 ```{r}
-semantic_algebra("Paris", "France", "ugadevinewvs")
+semantic_algebra("Paris", "France", "Malo")
 ```
 
 
@@ -233,8 +235,8 @@ Let's do the same thing below but with some political terms to investigate to wh
 ```{r}
 # Define socioeconomic anchor pairs
 left_right <- tibble(
-  add = c("socialdemocratic"),
-  subtract = c("conservative")
+  add = c("SPD"),
+  subtract = c("CDU")
 )
 
 
@@ -268,6 +270,7 @@ music_query <- c("Bach", "Mozart", "Wagner", "Mahler",
                  "Coltrane", "Davis", "Ellington") |> 
   str_to_lower()
 
+
 music_pca <- prcomp(glove_wiki[music_query, ]) |> 
   pluck("x") |> 
   as_tibble(rownames = NA) |> 
@@ -297,6 +300,22 @@ job_pca |>
 
 ```
 
+
+```{r}
+job_query <- c("lion", "tiger", "duck", "dog", "cat") |> 
+  str_to_lower()
+
+
+job_pca <- prcomp(glove_wiki[job_query, ]) |> 
+  pluck("x") |> 
+  as_tibble(rownames = NA) |> 
+  rownames_to_column("name")
+
+job_pca |> 
+  ggplot() +
+  geom_label_repel(aes(PC1, PC2, label = name))
+
+```
 
 ## How to train embeddings yourself?
 As mentioned earlier, you can also train your own word embeddings, which generally involves two approaches. The first is to train embeddings entirely from scratch using your own corpus. The second is to use pre-trained embeddings and fine-tune them on your specific dataset.
@@ -418,14 +437,14 @@ doc_closeness |>
 
 ## Exercises
 
-1. Load the provided GloVe embeddings and choose two sets of new words related to current events (e.g., "AI," "climate," "democracy") and investigate the 10 most similar words. Do these embeddings make sense to what you have given as input?
+1. Load the provided GloVe embeddings and choose new words related to current events (e.g., "AI," "climate," "democracy") and investigate the 10 most similar words. Do these embeddings make sense to what you have given as input?
 
 2. Find interesting examples of doing word algebra using `semantic_algebra()`. Find a set of words for which the algebraic logic fails and explain why this might happen.
 
 
 3. Calculate the gender bias for new professions using the `sim2()` function and discuss the results. Represent them graphically. 
 
-4. Extend the analysis by creating your own bias anchors (e.g., political biases such as "liberal" vs. "conservative" or political parties, sociological conepts) and test the biases of terms.
+4. Extend the analysis by creating your own bias anchors (e.g., political biases such as "liberal" vs. "conservative" or political parties, sociological concepts) and test the biases of terms.
 
 5. Import a corpus from the data folder and embed word embeddings yourself. Find the 10 most similar words to a word of choice in the trained embeddings and compare them to those in `glove_wiki`.
 

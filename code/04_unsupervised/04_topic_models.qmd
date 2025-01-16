@@ -67,12 +67,11 @@ sotu_lda_k10_tidied <- tidy(sotu_lda_k10)
 
 ```{r}
 #| include: false
-sotu_lda_k10_tidied <- read_csv("/Users/luissattelmayer/Desktop/intro-css/data/sotu_lda_k10_tidied.csv")
-```
+sotu_lda_k10_tidied <- read_csv(here::here("data/sotu_lda_k10_tidied.csv"))
 
-```{r}
 sotu_lda_k10_tidied
 ```
+
 
 ```{r}
 top_terms_k10 <- sotu_lda_k10_tidied |>
@@ -149,7 +148,7 @@ First, we will process our data into a format that is required for the `stm` pac
 processed <- textProcessor(sotu_stm$text, metadata = sotu_stm |> select(-text))
 ```
 
-The `processed` object is a list that contains the processed text and metadata. We can now proceed to fit the STM model. Next, we can prepare the documents within the processed object. Words that appear less then three times are omitted with `lower.thresh = 3` and anything beyond 80 times is also omitted with `upper.thresh = 80`.
+The `processed` object is a list that contains the processed text and metadata. We can now proceed to fit the STM model. Next, we can prepare the documents within the processed object. Words that appear less then three times are omitted with `lower.thresh = 5` and anything beyond 80 times is also omitted with `upper.thresh = 80`.
 
 ```{r}
 prepped_docs <- prepDocuments(processed$documents, 
@@ -180,12 +179,14 @@ sotu_content_fit <- stm(documents = prepped_docs$documents,
                         init.type = "Spectral",
                         verbose = FALSE)
 
-write_rds(sotu_content_fit, "data/sotu_content_fit.rds")
+# write_rds(sotu_content_fit, "data/sotu_content_fit.rds")
 ```
 
 ```{r}
 #| include: false
 sotu_content_fit <- read_rds(here::here("data/sotu_content_fit.rds"))
+
+sotu_content_fit
 ```
 
 
@@ -215,6 +216,5 @@ The question is where does this leave us with Topic Models and what should we do
 
 
 
-# Word Embeddings
 
 
