@@ -416,6 +416,22 @@ doc_closeness |>
 ```
 
 
+## Exercises
+
+1. Load the provided GloVe embeddings and choose two sets of new words related to current events (e.g., "AI," "climate," "democracy") and investigate the 10 most similar words. Do these embeddings make sense to what you have given as input?
+
+2. Find interesting examples of doing word algebra using `semantic_algebra()`. Find a set of words for which the algebraic logic fails and explain why this might happen.
+
+
+3. Calculate the gender bias for new professions using the `sim2()` function and discuss the results. Represent them graphically. 
+
+4. Extend the analysis by creating your own bias anchors (e.g., political biases such as "liberal" vs. "conservative" or political parties, sociological conepts) and test the biases of terms.
+
+5. Import a corpus from the data folder and embed word embeddings yourself. Find the 10 most similar words to a word of choice in the trained embeddings and compare them to those in `glove_wiki`.
+
+
+
+
 
 
 
