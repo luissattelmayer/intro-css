@@ -58,9 +58,9 @@ In this example it is a bit easier to work with GloVe. To download the embedding
 Now let's turn to the code. After you have installed the `text2map.pretrained` package, you can download the GloVe embeddings, you can use the following code to download the GloVe embeddings. 
 
 ```{r}
-# remotes::install_gitlab("culturalcartography/text2map.pretrained", force = TRUE)
+# remotes::install_gitlab("culturalcartography/text2map.pretrained")
 # library(text2map.pretrained)
-# text2map.pretrained::download_pretrained("vecs_glove300_wiki_gigaword", force = TRUE)
+# text2map.pretrained::download_pretrained("vecs_glove300_wiki_gigaword")
 
 
 
