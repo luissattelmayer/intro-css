@@ -204,6 +204,9 @@ editor_options:
 ![](images/05_translation.png)
 
 
+## Modern BERT
+
+
 
 ## Issues with LLMs {.smaller}
 - Carbon footprint
@@ -244,6 +247,8 @@ editor_options:
 - [Natural Language Inference]() (NLI)
     - paper by @laurer2024less
     - GitHub tutorial [here](https://github.com/MoritzLaurer/summer-school-transformers-2023/blob/main/4_tune_bert_nli.ipynb)
+
+
 
 
 ## Bibliography

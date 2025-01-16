@@ -186,11 +186,15 @@ editor_options:
     - thus, corpora reflect social structure and dynamics
 - Word embeddings can be used to analyze these biases
 
+## @garg2018word
+![]
+(images/05_garg_3.png)
+## @garg2018word
+![](images/05_garg_1.png)
+
 
 ## @garg2018word
-- Analyze how social attitudes towards women and minorities have changed over time
-
-
+![](images/05_garg_2.png)
 
 ## Shortcomings {.smaller}
 - One step away from BoW
@@ -229,6 +233,27 @@ editor_options:
 
 ## Named Entity Recignition (NER)
 ![](images/04_named_entity_recognition.png)
+## Use Cases {.smaller}
+
+| Entity Type | Entity        |     n |
+|-------------|---------------|-------|
+| PER         | Hitler        | 25119 |
+| PER         | Sohn          | 24207 |
+| PER         | Kohl          | 23472 |
+| PER         | Schröder      | 19127 |
+| PER         | Merkel        | 18093 |
+| PER         | Schmidt       | 15862 |
+| PER         | Helmut Kohl   | 12800 |
+| PER         | Strauß        | 12375 |
+| PER         | Brandt        | 11627 |
+| PER         | Adenauer      | 11134 |
+
+
+## Use Cases
+![](images/04_spiegel_mentions.png)
+
+
+
 
 ## References
 
