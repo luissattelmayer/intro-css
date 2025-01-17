@@ -76,35 +76,8 @@ editor_options:
 - **Biases**: parameters that allow the network to shift the activation function up or down
 - **Activation Function**: decides whether a neuron should "fire" (pass its signal forward) and how strong that signal should be
     - necessary to introduce *non-linearity* into the network and handle complex patterns in the data
-
-
-## Transformer Architecture 
-- Also a NN, state of the art since early 2018
-- "Attention is all you need" [@vaswani2017attention]
-
-- **Attention Mechanism**: 
-    - allows the model to focus on different parts of the input sequence when predicting the next token
-    - crucial for understanding the *context* of a word in a sentence
-
-## Attention in Transformers
-- For a visualization see [here](https://colab.research.google.com/drive/1hXIQ77A4TYS4y3UthWF-Ci7V7vVUoxmQ?usp=sharing)
-- Viz below taken from @clark2019does
-
-![](images/05_attention_mechanism.png)
-
-
-
-
-## Training a transformer
-- After the model was given huge amounts of raw text, it learns *causal language modeling* and *masked language modeling*
-
-![Causally predicting the next word](images/05_causal_modeling.png)
-
-
-## Masked Language Modeling
-
-![](images/05_masked_modeling.png)
-
+    
+    
 ## Transfer learning & fine-tuning {.smaller}
 
 - LLMs are trained on large corpora and thus contain a lot of knowledge about the (written) world
@@ -136,6 +109,32 @@ editor_options:
 
 
 
+## Transformer Architecture 
+- Also a NN, state of the art since early 2018
+- "Attention is all you need" [@vaswani2017attention]
+
+- **Attention Mechanism**: 
+    - allows the model to focus on different parts of the input sequence when predicting the next token
+    - crucial for understanding the *context* of a word in a sentence
+
+## Attention in Transformers
+- For a visualization see [here](https://colab.research.google.com/drive/1hXIQ77A4TYS4y3UthWF-Ci7V7vVUoxmQ?usp=sharing)
+- Viz below taken from @clark2019does
+
+![](images/05_attention_mechanism.png)
+
+
+
+
+## Training a transformer
+- After the model was given huge amounts of raw text, it learns *causal language modeling* and *masked language modeling*
+
+![Causally predicting the next word](images/05_causal_modeling.png)
+
+
+## Masked Language Modeling
+
+![](images/05_masked_modeling.png)
 
 ## 
 
@@ -202,6 +201,9 @@ editor_options:
 
 ## Multilingual Models
 ![](images/05_translation.png)
+
+## BERTopic
+![](images/05_bertopic.png)
 
 
 ## Modern BERT
