@@ -1,0 +1,54 @@
+---
+title: "Using oLlama in R"
+author: "Luis Sattelmayer"
+date: "2025-06-09"
+format: html
+---
+
+This document demonstrates how to use the `rollama` package in R to interact with the oLlama framework. This tutorial is very very strongly inspired by the one of [Johannes B. Gruber](https://jbgruber.github.io/rollama/articles/annotation.html#the-make_query-helper-function) who is also the author of the `rollama` package. 
+
+```{r}
+needs(tidyverse, rollama)
+```
+
+Before we can get started, you will have to install `ollama`. You can do so by following the instructions on the [ollama website](https://ollama.com/download). It will ask you to download a setup file which will then guide you through the local installation. The last step is to run a command in your terminal. 
+
+Once you have done this, you should be able to run the following command to see whether the rollama package can successfully connect to the local ollama installation. 
+
+```{r}
+rollama::ping_ollama()
+```
+
+
+
+Before delving into the details on how to use the models in R, you can also check out the *ollama* package through your Terminal. If the installation was succesful, you can run "ollama"  to see the available commands that come with the ollama software. Here are some of the more important ones: 
+
+- `ollama pull` to load a package
+- `ollama ls` to see the models you have downloaded
+- `ollama run` to run a model
+- `ollama rm [insert the model name here]` to delete a model
+
+The next step is to (down-)load a model. In this example, we will follow Gruber's model choice of `llama3.2:3b-instruct-q8_0`. This is one of the smaller model that is well-suited for quick tests and demonstrations but should also already be able to handle more complex tasks. There are a variety of different models available, which you can find on the [ollama model page](https://ollama.com/search). They differ in size, capabilities, the type of tasks you can use them for and (quite importantly) the developing company. You will download them locally, which implies that you will need enough disk space for the model you choose. The smallest ones are around 1 to 3 GB, while the largest ones can be much bigger. Technically, the larger models should be able to handle more complex tasks, but they are also considerably slower.
+
+
+
+```{r}
+options(rollama_model = "llama3.2:3b-instruct-q8_0")
+```
+
+
+
+
+```{r}
+q <- tribble(
+  ~role,    ~content,
+  "system", "You assign texts into categories. Answer with just the correct category.",
+  "user",   "text: the pizza tastes terrible\ncategories: positive, neutral, negative"
+)
+
+query(q)
+```
+
+
+
+

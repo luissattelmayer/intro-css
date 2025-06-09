@@ -49,6 +49,9 @@ editor_options:
 
 ![](images/05_history_of_ai.png)
 
+## Turing Test 
+![](images/05_turing_test.png)
+
 
 ## 
 
@@ -195,7 +198,8 @@ editor_options:
 
 
 ## Evolution of LLMs
-![](images/05_evolutionary_tree.jpg)
+![An outdated evolution tree](images/05_evolutionary_tree.jpg)
+
 ## Multilinguak Models
 ![](images/05_multilingual_embeddings.jpg)
 
@@ -207,7 +211,22 @@ editor_options:
 
 
 ## Modern BERT
+![](images/05_modern_bert.png)
 
+
+## oLLAMA and open source models {.smaller}
+- [oLLAMA](https://ollama.com/) is a platform for running generative LLMs locally
+- It allows you to run models like Llama 2, Mistral, and others on your own hardware
+- It is open source and can be used to run models *locally* --> no third party involved, great for data protection
+- Tends to be done through JSON calls in Python but you can use the [rollama package](https://github.com/JBGruber/rollama?tab=readme-ov-file) by [Johannes B. Gruber](https://www.johannesbgruber.eu/) 
+
+
+## How many shots? 
+- @weber2023evaluation
+- Zero shot
+- One shot
+- Few shot
+- Chain of Thought
 
 
 ## Issues with LLMs {.smaller}
@@ -215,17 +234,25 @@ editor_options:
     - on quantifying ML's carbon footprint see @lacoste2019quantifying
 
 - LLMs hardly solve the problem of bias in AI
-- GPU dependent
+- GPU dependent (again carbon footprint!)
 - Data privacy:
     - without personal GPU, you will have to think a lot about your data and whether it ought to be protected
     - some corpora (e.g. copyrighted data) should not be seen by third parties (Google Colab)
 - What is the training data? Where does it come from?
-
+- Private Companies like OpenAI or META
+- Hallucination
 
 ## Poli-sci examples
 - Measure populist frames in text: @bonikowski2022politics
 - Anti-elite rhetoric: @licht2024measuring
 - Social groups: @licht2024they
+
+## @bonikowski2022politics
+![](images/00_bonikowski.jpeg)
+
+## @bonikowski2022politics
+![](images/05_bonikowski_metrics.jpeg)
+
 
 ## What other use-cases for Transformers? 
 - This leaves the realm of textual analysis
