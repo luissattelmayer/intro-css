@@ -21,7 +21,7 @@ editor_options:
 ## About us {.smaller}
 
 - Malo Jan
-    - 3rd year PhD student at the CEE working on Climate politics, Legislative politics, Party politics, Quantitative and computational methods
+    - 3rd year PhD student at the CEE working on Climate politics, Party politics, Quantitative and computational methods
     - [malo.jan@sciencespo.fr](malo.jan@sciencespo.fr)
     
 - Luis Sattelmayer
@@ -44,7 +44,7 @@ editor_options:
 | 1 | Intro to CSS + Corpus selection | Web scraping in R  | Coding session |
 | 2 | Manipulating textual data | From text to numbers | Coding session |
 | 3 | Supervised machine learning (SML) for text classification | SML in R | Coding session |
-| 4 | Unsupervised machine learning (UML) | UML in R | Coding session |
+| 4 | Embeddings | Embeddings in R and Python | Coding session |
 | 5 | Large language models (LLMs) | LLMs in Python | Open |
 
 

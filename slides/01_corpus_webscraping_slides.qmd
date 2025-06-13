@@ -133,8 +133,6 @@ bibliography: references.bib
 - But there are many resources online, [here](https://tellingstorieswithdata.com/07-gather.html)
 - Request data from API with [httr2](https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/)
 - Parse Json or XML in R with [jsonlite](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) 
-
-
     
 # Webscraping
 
