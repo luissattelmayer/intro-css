@@ -14,18 +14,29 @@ required_packages <- c(
     "needs",
     "janitor",
     "sotu",
-    "topicmodels",
     "broom",
     "ldatuning",
-    "stm",
     "rvest",
     "stopwords",
     "textrecipes",
     "vip",
+    "SnowballC",
+    "wordsalad",
+    "data.table",
+    "ggrepel",
+    "text2map",
+    "text2vec",
     "gghighlight",
     "naivebayes",
     "caret",
-    "jsonlite"
+    "stm",
+    "broom",
+    "topicmodels",
+    "jsonlite",
+    "ellmer",
+    "ollamar",
+    "rollama",
+    "openai"
 )
 
 # Install any missing packages
