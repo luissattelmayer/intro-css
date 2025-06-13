@@ -1,6 +1,6 @@
 # Introduction to Computational Social Sciences
 
-This is a GitGHub repository of the Inter-Semester course *Introduction to Computational Social Sciences* held at SciencesPo Paris in January 2025. This class has three main goals. First, we want to help students understand how to address data limitations by automatically collecting textual data and choosing the right corpora for their research interests. Second, we aim to expose students to various practical methods for analyzing text quantitatively, enabling them to conduct their own research and potentially prepare for more extensive projects like a Master's thesis. Lastly, we hope that students will improve their programming skills and grasp quantitative reasoning, which can be applied to handle different types of data, not just text.
+This is a GitGHub repository of the Inter-Semester course *Introduction to Computational Social Sciences* held at SciencesPo Paris in June 2025. This class has three main goals. First, we want to help students understand how to address data limitations by automatically collecting textual data and choosing the right corpora for their research interests. Second, we aim to expose students to various practical methods for analyzing text quantitatively, enabling them to conduct their own research and potentially prepare for more extensive projects like a Master's thesis. Lastly, we hope that students will improve their programming skills and grasp quantitative reasoning, which can be applied to handle different types of data, not just text.
 
 
 # Program
