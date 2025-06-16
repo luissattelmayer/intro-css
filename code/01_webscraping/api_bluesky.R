@@ -7,7 +7,7 @@ library(atrrr)      # For accessing Bluesky API data
 
 # Authenticate with the Bluesky API using your account.
 # This will redirect you to a page where you copy the app password.
-#atrrr::auth("malojan.bsky.social")
+#atrrr::auth("malojan.bsky.social") # Here you should replace with your own Bluesky account handle
 
 # Retrieve all posts ("skeets") authored by the account "lesecologistes.fr"
 greens_bluesky <- get_skeets_authored_by(actor = "lesecologistes.fr", parse = TRUE)
