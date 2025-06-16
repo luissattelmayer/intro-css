@@ -45,10 +45,10 @@ editor_options:
 | 2 | Manipulating textual data | From text to numbers | Coding session |
 | 3 | Supervised machine learning (SML) for text classification | SML in R | Coding session |
 | 4 | Embeddings | Embeddings in R and Python | Coding session |
-| 5 | Large language models (LLMs) | LLMs in Python | Open |
+| 5 | Large language models (LLMs) | LLMs in Python & R | Open |
 
 
-## Course material {.smaller}
+## Course material
 
 - Slides and code will be available on the course's [Github repository](https://github.com/luissattelmayer/intro-css/tree/main)
 - If you are not familiar with Git and Github, have a look at this [tutorial](https://happygitwithr.com/)
@@ -75,22 +75,13 @@ CSS from two main developments :
     - Data on the web : digitization of text, historical archives, administrative records, open data
     - Data from the web : social media, websites
     - Unstructured data : text, images, videos, not produced by researchers
+    - Collecting population rather than sample
+
 - New methods and computing power 
-    - More powerful computers and hardware
+    - More powerful computers and hardware (mostly GPUs)
     - More powerful algorithms, methods, models, IA
-    
-## More data, computing power and methods {.smaller}
+    - Allows to train more complex models: advent of LLMs
 
-- New data sources
-- Unstructured data: not produced by researchers (such as survey, qualitative interviews)
-- Collecting population rather than sample
-- Allows to train more complex models
-
-:::{.fragment}
-- Development of new algorithms, models in Natural Language Processing
-- Rise of LLMs
-- GPU
-:::
 
 ## Developments in political science {.smaller}
 
@@ -98,12 +89,12 @@ CSS from two main developments :
 - But really booming over the last few years with advances in AI allowing to perform more complex analysis
 - Even more recent developments : 
     - Muiltilingual text analysis
-    - Image, Video as data, multimodal analysis
+    - Image, Video as data, *multimodal* analysis
     - Generative language
 
 ## Six principles for CSS [@grimmer2022text] {.smaller}
 1. Social science theories and substantive knowledge are essential for research design. 
-2. Text analysis does not replace humans -- it augments them (see also the great paper by @do2024augmented)
+2. Text analysis does not replace humans -- it augments them (see also @do2024augmented)
 3. Building, refining, and testing social science theories requires iteration and cumulation. 
 4. Text analysis methods distill generalizations from language. 
 5. The best method depends on the task. 
