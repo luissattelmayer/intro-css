@@ -30,6 +30,7 @@ timelines <- read_csv("https://www.dropbox.com/s/dpu5m3xqz4u4nv7/tweets_house_re
 
 timelines
 ```
+
 ```{r}
 # Remove links and mentions from the tweets
 
