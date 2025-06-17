@@ -274,6 +274,7 @@ unsg_df |>
     summarise(
         climate_dict_two = mean(str_detect(text, "climate|global warming|greenhouse gas"), na.rm = T),
         climate_dict_one = mean(str_detect(text, "climate change|global warming|greenhouse gas"), na.rm = T),
+        climate_dict_three = mean(str_detect(text, "climate change|climate emergency|climate crisis|global warming|greenhouse gas"))
     ) |>
     pivot_longer(
         cols = c(climate_dict_one, climate_dict_two),
@@ -282,7 +283,7 @@ unsg_df |>
     ) |>
     ggplot(aes(year, prop, color = Dictionnary)) +
     geom_line(size = 1)  +
-    scale_color_manual(values = c("#0038B8", "#007A33"), labels = c("climate*|global warming|greenhouse gas", "climate change|global warming|greenhouse gas")) +
+    scale_color_manual(values = c("#0038B8", "#007A33"), labels = c("climate change|global warming|greenhouse gas", "climate|global warming|greenhouse gas")) +
     theme_light() +
     scale_x_continuous("Year") +
     scale_y_continuous("Proportion of press releases") +
