@@ -89,7 +89,7 @@ cos_sim <- sim2(
   enframe(name = "token", value = "cosine_sim") |> 
   mutate(cosine_sim = cosine_sim[,1]) |> 
   arrange(-cosine_sim) |> 
-  slice_max(cosine_sim, n = 10)
+  slice_min(cosine_sim, n = 10)
 
 # give lowest cosine_sim
 
@@ -196,6 +196,7 @@ sem_dir <- get_direction(anchors = gender, wv = glove_wiki)
 jobs <- c("secretary", "carpenter", "nurse", "ceo", "doctor")
 
 job_gender_bias <- sim2(sem_dir, glove_wiki[jobs, ], method = "cosine")
+
 
 bias_tbl <- tibble(direction = job_gender_bias[1, ],
                    term = colnames(job_gender_bias))

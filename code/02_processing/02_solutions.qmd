@@ -36,7 +36,8 @@ timelines
 
 timelines <- timelines |> 
   mutate(text = str_remove_all(text, "http\\S+")) |> 
-  mutate(text = str_remove_all(text, "@\\S+"))
+  mutate(text = str_remove_all(text, "@\\S+"),
+         text = str_remove_all(text, "#"))
 
 timelines
 ```
