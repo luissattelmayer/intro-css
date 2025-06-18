@@ -282,12 +282,7 @@ editor_options:
 - Parallelization
 - A task that would take days with a CPU can be done in hours with a GPU
 - This does mean that working with LLMs...
-    - ... requires patience, time, and unfortunately computational ressources
-
-
-
-
-
+    - ... requires patience, time, and unfortunately computational resources
 
 ## Evolution of LLMs
 ![An outdated evolution tree](images/05_evolutionary_tree.jpg)
