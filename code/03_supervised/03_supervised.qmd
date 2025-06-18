@@ -8,6 +8,7 @@ The following script introduces supervised text classification in R. To do so, w
 
 ```{r}
 needs(tidymodels, tidyverse, tidytext, textrecipes, vip)
+
 ```
 
 To illustrate the process, we use a dataset from Benoit et al. (2016) that was crowdsourced to classify english party manifestos being about economy policy, social policy or other. The corpus contains around 16000 natural sentences from British Conservative, Labour and Liberal democrats manifestos between 1987 and 2010. We focus here on a binary classification task about the speech being about economic policy or not. 
@@ -49,7 +50,11 @@ set.seed(123)
 
 split <- initial_split(df, prop = 0.8, strata = label)
 
+split
+
 df_train <- training(split)
+
+df_train
 df_test <- testing(split)
 
 df_train |> 
@@ -66,10 +71,10 @@ df_test |>
 Once we have the training and testing sets, we can begin the preprocessing steps to create numerical representations of the text data for input into a supervised model. In tidymodels, we need to create a "recipe" that specifies the preprocessing steps to be applied to the data. The recipe is created using the `recipe()` function, where we specify the dependent variable (label) and the independent variable (text). We can then add various preprocessing steps, such as tokenization with step_tokenize. Many preprocessing steps are available and can be combined, such as removing stopwords, retaining only the most frequent words, lemmatization, and more.  These different options can be seen [here](https://cran.r-project.org/web/packages/textrecipes/textrecipes.pdf). Eventually, we add a final step to convert the text data into a numerical representation. Here we use the term frequency-inverse document frequency (tf-idf) method with `step_tfidf`. Alternatives include using only word counts with `step_tf()` or using pre-trained word embeddings with `step_word_embeddings()`. We can explore the output of the recipe using the `prep()` and `bake()` functions that gives us a document-term matrix with the tf-idf values for each word in the text data.
 
 ```{r}
-economy_recipe <- recipe(label ~ text, data = df_train) |> 
-  step_tokenize(text) |>
+economy_recipe <- recipe(label ~ text, data = df_train) |>
+    step_tokenize(text) |>
     step_stopwords(text) |>
-  step_tfidf(text) 
+    step_tf_df(text) 
 
 economy_recipe
 
@@ -134,8 +139,8 @@ preds_economy_rf <- augment(economy_model_rf, df_test)
 
 # Exemple of a prediction
 preds_economy_rf |> 
-    slice_sample(n =1) |> 
-    select(text, label, .pred_class, .pred_1)
+    slice_sample(n =5) |> 
+    select(text, label, .pred_class, .pred_1) |> view()
 ```
 
 We can have a first glimpse on the quality of our predictions by looking at the confusion matrix that report the number of true positives, true negative, false positives and false negatives. 
@@ -145,9 +150,25 @@ We can have a first glimpse on the quality of our predictions by looking at the 
 conf_mat <- conf_mat(preds_economy_rf, truth = label, estimate = .pred_class)
 
 conf_mat
+
+preds_economy_rf |> 
+    count(label, .pred_class)
+
+preds_economy_rf <- preds_economy_rf |> mutate(
+    label = fct_relevel(label, c("1", "0")),
+    .pred_class = fct_relevel(.pred_class, c("1", "0"))
+)
+
 ```
 
 Yet, the confusion matrix is not enough to evaluate the model. We can compute several metrics such as accuracy, recall, precision, and F1-measure to get a better understanding of the model's performance. These metrics are computed using the `metric_set()` function from the `yardstick` package.
+
+
+```{r}
+preds_economy_rf |> 
+    select(.pred_class, label) 
+
+```
 
 ```{r}
 # Create a function to compute multiple metrics
@@ -186,7 +207,7 @@ preds_economy_rf <- preds_economy_rf |>
         pred_keywords = case_when(
             str_detect(text, str_c(econ_keywords, collapse = "|")) ~ 1,
             .default = 0
-        ) |> as.factor()
+        ) |> as.factor() |> fct_relevel(c("1", "0")) # Relevel to match the label factor
     )
 
 preds_economy_rf |> 
@@ -211,8 +232,16 @@ manifestos <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-
 
 preds_manifesto <- augment(economy_model_rf, manifestos)
 
+preds_manifesto |> head(10) |> view()
+
 preds_manifesto |> 
-    count(.pred_class)
+    filter(partyname %in% c("Lab", "Tories", "Lib Dems", "SNP", "Green")) |> 
+    group_by(partyname) |>
+    count(.pred_class) |> 
+    mutate(prop =n/sum(n)*100) |> 
+    filter(.pred_class == 1)
+
+
 ```
 
 
