@@ -170,6 +170,15 @@ semantic_algebra("paris", "france", "germany")
 semantic_algebra("sea", "water", "sand")
 ```
 
+```{r}
+semantic_algebra("italy", "germany", "hitler")
+```
+
+```{r}
+semantic_algebra("germany", "japan", "sushi")
+```
+
+
 Why does this not work?
 
 ```{r}

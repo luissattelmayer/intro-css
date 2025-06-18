@@ -79,38 +79,6 @@ editor_options:
 - **Biases**: parameters that allow the network to shift the activation function up or down
 - **Activation Function**: decides whether a neuron should "fire" (pass its signal forward) and how strong that signal should be
     - necessary to introduce *non-linearity* into the network and handle complex patterns in the data
-    
-    
-## Transfer learning & fine-tuning {.smaller}
-
-- LLMs are trained on large corpora and thus contain a lot of knowledge about the (written) world
-- This knowledge can be *transferred* to other similar and related tasks
-- Transfer learning adds a new layer of neural network on top of the pre-trained model
-
-
-:::{.fragment}
-- *Fine-tuning* a pre-trained model on a specific task is often faster and requires less data than training a model from scratch
-- The model is fine-tuned on a smaller dataset to adapt to the specifics of the new task
-- For fine-tuning, The weights within the model are adjusted to the new task
-:::
-
-## Transfer learning
-![](images/05_transfer_learning.png)
-
-
-
-## From pretrained models...
-![](images/05_pretrained_model.png)
-
-
-## ... to finetuning
-![](images/05_finetuned_model.png)
-
-## Finetuning visualized 
-
-![@do2024augmented](images/03_do_supervised.png)
-
-
 
 ## Transformer Architecture {.smaller}
 - Also a NN, state of the art since early 2018
@@ -143,13 +111,13 @@ editor_options:
 ## Transformer Architecture {.smaller}
 - **Encoder**: 
     - processes the input sequence and generates a contextualized representation of each token
-    - consists of multiple layers, each with attention and feedforward neural-network sub-layers
+    - multiple layers, each with attention and feedforward neural-network sub-layers
     - captures relationships between words in the input sequence
 
 - **Decoder**:
     - generates the output sequence based on the encoder's representation
-    - also consists of multiple layers, with additional attention mechanisms to focus on the encoder's output
-    - used in tasks like machine translation, text generation/generative AI, etc.
+    - multiple layers, with additional attention mechanisms to focus on the encoder's output
+    - machine translation, text generation/generative AI, etc.
 
 - Think about it like this: 
     - Attention: "How does this word relate to the others in the sentence?"
@@ -174,7 +142,7 @@ editor_options:
 ## Transfomer Architecture {.smaller}
 ::::{.columns}
 ::: {.column width="50%"}
-![](images/05_transformer_01.png)
+![](images/05_transformer_02.png)
 :::
 
 ::: {.column width="50%"}
@@ -189,7 +157,7 @@ editor_options:
 ## Transfomer Architecture {.smaller}
 ::::{.columns}
 ::: {.column width="50%"}
-![](images/05_transformer_02.png)
+![](images/05_transformer_03.png)
 :::
 ::: {.column width="50%"}
 - **Decoder**:
@@ -198,6 +166,28 @@ editor_options:
     - used in tasks like machine translation, text generation/generative AI, etc.
 :::
 ::::
+
+## Token Prediction with Softmax {.smaller}
+
+- After the transformer processes input tokens, it produces a *logit vector* (unnormalized scores but not log-odds like in logistic regressions) for every possible next token in the vocabulary
+- These logits are passed through a **softmax** function: $\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$
+
+- This turns the logits into a *probability distribution* over the model's learned  vocabulary
+- The model then:
+    - Picks the most likely token (*argmax*)  
+    - Or samples based on the probabilities (e.g. *temperature*)
+- Softmax ensures that all output probabilities are positive and sum to 1 
+    - key step for **generative models** (aka Decoder models trained with causal language modeling)
+
+
+
+
+## Softmax
+![](images/05_softmax_1.png)
+
+## Softmax
+![](images/05_softmax_2.png)
+
 
 
 ## Training a transformer {.smaller}
@@ -209,31 +199,59 @@ editor_options:
 
 ![](images/05_masked_modeling.png)
 
+## BERT {.smaller}
+- **B**idirectional **E**ncoder **R**epresentations from **T**ransformers
+    - masked language model for NLP tasks
+    - only uses encoder part of the architecture
+    - bi-directional attention, meaning it looks at the context from both the left and right sides of a word
+
+- **RoBERTa**: Removed NSP and trained on larger datasets with more robust techniques
+- **DeBERTa**: Enhanced BERT with disentangled attention and enhanced mask decoder
+- **DistilBERT**: Smaller and faster version of BERT
+- and many other variants trained on different languages, tasks, etc 
+    - or fine-tuned on huggingface
 
 
-## Token Prediction with Softmax {.smaller}
+## BERT vs. GPT {.smaller}
 
-- After the transformer processes input tokens, it produces a *logit vector* (unnormalized scores but not log-odds like in logistic regressions) for every possible next token in the vocabulary
-- These logits are passed through a **softmax** function:
-
-
-$\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$
-
-- This turns the logits into a *probability distribution* over the vocabulary
-- The model then:
-    - Picks the most likely token (*argmax*)  
-    - Or samples based on the probabilities (e.g. *temperature*)
-
-- Softmax ensures that all output probabilities are positive and sum to 1     — key step for **generative models** (aka Decoder models trained with causal language modeling)
+|    | **BERT**                             | **GPT**                             |
+|-------------------|--------------------------------------|--------------------------------------|
+| **Type**         | Encoder-only                        | Decoder-only                        |
+| **Training**    | Masked Language Modeling (MLM)       | Causal Language Modeling (CLM)      |
+| **Direction**    | Bi-directional                      | Uni-directional                     |
+| **Task Focus**   | Language understanding              | Language generation                 |
+| **Strength**     | Deep sentence/context understanding | Coherent and fluent text generation |
 
 
 
+## Transfer learning & fine-tuning {.smaller}
 
-## Softmax
-![](images/05_softmax_1.png)
+- LLMs are trained on large corpora and thus contain a lot of knowledge about the (written) world
+- This knowledge can be *transferred* to other similar and related tasks
+- Transfer learning adds a new layer of neural network on top of the pre-trained model
 
-## Softmax
-![](images/05_softmax_2.png)
+
+:::{.fragment}
+- *Fine-tuning* a pre-trained model on a specific task is often faster and requires less data than training a model from scratch
+- The model is fine-tuned on a smaller dataset to adapt to the specifics of the new task
+- For fine-tuning, The weights within the model are adjusted to the new task
+:::
+
+## Transfer learning
+![](images/05_transfer_learning.png)
+
+
+
+## From pretrained models...
+![](images/05_pretrained_model.png)
+
+
+## ... to finetuning
+![](images/05_finetuned_model.png)
+
+## Finetuning visualized 
+
+![@do2024augmented](images/03_do_supervised.png)
 
 
 
@@ -269,26 +287,6 @@ $\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$
 
 
 
-## BERT {.smaller}
-- **B**idirectional **E**ncoder **R**epresentations from **T**ransformers
-    - masked language model for NLP tasks
-    - only uses encoder part of the architecture
-    - bi-directional attention, meaning it looks at the context from both the left and right sides of a word
-
-- **RoBERTa**: Removed NSP and trained on larger datasets with more robust techniques
-- **DistilBERT**: Smaller and faster version of BERT
-- and other variants trained on different languages, tasks, etc 
-
-
-## BERT vs. GPT {.smaller}
-
-|    | **BERT**                             | **GPT**                             |
-|-------------------|--------------------------------------|--------------------------------------|
-| **Type**         | Encoder-only                        | Decoder-only                        |
-| **Training**    | Masked Language Modeling (MLM)       | Causal Language Modeling (CLM)      |
-| **Direction**    | Bi-directional                      | Uni-directional                     |
-| **Task Focus**   | Language understanding              | Language generation                 |
-| **Strength**     | Deep sentence/context understanding | Coherent and fluent text generation |
 
 
 ## Evolution of LLMs
@@ -310,45 +308,78 @@ $\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$
 
 ## oLLAMA and open source models {.smaller}
 - [oLLAMA](https://ollama.com/) is a platform for running generative LLMs locally
-- It allows you to run models like Llama 2, Mistral, and others on your own hardware
+- It allows you to run models like Llama, Mistral, DeepSeek, and others on your own hardware
 - It is open source and can be used to run models *locally* --> no third party involved, great for data protection
-- Tends to be done through JSON calls in Python but you can use the [rollama package](https://github.com/JBGruber/rollama?tab=readme-ov-file) by [Johannes B. Gruber](https://www.johannesbgruber.eu/) 
+- Tends to be done through JSON calls in Python
+    - but you can use the [rollama package](https://github.com/JBGruber/rollama?tab=readme-ov-file) by [Johannes B. Gruber](https://www.johannesbgruber.eu/) 
+    - or [ellmer](https://ellmer.tidyverse.org/) developed by tidyverse creator [Hadley Wickham](https://hadley.nz/)
+
+## When to use what?
+![@weber2023evaluation](images/05_decision_tree_gen_ai.png)
 
 
 ## How many shots? 
-- @weber2023evaluation
-- Zero shot
-- One shot
-- Few shot
-- Chain of Thought
+- **Zero shot**: the model is asked to perform a task without any examples
+- **One shot**: the model is given one example of the task
+- **Few shot**: the model is given a few examples of the task
+- **Chain of Thought**: the model is asked to think step by step before answering
+    - reasoning output can be used to tweak the final prompt 
+
+- see also: @weber2023evaluation
+
+## How many shots? {.smaller}
+![@weber2023evaluation](images/05_prompting_strategies.png)
 
 
-## Issues with LLMs {.smaller}
-- Carbon footprint
+## LLMs and the environment
+- Carbon footprint of LLMs is quite frankly huge and bad
     - on quantifying ML's carbon footprint see @lacoste2019quantifying
+    - a [Drive](https://docs.google.com/spreadsheets/d/1UCsgAqgonjpP9uPVyssXU0VE0G6Fs7ydxt_mmrpcd1o/edit?usp=drive_link) with some ressources (thanks to [Sean Palicki](https://github.com/seankellyhp))
+    - a [Dashboard](https://sfznkm-isaac0bravo.shinyapps.io/main_app/) with carbon emission comparisons per tasks and model types
+    - [emissionTrackerR](https://github.com/IsaacBravo/emissionTrackerR)
 
-- LLMs hardly solve the problem of bias in AI
-- GPU dependent (again carbon footprint!)
+## Cost of sentiment analysis {.smaller}
+
+![Palicki et al. forthcoming](images/05_llm_environment_palicki_01.png)
+
+## Cost of classification {.smaller}
+![Palicki et al. forthcoming](images/05_llm_environment_palicki_02.png)
+
+## The worst polluter {.smaller}
+![Palicki et al. forthcoming](images/05_llm_environment_palicki_03.png)
+
+## NER and costs {.smaller}
+![Palicki et al. forthcoming](images/05_llm_environment_palicki_04.png)
+
+## F1 adjusted by carbon footprint {.smaller}
+![Palicki et al. forthcoming](images/05_llm_environment_palicki_05.png)
+
+## More problems with LLMs {.smaller}
 - Data privacy:
     - without personal GPU, you will have to think a lot about your data and whether it ought to be protected
-    - some corpora (e.g. copyrighted data) should not be seen by third parties (Google Colab)
+    - some corpora (e.g. copyrighted data) should not be seen by third parties (Google Colab, OpenAI etc)
+
 - What is the training data? Where does it come from?
+    - do we have enough statistical power to make claims about validation metrics?
+- Leakage of training data
+    - e.g. if the model was trained on a specific dataset, it might "leak" information from that dataset into its predictions 
 - Private Companies like OpenAI or META
 - Hallucination
+- Geo-politics
 
 ## Poli-sci examples
 - Measure populist frames in text: @bonikowski2022politics
 - Anti-elite rhetoric: @licht2024measuring
 - Social groups: @licht2024they
 
-## @bonikowski2022politics
+## @bonikowski2022politics {.smaller}
 ![](images/00_bonikowski.jpeg)
 
 ## @bonikowski2022politics
 ![](images/05_bonikowski_metrics.jpeg)
 
 
-## What other use-cases for Transformers? 
+## What other use-cases for LLMs? 
 - This leaves the realm of textual analysis
 - Image generation
     - Dall-E
@@ -359,6 +390,20 @@ $\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$
     - [Whisper](https://github.com/openai/whisper)
 - Machine translation
     - [NMT](https://github.com/UKPLab/EasyNMT)
+    
+## Silicon Sampling
+- Idea of replacing humans with silicon samples generated by LLMs
+    - subjects in agent-based models [@gao2024large]
+    - opinion survey respondents [@argyle2023out; @horton2023large]
+
+- For an opposing view see @boelaert2024machine
+
+## Beyond text {.smaller}
+![Share of women in parties visual communication, detected using automated models (Jan, Piolat, and Sattelmayer ongoing)](images/05_gendered_parties.png)
+
+
+## Beyond text {.smaller}
+![Jan, Piolat, and Sattelmayer ongoing](images/05_gendered_countries.png)
 
 ## Whisper
 - For the GitHub tutorial click [here](https://github.com/openai/whisper)
