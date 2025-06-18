@@ -72,9 +72,9 @@ editor_options:
 
 ## Structural Topic Modeling
 - Structural Topic Modeling (STM) [@roberts2014structural] is an extension of LDA that incorporates document metadata
-- It inclusion of covariates in the model, which can help to explain the relationship between topics and document metadata
+- Allows the inclusion of covariates in the model, which can help to explain the relationship between topics and document metadata
 
-- If you have when metadata critical to your research questions (understanding how topics vary across groups, over time, or in relation to specific attributes)
+- If you have metadata critical to your research questions (understanding how topics vary across groups, over time, or in relation to specific attributes)
 
 
 

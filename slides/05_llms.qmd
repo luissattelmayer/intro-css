@@ -106,42 +106,136 @@ editor_options:
 ## ... to finetuning
 ![](images/05_finetuned_model.png)
 
-## Finetuning visualized [@do2024augmented]
+## Finetuning visualized 
 
-![](images/03_do_supervised.png)
+![@do2024augmented](images/03_do_supervised.png)
 
 
 
-## Transformer Architecture 
+## Transformer Architecture {.smaller}
 - Also a NN, state of the art since early 2018
 - "Attention is all you need" [@vaswani2017attention]
 
 - **Attention Mechanism**: 
     - allows the model to focus on different parts of the input sequence when predicting the next token
     - crucial for understanding the *context* of a word in a sentence
+    - *context size*: the number of tokens the model can consider at once
 
-## Attention in Transformers
+## Attention Mechanism {.smaller}
+- **Self-Attention**: 
+    - each word in a sentence attends to every other word
+    - computes a weighted representation of the input sequence in relation to all other tokens
+    - allows the model to capture relationships between words beyond their position in the sequence
+
+- **Multi-Head Attention**:
+    - multiple attention mechanisms run in parallel
+    - each head learns different aspects of the relationships between words (grammar, semantics, syntax)
+    - outputs are concatenated and linearly transformed to produce the final representation
+
+- Attention mechanism directly and efficiently capture long-range dependencies and context --> crucial for understanding dynamic relationships in language 
+
+## Attention in Transformers {.smaller}
 - For a visualization see [here](https://colab.research.google.com/drive/1hXIQ77A4TYS4y3UthWF-Ci7V7vVUoxmQ?usp=sharing)
-- Viz below taken from @clark2019does
 
-![](images/05_attention_mechanism.png)
-
+![Viz below taken from @clark2019does](images/05_attention_mechanism.png)
 
 
+## Transformer Architecture {.smaller}
+- **Encoder**: 
+    - processes the input sequence and generates a contextualized representation of each token
+    - consists of multiple layers, each with attention and feedforward neural-network sub-layers
+    - captures relationships between words in the input sequence
 
-## Training a transformer
+- **Decoder**:
+    - generates the output sequence based on the encoder's representation
+    - also consists of multiple layers, with additional attention mechanisms to focus on the encoder's output
+    - used in tasks like machine translation, text generation/generative AI, etc.
+
+- Think about it like this: 
+    - Attention: "How does this word relate to the others in the sentence?"
+    - Feedforward: "How do I refine the representation of this word, now that I know the context?"
+
+## Transfomer Architecture {.smaller}
+::::{.columns}
+::: {.column width="50%"}
+![](images/05_transformer_01.png)
+:::
+
+::: {.column width="50%"}
+- **Initial Embeddings**: 
+    - input tokens are converted into dense vectors (embeddings)
+    - these embeddings capture semantic information about the words
+    - positional encodings are added to the embeddings to retain information about the order of tokens in the sequence
+:::
+
+::::
+
+
+## Transfomer Architecture {.smaller}
+::::{.columns}
+::: {.column width="50%"}
+![](images/05_transformer_01.png)
+:::
+
+::: {.column width="50%"}
+- **Encoder**: 
+    - processes the input sequence and generates a contextualized representation of each token
+    - consists of multiple layers, each with attention and feedforward neural-network sub-layers
+    - captures dynamic relationships between words in the input sequence
+:::
+
+::::
+
+## Transfomer Architecture {.smaller}
+::::{.columns}
+::: {.column width="50%"}
+![](images/05_transformer_02.png)
+:::
+::: {.column width="50%"}
+- **Decoder**:
+    - generates the output sequence based on the encoder's representation
+    - also consists of multiple layers, with additional attention mechanisms to focus on the encoder's output
+    - used in tasks like machine translation, text generation/generative AI, etc.
+:::
+::::
+
+
+## Training a transformer {.smaller}
 - After the model was given huge amounts of raw text, it learns *causal language modeling* and *masked language modeling*
 
 ![Causally predicting the next word](images/05_causal_modeling.png)
 
-
-## Masked Language Modeling
+## Masked Language Modeling 
 
 ![](images/05_masked_modeling.png)
 
-## 
 
-![](images/05_transformer_architecture.png)
+
+## Token Prediction with Softmax {.smaller}
+
+- After the transformer processes input tokens, it produces a *logit vector* (unnormalized scores but not log-odds like in logistic regressions) for every possible next token in the vocabulary
+- These logits are passed through a **softmax** function:
+
+
+$\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$
+
+- This turns the logits into a *probability distribution* over the vocabulary
+- The model then:
+    - Picks the most likely token (*argmax*)  
+    - Or samples based on the probabilities (e.g. *temperature*)
+
+- Softmax ensures that all output probabilities are positive and sum to 1     — key step for **generative models** (aka Decoder models trained with causal language modeling)
+
+
+
+
+## Softmax
+![](images/05_softmax_1.png)
+
+## Softmax
+![](images/05_softmax_2.png)
+
+
 
 ## 
 
@@ -200,7 +294,7 @@ editor_options:
 ## Evolution of LLMs
 ![An outdated evolution tree](images/05_evolutionary_tree.jpg)
 
-## Multilinguak Models
+## Multilingual Models
 ![](images/05_multilingual_embeddings.jpg)
 
 ## Multilingual Models
@@ -276,8 +370,6 @@ editor_options:
 - [Natural Language Inference]() (NLI)
     - paper by @laurer2024less
     - GitHub tutorial [here](https://github.com/MoritzLaurer/summer-school-transformers-2023/blob/main/4_tune_bert_nli.ipynb)
-
-
 
 
 ## Bibliography
