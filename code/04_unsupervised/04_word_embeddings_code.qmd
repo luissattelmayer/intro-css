@@ -83,7 +83,7 @@ The `text2vec` package provides a function to calculate the cosine similarity be
 ```{r}
 cos_sim <- sim2(
   x = glove_wiki,
-  y = glove_wiki["school", , drop = FALSE],
+  y = glove_wiki["ai", , drop = FALSE],
   method = "cosine"
 ) |> 
   enframe(name = "token", value = "cosine_sim") |> 
@@ -450,7 +450,6 @@ doc_closeness |>
 1. Load the provided GloVe embeddings and choose new words related to current events (e.g., "AI," "climate," "democracy") and investigate the 10 most similar words. Do these embeddings make sense to what you have given as input?
 
 2. Find interesting examples of doing word algebra using `semantic_algebra()`. Find a set of words for which the algebraic logic fails and explain why this might happen.
-
 
 3. Calculate the gender bias for new professions using the `sim2()` function and discuss the results. Represent them graphically. 
 

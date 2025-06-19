@@ -37,18 +37,66 @@ options(rollama_model = "llama3.2:3b-instruct-q8_0")
 ```
 
 
+```{r}
+econ <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/tweets_annotations.csv") |> 
+    slice(1:5)
 
+econ
+```
+
+The `rollama` package provides a convenient way to create queries for the models. The `make_query()` function allows you to specify the text you want to analyze, the prompt for the model, and any additional system instructions. 
+
+The `text` argument specifies the text you want to analyze, which in this case is the `text` column of the `econ` data frame. The `prompt` argument is a string that will be used as a prompt for the model. Here I simply tell the model what output categories I want as labels. The `template` argument allows you to specify how the input should be formatted. Here this means that the model will first see the prefix, followed by the text, after which we insert a paragraph and then the prompt. The `system` argument provides the actual instructions to the model, and the `prefix` argument specifies a prefix for the text to classify.
+
+You can see that I am not giving the machine any examples of what the categories mean or what some ground-truth examples would look like. This here is purely a zero-shot classification task, which means that the model will have to rely on its pre-trained knowledge to classify the tweets.
 
 ```{r}
-q <- tribble(
-  ~role,    ~content,
-  "system", "You assign texts into categories. Answer with just the correct category.",
-  "user",   "text: the pizza tastes terrible\ncategories: positive, neutral, negative"
+econ_queries <- make_query(
+  text = econ$text,
+  prompt = "Categories: 0, 1",
+  template = "{prefix}{text}\n{prompt}",
+  system = "Classify this tweet based on whether it speaks about economic issues or not. Don't give any more comments.",
+  prefix = "You are a helpful and concise assistant that classifies tweets into two categories: economic issues (1) and non-economic issues (0). Please classify the following tweet:\n\n"
 )
-
-query(q)
 ```
 
 
+Let's now create a new column in the `econ` data frame that contains the model's annotations for each tweet. The `query()` function will send the custom `econ_queries` task to the model and return the results. The `verbose = TRUE` argument will print out the progress of the queries, and `output = "text"` specifies that we want the output in text format. The `model_params` argument allows us to set specific parameters for the model, such as the `seed` for reproducibility and the `temperature` for controlling randomness in the output. Setting a consistent seed, and a temperature of 0 will ensure that the model's output is deterministic, meaning that it will produce the same results each time you run the code. Great for reproducibility!
+
+```{r}
+econ$annotation <- query(econ_queries, verbose = TRUE, output = "text",  model_params = list(seed = 2507, temperature = 0))
+econ
+```
+
+```{r}
+# calculate F1 scores
+MLmetrics::F1_Score(y_pred = econ$annotation, y_true = econ$label)
+```
+
+If you wanted to put this into a tidy workflow...
+
+```{r}
+econ_full <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/tweets_annotations.csv")
+
+econ_llama_annotated <- econ_full |>
+  mutate(
+    annotation = make_query(
+      text = text,
+      prompt = "Categories: 0, 1",
+      template = "{prefix}{text}\n{prompt}",
+      system = "Classify this tweet based on whether it speaks about economic issues or not. Don't give any more comments.",
+  prefix = "You are a helpful and concise assistant that classifies tweets into two categories: economic issues (1) and non-economic issues (0). Please classify the following tweet:\n\n"
+    ) |>
+      query(screen = FALSE, output = "text", model_params = list(seed = 2507, temperature = 0))
+  )
+
+write_rds(econ_llama_annotated, "data/econ_llama_annotated.rds")
+
+econ_llama_annotated
+```
+
+```{r}
+MLmetrics::F1_Score(y_pred = econ_llama_annotated$annotation, y_true = econ_llama_annotated$label)
+```
 
 
