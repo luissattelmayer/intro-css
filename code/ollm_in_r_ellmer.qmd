@@ -1,0 +1,227 @@
+---
+title: "oLLMs in R"
+format: html
+---
+
+Before we can get started, you will have to install `ollama`. You can do so by following the instructions on the [ollama website](https://ollama.com/download). It will ask you to download a setup file which will then guide you through the local installation. The last step is to run a command in your terminal. 
+
+Once you have done this, you should be able to run the following command to see whether the rollama package can successfully connect to the local ollama installation. 
+
+
+
+
+```{r}
+# install.packages("ellmer")
+```
+
+
+
+```{r}
+library(ellmer)
+library(tidyverse)
+```
+
+```{r}
+chat_ollama <- chat_ollama(model = "llama3.2")
+```
+
+
+
+# Chatting with the local model
+
+Running the command below will open a live console that allows you to chat with the model. You can type in your messages and the model will respond. You can exit the console by typing `Q` and hitting enter, or by hitting `Ctrl + c`.
+
+```{r}
+live_console(chat_ollama)
+```
+
+This is quite fun but the knowledge of these smaller models is definitely limited and they are not as powerful as the larger models. However, they can still be useful for simple classification tasks and experiments.
+
+
+
+# Issue classification 
+
+Let's say I have text data that I want to classify into two categories: "Politics" and "Other". I can use the `chat_ollama` (or again any other `chat_andthenyourmodelofchocie` function) function to have a model classify the text into these two categories.
+
+For this let's first create a tibble with some example text data that we want to classify:
+
+```{r}
+politics_classification <- tibble(
+    text = c(
+    "The government is doing a great job.",
+    "Malo works on the environment.",
+    "The opposition is not doing enough to help the people.",
+    "I love RStudio and only want to code."
+  ), 
+  text_id = c(1, 2, 3, 4))
+```
+
+
+Now we need to tell R what type of classification we want it to do and how the output should be structured. On the backend, the model will use JSON calls to do that.
+
+```{r}
+issue_classification_prompt <- "You are an expert classifier. I am going to give you texts. I want you to classify this into either relating to 'Politics' or 'Other'. Assign 1 if the text speaks about politics and 0 if it does not. Return the output in the JSON format. Give no other commentary."
+
+chat_ollama_prompted <- chat_ollama(model = "llama3.2",
+            system_prompt = issue_classification_prompt)
+
+
+chat_ollama_prompted$chat(politics_classification$text)
+
+```
+
+```{r}
+example_instructions_classification <- r"(
+    You are an expert classifier. I am going to give you texts. I want you to classify this into either relating to 'Politics' or 'Other'. Assign 1 if the text speaks about politics and 0 if it does not. Return the output in the JSON format. Give no other commentary.
+      
+  Here are some examples of the sort of output I'm looking for:
+  The government must to more for the people.
+  {"text": "The government must to more for the people.", "label": "1"}
+  
+
+  Luis works on the stuff nobody reads
+  {"text": "Luis works on the stuff nobody reads", "label": "0"})"
+```
+
+
+```{r}
+chat <- chat_ollama(paste(issue_classification_prompt, example_instructions_classification), model = "llama3.2")
+
+chat$chat(politics_classification$text)
+```
+
+You can also get deeper and give more specific instructions on how the output should be generated. Let's say we want to know whether mentions of politics also mention an actor. If so, we want to extract them as well. 
+
+```{r}
+more_complex_instructions_classification <- r"(
+    You are an expert classifier. I am going to give you texts. I want you to classify this into either relating to 'Politics' or 'Other'. Assign 1 if the text speaks about politics and 0 if it does not. Return the output in the JSON format. Give no other commentary.
+      
+  Here are some examples of the sort of output I'm looking for:
+  The government must to more for the people.
+  {"text": "The government must to more for the people.", "label": "1"}
+  
+
+  Luis works on the stuff nobody reads
+  {"text": "Luis works on the stuff nobody reads", "label": "0"})
+
+  * If a text speaks about politics, see if there is also an actor. If that is the case, extract the actor and return it in the JSON format as well:
+
+  The government must to more for the people.
+  [
+{"text": "The government must to more for the people.", "label": "1", "actor": "government"}
+  ]
+
+  Luis works on the stuff nobody reads
+  [
+{"text": "Luis works on the stuff nobody reads", "label": "0", "actor": NA}
+  ]
+)"
+```
+
+Now let's try this again and see if this works and extracts actors, where politics is discussed: 
+
+```{r}
+chat <- chat_ollama(paste(issue_classification_prompt, more_complex_instructions_classification), model = "llama3.2")
+
+chat$chat(politics_classification$text)
+```
+
+Well, it seems to be working. This is a very simple example of how you can use the `ellmer` package to classify text data using oLLMs. Here I only classify into binary categories and have the idea to also extract an entity. You can extend this further by adding more complex instructions, using different models, or even combining multiple models for more advanced tasks.
+
+Keep in mind that the quality of the classification will depend on the model you use and the instructions you provide. The larger and more advanced models will generally perform better, but they also require more computational resources and time to run. You should always test the model on a small sample of your data before applying it to the entire dataset to ensure that it performs well for your specific use case. 
+
+At the same time you should also always check the prompt and how much it influences the output and model behavior. Some prompts provide more stability than others. 
+
+
+Now that the LLM conveniently gives us the output and everything we have asked it to do in a JSON format, we can use the `ellmer` package to parse the output and convert it into a tibble. This will allow us to work with the data in a more structured way and use it for further analysis or visualization. There are a couple of functions that help us with this. Depending on what you want the JSON output to be classed as in your tibble, you will have to use `type_string()`, `type_number()`, `type_boolean()`, or `type_integer()`. You could try to think about the `type_object()` as the object which defines what types (classes) the JSON output of your oLLM should be converted to/read as.
+
+
+```{r}
+type_politics <- type_object(
+  label = type_integer(),
+  actor = type_string("Actor mentioned")
+)
+
+type_politics <- type_array(items = type_politics)
+```
+
+Now let's use this to parse the output of the model and convert it into a tibble:
+
+
+```{r}
+classified_text_politics <-  chat$chat_structured(politics_classification$text, type = type_politics)
+
+classified_text_politics
+```
+
+Our code managed to classify the texts into the categories "Politics" and "Other" in a numeric binary 1 and 0 format. It also extracted the actors mentioned in the texts, which it had classified as speaking about politics before. The output is now structured in a tibble, which makes it easy to work with and analyze further.
+
+
+# Applying this real annotated data
+```{r}
+econ <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/tweets_annotations.csv") |> 
+    slice(40:70) |> 
+    mutate(text_with_id = paste0("TWEET_ID: ", id, "\nTEXT: ", text))
+
+econ$label |> table()
+```
+
+
+```{r}
+econ |> glimpse()
+```
+
+
+Let's create a prompt that will classify the Tweets based on whether they speak about economic issues or not. 
+
+```{r}
+econ_prompt <- r"(
+You are an expert classifier. I will give you texts with tweet IDs. I want you to classify whether each tweet speaks about economic issues. Assign "1" if it speaks about economic issues, and "0" otherwise. If economic issues are mentioned, extract a short keyword for it. Return the output in JSON format, one object per tweet. Include the tweet_id in the output.
+
+Here are examples:
+
+TWEET_ID: 12345
+TEXT: .@LeaderMcConnell &amp; @RepAndyBarr announce Scott Co. to receive $3.1M to expand rural broadband https://t.co/eTGqHxy0an
+
+{"tweet_id": 12345, "text": ".@LeaderMcConnell &amp; @RepAndyBarr announce Scott Co. to receive $3.1M to expand rural broadband https://t.co/eTGqHxy0an", "label": "0", "econ_issue": NA}
+
+TWEET_ID: 67890
+TEXT: Thank you @RepHaleyStevens for standing with EPA workers at @704afge! https://t.co/L7bYMEJaI0
+
+{"tweet_id": 67890, "text": "Thank you @RepHaleyStevens for standing with EPA workers at @704afge! https://t.co/L7bYMEJaI0", "label": "1", "econ_issue": "EPA workers"}
+)"
+
+```
+
+
+```{r}
+chat <- chat_ollama(econ_prompt, model = "llama3.2")
+
+chat$chat(econ$text_with_id[1])
+```
+Let's pretend that this was not horrible (it is not great...) and proceed to extract the information that we want into a tibble that we can work with later on.
+
+Given that we have extracted the tweet ids, we can now left_join the classifications back to the initial data frame.
+
+```{r}
+
+
+econ_classified_merged <- econ |> 
+    left_join(classified_text_econ, by = "id")
+```
+
+
+# Validating oLLMs
+Obviously you will have to validate the output of the model. This is however exactly the same as if you were to validate the performance of a random forest machine learning algorithm or a fine-tuned BERT model. You can do this by comparing the output of the model with a manually annotated dataset, based on which you try your model or by using a separate validation set. 
+
+You can also use metrics such as precision, recall, and F1-score to evaluate the performance of the model. For this, you would proceed exactly as you would with any other model. Here, you would first find a stable and reproducible prompt that works well for your task and then use it to classify humanly annotated data. Use the parsing functions to convert the output into a tibble. That will give you a label column produced by the model, which you can then benchmark against your own annotations. Based on this, you can calculate your precision, recall, and F1-score.
+
+```{r}
+
+```
+
+
+
+
+
+
