@@ -83,13 +83,13 @@ The `text2vec` package provides a function to calculate the cosine similarity be
 ```{r}
 cos_sim <- sim2(
   x = glove_wiki,
-  y = glove_wiki["climate", , drop = FALSE],
+  y = glove_wiki["school", , drop = FALSE],
   method = "cosine"
 ) |> 
   enframe(name = "token", value = "cosine_sim") |> 
   mutate(cosine_sim = cosine_sim[,1]) |> 
   arrange(-cosine_sim) |> 
-  slice_min(cosine_sim, n = 10)
+  slice_max(cosine_sim, n = 10)
 
 # give lowest cosine_sim
 
@@ -182,7 +182,7 @@ semantic_algebra("germany", "japan", "sushi")
 Why does this not work?
 
 ```{r}
-semantic_algebra("Paris", "France", "Malo")
+semantic_algebra("paris", "france", "malo")
 ```
 
 
@@ -312,7 +312,7 @@ job_pca |>
 
 
 ```{r}
-job_query <- c("lion", "tiger", "duck", "dog", "cat") |> 
+job_query <- c("lion", "tiger", "duck", "dog", "cat", "python") |> 
   str_to_lower()
 
 
