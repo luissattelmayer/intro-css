@@ -130,7 +130,8 @@ editor_options:
 ## Cosine Similarity {.smaller}
 - Cosine similarity: inner product of two non-zero vectors (basically taking the cosine of the angle between two vectors)
   - $[-1; 1]$ where $-1$ = no similarity, $1$ = same word, $0$ = independence (orthogonal)
-- Thus, we can place words and their similarity with the help of vectors:
+- Thus, we can place words and their similarity with the help of vectors: $\text{cosine_similarity}(A, B) = \frac{A \cdot B}{||A|| \cdot ||B||}$
+
 
 :::{.fragment}
 ![](images/04_we_word2vec.png){height="400" width="700"}
@@ -198,14 +199,16 @@ editor_options:
 
 ## Shortcomings {.smaller}
 - One step away from BoW
-- The embeddings are *static*: words have a unique meaning regardless of their context
+- Traditional word embeddings are **static**
+    - each word is represented by a single vector that captures the general contexts it typically appears in across the corpus
+    - but they do not capture the specific meaning of individual word tokens *in their unique sentence contexts*
 - For instance, ”climate” will still have the same representation in different contexts
-  1. ”Foreign investors know what a favourable climate the United Kingdom provides for manufacturing enterprise.”
-  2. ”The Prime Minister signed the Rio convention on climate change last June.”
+  1. ”Foreign investors know what a favourable *climate* the United Kingdom provides for manufacturing enterprise.”
+  2. ”The Prime Minister signed the Rio convention on *climate* change last June.”
 - Word order still does not matter
   1. ”The government serves the people.”
   2. ”The people serve the government.”
-- Dimensonality and embedding might be hard to understand
+- Dimensionality and embedding might be hard to understand
 
 
 # End of Unsupervised models
