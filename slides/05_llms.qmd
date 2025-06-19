@@ -293,9 +293,6 @@ editor_options:
 ## Multilingual Models
 ![](images/05_translation.png)
 
-## BERTopic
-![](images/05_bertopic.png)
-
 
 ## Modern BERT
 ![](images/05_modern_bert.png)
@@ -373,6 +370,8 @@ editor_options:
 ## @bonikowski2022politics
 ![](images/05_bonikowski_metrics.jpeg)
 
+## BERTopic
+![](images/05_bertopic.png)
 
 ## What other use-cases for LLMs? 
 - This leaves the realm of textual analysis
@@ -393,24 +392,40 @@ editor_options:
 
 - For an opposing view see @boelaert2024machine
 
-## Beyond text {.smaller}
-![Share of women in parties visual communication, detected using automated models (Jan, Piolat, and Sattelmayer ongoing)](images/05_gendered_parties.png)
-
-
-## Beyond text {.smaller}
-![Jan, Piolat, and Sattelmayer ongoing](images/05_gendered_countries.png)
-
-## Whisper
+## Beyond text: Whisper
 - For the GitHub tutorial click [here](https://github.com/openai/whisper)
 
 ![Developed by OpenAI](images/05_whisper.png)
 
-# Further ressources
-- [Lena Voita's blog on NLP](https://lena-voita.github.io/nlp_course.html)
-- [Natural Language Inference]() (NLI)
+
+## Beyond text: multimodal {.smaller}
+- You can use LLMs to analyze images, videos, and other non-textual data
+- @torres2024framework for a framework to conduct semi-supervised or unsupervised analyses of images
+- @lukena2024mexca for the automated analysis of Emotion Expressions in Faces, Vocalization, and Speech
+    - argument: emotions are multimodal, i.e. they are expressed through multiple channels (e.g. facial expressions, vocalizations, and speech)
+    - therefore: framework to analyze these channels together and output integrated features of emotion label
+
+## Beyond text: visual data {.smaller}
+- "Simple" face recognition ([click here for a tutorial](https://sefiks.com/2020/05/01/a-gentle-introduction-to-face-recognition-in-deep-learning/)) tasks using [DeepFace](https://github.com/serengil/deepface) or [FaceNet](https://www.kaggle.com/code/minhnguyenvan95/facenet-512-transfer-learning)
+    - possible uses: age, gender, emotion, ethnicity
+
+- Here is an overview on [zero-shot image classification](https://huggingface.co/docs/transformers/tasks/zero_shot_image_classification)
+    - [CLIP Model](https://huggingface.co/openai/clip-vit-base-patch32) developed by OpenAI
+- There are also pre-trained models for image classification that you can train yourself on your own data and annotations
+    - for example the [vision transformer model](https://huggingface.co/google/vit-base-patch16-224) developed by Google
+    - [Kaggle datasets](https://www.kaggle.com/datasets?tags=13207-Computer+Vision) are publicly available and pre-annotated --> can be adapted to certain tasks
+
+## Beyond text example {.smaller}
+![Share of women in parties visual communication, detected using automated models (Jan, Piolat, and Sattelmayer ongoing)](images/05_gendered_parties.png)
+
+## Beyond text example {.smaller}
+![Jan, Piolat, and Sattelmayer ongoing](images/05_gendered_countries.png)
+
+## Further ressources
+- For some more basics on transformers and Neural Networks [Lena Voita's blog on NLP](https://lena-voita.github.io/nlp_course.html)
+- [Natural Language Inference](https://nlpprogress.com/english/natural_language_inference.html) (NLI)
     - paper by @laurer2024less
     - GitHub tutorial [here](https://github.com/MoritzLaurer/summer-school-transformers-2023/blob/main/4_tune_bert_nli.ipynb)
-
 
 ## Bibliography
 
