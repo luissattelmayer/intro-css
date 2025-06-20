@@ -322,6 +322,12 @@ editor_options:
 ## How many shots? {.smaller}
 ![@weber2023evaluation](images/05_prompting_strategies.png)
 
+## Classification pipelines
+![](images/05_classifcation_pipeline_jan.png)
+
+## Classification pipelines
+![](images/05_classification_pipeline_sattelmayer.png)
+
 
 ## LLMs and the environment
 - Carbon footprint of LLMs is quite frankly huge and bad
