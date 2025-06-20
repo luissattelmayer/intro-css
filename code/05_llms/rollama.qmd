@@ -64,7 +64,7 @@ econ_queries <- make_query(
 Let's now create a new column in the `econ` data frame that contains the model's annotations for each tweet. The `query()` function will send the custom `econ_queries` task to the model and return the results. The `verbose = TRUE` argument will print out the progress of the queries, and `output = "text"` specifies that we want the output in text format. The `model_params` argument allows us to set specific parameters for the model, such as the `seed` for reproducibility and the `temperature` for controlling randomness in the output. Setting a consistent seed, and a temperature of 0 will ensure that the model's output is deterministic, meaning that it will produce the same results each time you run the code. Great for reproducibility!
 
 ```{r}
-econ$annotation <- query(econ_queries, verbose = TRUE, output = "text",  model_params = list(seed = 2507, temperature = 0))
+econ$annotation <- query(econ_queries, output = "text",  model_params = list(seed = 123, temperature = 0))
 econ
 ```
 
@@ -87,7 +87,7 @@ econ_llama_annotated <- econ_full |>
       system = "Classify this tweet based on whether it speaks about economic issues or not. Don't give any more comments.",
   prefix = "You are a helpful and concise assistant that classifies tweets into two categories: economic issues (1) and non-economic issues (0). Please classify the following tweet:\n\n"
     ) |>
-      query(screen = FALSE, output = "text", model_params = list(seed = 2507, temperature = 0))
+      query(output = "text", model_params = list(seed = 2507, temperature = 0))
   )
 
 write_rds(econ_llama_annotated, "data/econ_llama_annotated.rds")
