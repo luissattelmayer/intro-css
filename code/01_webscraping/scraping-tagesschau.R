@@ -44,14 +44,14 @@ scrape_urls <- function(x) {
 safe_scrape_urls <- safely(scrape_urls)
 
 # mapping over our list of urls
-results <- purrr::map(urls, safe_scrape_urls, .progress = TRUE)
+results <- purrr::map(urls[1:20], safe_scrape_urls, .progress = TRUE)
 
-# create a tibble with the urls (with magrittr pipe for placeholder)
+# create a tibble with the urls 
 final_urls_tagesschau <- results |>
-  map("result") |>
+  map("result") |> # go through each element of results, and from each one, extract the element named result
   keep(~ !is_empty(.)) |>
   unlist() |>
-  tibble(urls = .)       
+  tibble(urls = _)
 
 
 # scrape the articles
@@ -63,10 +63,10 @@ scrape_articles <- function(x) {
     str_remove_all("Stand: |Uhr|Aktualisiert am |\\s\\d{2}:\\d{2}") |>
     dmy()
   
-  title <- html_element(page_content, ".seitenkopf__headline--text") |>
+  title <- html_element(page_content, ".article-head__headline--text") |>
     html_text()
   
-  supra_title <- html_element(page_content, ".seitenkopf__topline") |>
+  description <- html_element(page_content, ".article-head__shorttext strong") |>
     html_text()
   
   content <- html_elements(page_content, ".textabsatz") |>
@@ -75,8 +75,8 @@ scrape_articles <- function(x) {
     str_squish()
   
   # Create tibble and then collapse content
-  tagesschau_articles <- tibble(date, title, supra_title, content) |>
-    group_by(date, title, supra_title) |>
+  tagesschau_articles <- tibble(date, title, description, content) |>
+    group_by(date, title, description) |>
     summarize(content = paste(content, collapse = " "),
               .groups = 'drop')
   
