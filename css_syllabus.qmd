@@ -54,7 +54,27 @@ This session will be devoted to lean how to use the methods presented in the mor
 
 - Van Atteveldt, W., Trilling, D., & Calderón, C. A. (2022). Computational analysis of communication. John Wiley & Sons.
 
-# Day 3 : Unsupervised learning
+# Day 3 : Supervised methods
+
+*10h-12h : Introduction to supervised methods*
+
+In this session, we will explore supervised machine learning methods designed to generate measurements using text in the field of social sciences. The lecture will delve into the objectives of supervised learning and elaborate on the evaluation and validation of supervised models, shedding light on important use cases.
+
+*13h30-14h45 : Supervised machine learning in practice*
+
+*15h15-16h45 : Applications in RStudio*
+
+#### References
+
+- Bonikowski, B., Luo, Y., & Stuhler, O. (2022). Politics as Usual? Measuring Populism, Nationalism, and Authoritarianism in US Presidential Campaigns (1952–2020) with Neural Language Models. Sociological Methods & Research, 51(4), 1721-1787.
+
+- Hvitfeldt, E., & Silge, J. (2021). Supervised machine learning for text analysis in R. CRC Press.
+
+- Kuhn, M., & Silge, J. (2022). Tidy Modeling with R. " O'Reilly Media, Inc.".
+
+- Peterson, A., & Spirling, A. (2018). Classification accuracy as a substantive quantity of interest: Measuring polarization in westminster systems. Political Analysis, 26(1), 120-128.
+
+# Day 4 : Unsupervised learning
 
 *10h-12h : Introduction to unsupervised text analysis*
 
@@ -76,25 +96,6 @@ In this session, participants will delve into the fundamentals of unsupervised t
 
 - Rheault, L., & Cochrane, C. (2020). Word embeddings for the analysis of ideological placement in parliamentary corpora. Political Analysis, 28(1), 112-133.
 
-# Day 4 : Supervised methods
-
-*10h-12h : Introduction to supervised methods*
-
-In this session, we will explore supervised machine learning methods designed to generate measurements using text in the field of social sciences. The lecture will delve into the objectives of supervised learning and elaborate on the evaluation and validation of supervised models, shedding light on important use cases.
-
-*13h30-14h45 : Supervised machine learning in practice*
-
-*15h15-16h45 : Applications in RStudio*
-
-#### References
-
-- Bonikowski, B., Luo, Y., & Stuhler, O. (2022). Politics as Usual? Measuring Populism, Nationalism, and Authoritarianism in US Presidential Campaigns (1952–2020) with Neural Language Models. Sociological Methods & Research, 51(4), 1721-1787.
-
-- Hvitfeldt, E., & Silge, J. (2021). Supervised machine learning for text analysis in R. CRC Press.
-
-- Kuhn, M., & Silge, J. (2022). Tidy Modeling with R. " O'Reilly Media, Inc.".
-
-- Peterson, A., & Spirling, A. (2018). Classification accuracy as a substantive quantity of interest: Measuring polarization in westminster systems. Political Analysis, 26(1), 120-128.
 
 # Day 5 : Large language models
 
