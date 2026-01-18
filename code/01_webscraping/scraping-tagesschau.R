@@ -7,36 +7,36 @@ base_url <- "https://www.tagesschau.de/archiv?datum="
 urls <- expand.grid(year = 2006:2023,
                     month = 1:12,
                     page = 1:15) |>
-  arrange(year, month, page) |>
-  mutate(
-    url = paste0(
-      "https://www.tagesschau.de/archiv?datum=",
-      year,
-      "-",
-      str_pad(month, 2, pad = "0"),
-      "-01",
-      "&pageIndex=",
-      page
-    )
-  ) |>
-  pull(url)
+    arrange(year, month, page) |>
+    mutate(
+        url = paste0(
+            "https://www.tagesschau.de/archiv?datum=",
+            year,
+            "-",
+            str_pad(month, 2, pad = "0"),
+            "-01",
+            "&pageIndex=",
+            page
+        )
+    ) |>
+    pull(url)
 
 
 scrape_urls <- function(x) {
-  read_html(x) |>
-    html_nodes("a") |>
-    html_attr("href") |>
-    as_tibble() |>
-    filter(str_detect(
-      value,
-      regex(
-        "/inland/|/ausland/|/wirtschaft/|/wissen/|faktenfinder|investigativ",
-        ignore_case = TRUE
-      )
-    )) |>
-    filter(str_detect(value, "\\.html$")) |>
-    mutate(value = paste0("https://www.tagesschau.de", value)) |>
-    pull(value)
+    read_html(x) |>
+        html_nodes("a") |>
+        html_attr("href") |>
+        as_tibble() |>
+        filter(str_detect(
+            value,
+            regex(
+                "/inland/|/ausland/|/wirtschaft/|/wissen/|faktenfinder|investigativ",
+                ignore_case = TRUE
+            )
+        )) |>
+        filter(str_detect(value, "\\.html$")) |>
+        mutate(value = paste0("https://www.tagesschau.de", value)) |>
+        pull(value)
 }
 
 
@@ -48,38 +48,38 @@ results <- purrr::map(urls[1:20], safe_scrape_urls, .progress = TRUE)
 
 # create a tibble with the urls 
 final_urls_tagesschau <- results |>
-  map("result") |> # go through each element of results, and from each one, extract the element named result
-  keep(~ !is_empty(.)) |>
-  unlist() |>
-  tibble(urls = _)
+    map("result") |> # go through each element of results, and from each one, extract the element named result
+    keep(~ !is_empty(.)) |>
+    unlist() |>
+    tibble(urls = _)
 
 
 # scrape the articles
 scrape_articles <- function(x) {
-  page_content <- read_html(x)
-  
-  date <- html_element(page_content, ".metatextline") |>
-    html_text() |>
-    str_remove_all("Stand: |Uhr|Aktualisiert am |\\s\\d{2}:\\d{2}") |>
-    dmy()
-  
-  title <- html_element(page_content, ".article-head__headline--text") |>
-    html_text()
-  
-  description <- html_element(page_content, ".article-head__shorttext strong") |>
-    html_text()
-  
-  content <- html_elements(page_content, ".textabsatz") |>
-    html_text() |>
-    str_remove("\\n") |>
-    str_squish()
-  
-  # Create tibble and then collapse content
-  tagesschau_articles <- tibble(date, title, description, content) |>
-    group_by(date, title, description) |>
-    summarize(content = paste(content, collapse = " "),
-              .groups = 'drop')
-  
+    page_content <- read_html(x)
+    
+    date <- html_element(page_content, ".metatextline") |>
+        html_text() |>
+        str_remove_all("Stand: |Uhr|Aktualisiert am |\\s\\d{2}:\\d{2}") |>
+        dmy()
+    
+    title <- html_element(page_content, ".article-head__headline--text") |>
+        html_text()
+    
+    description <- html_element(page_content, ".article-head__shorttext strong") |>
+        html_text()
+    
+    content <- html_elements(page_content, ".textabsatz") |>
+        html_text() |>
+        str_remove("\\n") |>
+        str_squish()
+    
+    # Create tibble and then collapse content
+    tagesschau_articles <- tibble(date, title, description, content) |>
+        group_by(date, title, description) |>
+        summarize(content = paste(content, collapse = " "),
+                  .groups = 'drop')
+    
 }
 
 
@@ -87,21 +87,21 @@ scrape_articles <- function(x) {
 safe_scrape_articles <- safely(scrape_articles)
 
 tagesschau_scraped <- final_urls_tagesschau$urls |>
-  set_names() |>
-  map(safe_scrape_articles, .progress = TRUE) |>
-  map_dfr( ~ .x$result, .id = "url") |>
-  arrange(date)
+    set_names() |>
+    map(safe_scrape_articles, .progress = TRUE) |>
+    map_dfr( ~ .x$result, .id = "url") |>
+    arrange(date)
 
 tagesschau_scraped_secondhalf <- final_urls_tagesschau$urls[18570:29772] |>
-  set_names() |>
-  map(safe_scrape_articles, .progress = TRUE) |>
-  map_dfr( ~ .x$result, .id = "url") |>
-  arrange(date)
+    set_names() |>
+    map(safe_scrape_articles, .progress = TRUE) |>
+    map_dfr( ~ .x$result, .id = "url") |>
+    arrange(date)
 
 tagesschau_scraped_full <- rbind(tagesschau_scraped,
                                  tagesschau_scraped_secondhalf,
                                  tagesschau_missing_articles) |>
-  arrange(date)
+    arrange(date)
 
 
 write_csv(tagesschau_scraped_full, "tagesschau_scraped_full.csv")
@@ -109,18 +109,18 @@ write_csv(tagesschau_scraped_full, "tagesschau_scraped_full.csv")
 
 # scraping was interrupted; anti_join to keep only missing urls
 tagesschau_missing_urls <- final_urls_tagesschau |>
-  mutate(url = urls) |>
-  anti_join(tagesschau_scraped_full, by = "url") |>
-  select(urls)
+    mutate(url = urls) |>
+    anti_join(tagesschau_scraped_full, by = "url") |>
+    select(urls)
 
 tagesschau_missing_articles <- tagesschau_missing_urls$urls |>
-  set_names() |>
-  map(safe_scrape_articles, .progress = TRUE) |>
-  map_dfr( ~ .x$result, .id = "url") |>
-  arrange(date)
+    set_names() |>
+    map(safe_scrape_articles, .progress = TRUE) |>
+    map_dfr( ~ .x$result, .id = "url") |>
+    arrange(date)
 
 tagesschau_sample <- tagesschau_scraped_full |>
-  sample_n(2000)
+    sample_n(2000)
 
 
 
@@ -130,16 +130,16 @@ url_to_search <- "https://www.tagesschau.de/investigativ/swr/umfrage-handwerk-10
 # For dataframe df1
 index_df1 <- which(final_urls_tagesschau$urls == url_to_search)
 if (length(index_df1) > 0) {
-  cat("The URL was found at row", index_df1[1], "in df1.\n")
+    cat("The URL was found at row", index_df1[1], "in df1.\n")
 } else {
-  cat("The URL was not found in df1.\n")
+    cat("The URL was not found in df1.\n")
 }
 
 
 # For dataframe df2
 index_df2 <- which(tagesschau_scraped$url == url_to_search)
 if (length(index_df2) > 0) {
-  cat("The URL was found at row", index_df2[1], "in df2.\n")
+    cat("The URL was found at row", index_df2[1], "in df2.\n")
 } else {
-  cat("The URL was not found in df2.\n")
+    cat("The URL was not found in df2.\n")
 }
