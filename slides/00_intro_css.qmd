@@ -21,14 +21,16 @@ editor_options:
 ## About us {.smaller}
 
 - Malo Jan
-    - 3rd year PhD student at the CEE working on Climate politics, Party politics, Quantitative and computational methods
+    - 4th year PhD student at the CEE working on Climate politics, Party politics, Quantitative and computational methods
     - [malo.jan@sciencespo.fr](malo.jan@sciencespo.fr)
+    - [https://malojan.github.io/website/](https://malojan.github.io/website/)
     
 - Luis Sattelmayer
-    - 3rd year PhD student at the CEE working on Party Competition, Partisan Strategies, Immigration Politics, Quantitative and computational methods
+    - 4th year PhD student at the CEE working on Party Competition, Partisan Strategies, Immigration Politics, Quantitative and computational methods
     - [luis.sattelmayer@sciencespo.fr](luis.sattelmayer@sciencespo.fr)
+    - [https://luissattelmayer.github.io/website/](https://luissattelmayer.github.io/website/)
 
-## Goal of the course {.smaller}
+## Goals of the course 
 
 - Introduction to Computational Social Sciences
 - From data collection to analysis
@@ -57,15 +59,23 @@ editor_options:
 
 # Computational Social Sciences {.smaller}
 
-## What are CSS {.smaller}
+## What is CSS? {.smaller}
 
 
 > Computational social science is an interdisciplinary field that advances theories of human behavior by applying computational techniques to large datasets from social media sites, the Internet, or other digitized archives such as administrative records. @edelmann2020computational
 
-- Institutionalization of CSS
-    - Specific journals : eg. JCSS
-    - Networks : eg. SICCS
-    - Positions : Assistant professor in CSS, postdocs...
+
+::::::: {.columns}
+::: {.column width="50%"}
+![](images/00_jcss.png){width="70%"}
+:::
+
+::: {.column width="50%"}
+![](images/00_sicss.png)
+- Computational Social Science (CSS) is an interdisciplinary field at the intersection of social sciences, computer science, and data science.
+
+:::
+::::
 
 ## More data, computing power and methods {.smaller}
 
@@ -90,21 +100,12 @@ CSS from two main developments :
 - Even more recent developments : 
     - Muiltilingual text analysis
     - Image, Video as data, *multimodal* analysis
-    - Generative language
-
-## Six principles for CSS [@grimmer2022text] {.smaller}
-1. Social science theories and substantive knowledge are essential for research design. 
-2. Text analysis does not replace humans -- it augments them (see also @do2024augmented)
-3. Building, refining, and testing social science theories requires iteration and cumulation. 
-4. Text analysis methods distill generalizations from language. 
-5. The best method depends on the task. 
-6. Validations are essential and depend on the theory and the task. 
-
+    - Generative language models (LLMs)
 
 ## What are textual statistics? {.smaller}
 - Capture *latent meaning* in text
   - Meaning can be discovered through the method (inductively -- unsupervised)
-  - Or we can use a more deductive reasoning beforehand to nudge our method toward a specific underlying pattern we are interested in (supervised)
+  - Or we can use more deductive reasoning beforehand to nudge the method toward a specific underlying pattern of interest (supervised)
 - This means that we are more or less informed about the *latent dimensionality(ies)* of our texts
 - It is also a mathematization of language 
   - written or not, there is no difference as long as the text is available in a form that is readable for computers
@@ -114,7 +115,7 @@ CSS from two main developments :
 statistical models (clustering, scaling, topic models, supervised machine learning etc.)
 - Featurization: extract numeric features from raw text
 - Three main steps in text analysis:
-  1. **Bag of word representation**
+  1. **Bag of words representation**
   2. **Static word embeddings**
   3. **Contextual embeddings from Large Language Models (LLMs)**
 
@@ -130,12 +131,18 @@ statistical models (clustering, scaling, topic models, supervised machine learni
     - organizing and structuring data
     - uncovering patterns *inductively*
 
+## Six principles for CSS [@grimmer2022text] {.smaller}
+1. Social science theories and substantive knowledge are essential for research design. 
+2. Text analysis does not replace humans -- it augments them (see also @do2024augmented)
+3. Building, refining, and testing social science theories requires iteration and cumulation. 
+4. Text analysis methods distill generalizations from language. 
+5. The best method depends on the task. 
+6. Validations are essential and depend on the theory and the task. 
+
 
 ## Social group detection in party manifestos {.smaller}
 
 :::: {.columns}
-
-
 ::: {.column width="50%"}
 ![@licht2024they](images/00_licht_sczepanski1.png)
 :::
