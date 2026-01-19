@@ -7,7 +7,10 @@ editor_options:
 In this document, we will learn how to manipulate text data in R using the *stringr* package. It provides a set of functions that make it easier to work with strings in R. The package is part of the tidyverse. All functions in stringr start with *str_*, making it easy to identify them. They are designed to work with regular expressions to manipulate strings and match patterns. To learn more about the package, you can visit the [official documentation](https://stringr.tidyverse.org/) and its presentation in Hadley Wickham's R for Data Science [book](https://r4ds.hadley.nz/strings).  
 
 ```{r}
-needs(tidyverse, rvest) # Will load stringr
+
+library(tidyverse)
+library(rvest)
+
 ```
 
 ## Creating and combining strings
@@ -23,13 +26,14 @@ class(text)
 It is also possible to have vectors of strings in R, "character vectors", that are created using the c() function. 
 
 ```{r}
+
+
 texts <- c("Some facts about US presidents:", 
           "Donald Trump was elected president in 2016.", 
             "Joe Biden won the presidency in 2020.", 
             "Now, in 2025, Trump is president again.")
 
 texts
-
 ```
 
 ## Concatenating strings
@@ -37,12 +41,14 @@ texts
 Stringr provides a set a function to manipulate these strings and vectors. For instance, you can concatenate strings using `str_c()`. 
 
 ```{r}
-str_c(text, "Obama was president in 2016. ") # Concatenate strings
+text
+
+str_c(text, "Obama was president in 2016. ", sep = " ") # Concatenate strings
 
 presidents <- c("Obama", "Trump", "Biden")
 party <- c("Democrat", "Republican", "Democrat")
 
-str_c(presidents, "is", party, sep = "-") # Concatenate strings
+str_c(presidents, "is", party, sep = " ") # Concatenate strings
 ```
 
 ## Changing case
@@ -55,13 +61,16 @@ str_to_upper(texts) # Convert to upper case
 str_to_title(texts) # Convert to title case
 str_to_sentence(texts) # Convert to sentence case
 ```
+
 ## Detecting and counting patterns
 
 You can also detect whether a given pattern is present in a string using `str_detect()`. This function returns a logical vector indicating whether the pattern is present in each element of the input vector. Similarly, you can count the number of occurrences of a pattern in a string using `str_count()`. These functions will be useful later when developing dictionaries of words or phrases to match in text data. 
 
 ```{r}
+texts
 str_detect(text, "Trump") # Detect the word Trump in the text
 str_detect(texts, "Trump") # Detect the word Trump in the texts
+
 str_count(text, "Trump") # Count the number of occurrences of Trump in the text
 str_count(texts, "Trump") # Count the number of occurrences of Trump in the texts
 ```
@@ -71,10 +80,11 @@ str_count(texts, "Trump") # Count the number of occurrences of Trump in the text
 Stringr provides functions to replace, remove, locate and extract patterns from strings. This is especially useful when you want to clean up text data or extract specific information from it.
 
 ```{r}
-str_replace(text, "Donald Trump", "Trump") # Replace Donald Trump by Trump
-str_extract(text, "Trump") # Extract Donald Trump
-str_length(text)
 text
+
+str_replace(text, "Donald Trump", "Trump") # Replace Donald Trump by Trump
+str_extract(text, "\\d+") # Extract Donald Trump
+str_length(text)
 str_locate(text, "Trump") # Locate the position of Trump
 str_remove(text, "Donald") # Remove Trump
 ```
@@ -123,7 +133,7 @@ Regex contains also a set of metacharacters that are special character that has 
 The most common metacharacters is the dot `.`
 
 ```{r}
-str_view(text, "Trum.") # Highlight the word "Trump" in the text
+str_view(text, "Trump...........") # Highlight the word "Trump" in the text
 ```
 
 An important metacharacter is the backslash `\`, which is used to escape metacharacters. For instance, if you want to match a dot, you need to escape it with a backslash. In R you need to escape the backslash itself, so you need to use two backslashes. If you want to match a literal '\', you need to use \\\\'. 
@@ -137,8 +147,8 @@ Other important metacharacters are the character classes, which are used to matc
 
 ```{r}
 str_view(text, "\\d") # Highlight digits in the text
-str_view(text, "\\w") # Highlight word characters in the text
-str_view(text, "\\s") # Highlight whitespace characters in the text
+str_view(text, "[A-z]") # Highlight word characters in the text
+str_view(text, "\\s\\d") # Highlight whitespace characters in the text
 ```
 
 ## Quantifiers
@@ -160,7 +170,7 @@ You can create a range of occurrences using the quantifier `{}`. For instance, i
 
 ```{r}
 str_view(text, "\\d{4}") 
-str_view(text, "\\d{2}") 
+str_view(text, "\\d{3}") 
 
 date <- "2025-01-01"
 
@@ -170,7 +180,7 @@ str_extract(date, "\\d{4}-\\d{2}-\\d{2}")
 You can capture a range of characters using the quantifier `[]`. For instance, if you want to match any character between "a" and "z", you can use the pattern "[a-z]". This will match any lowercase letter. To match any uppercase letter, you can use the pattern "[A-Z]".
 
 ```{r}
-str_view(text, "[a-z]") # Highlight word characters in the text
+str_view(text, "[a-d]") # Highlight word characters in the text
 str_view(text, "[A-Z]") 
 str_view(text, "[adz]") # Will match a, b, or c
 str_view(text, "[^abc]") # Will match everything except abc
@@ -229,6 +239,8 @@ unsg_df
 
 unsg_palestine <- unsg_df |> 
     filter(str_detect(text, "[Pp]alestine|[Gg]aza|[Ww]est [Bb]ank|Hamas"))
+
+
 ```
 
 
@@ -288,7 +300,6 @@ congreso <- scrape_congreso("https://www.congreso.es/es/busqueda-de-publicacione
 
 congreso
 
-
 congreso <- congreso |>
     mutate(
         date = str_extract(raw_text, "(?<=de) \\d{2}\\/\\d{2}\\/\\d{4}") |>  dmy(),
@@ -297,12 +308,7 @@ congreso <- congreso |>
         text = str_extract(raw_text, "(?<=ORDEN DEL DÍA:)[\\s\\S]*") # Include all text after "ORDEN DEL DÍA"
         )
 
-congreso |> head() |> view()
-
 congreso_long <- congreso %>% 
   separate_longer_delim(text, delim = regex("El señor (?=[ÁA-Z]{2})|La señora (?=[ÁA-Z]{2})")) # A Verifier ne marche pas forcément tout le temps bien
-
-congreso_long |> head(10) |> view()
-
 ```
 

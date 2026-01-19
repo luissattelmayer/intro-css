@@ -272,18 +272,36 @@ unsg_df |>
 unsg_df |>
     group_by(year) |>
     summarise(
-        climate_dict_two = mean(str_detect(text, "climate|global warming|greenhouse gas"), na.rm = T),
-        climate_dict_one = mean(str_detect(text, "climate change|global warming|greenhouse gas"), na.rm = T),
-        climate_dict_three = mean(str_detect(text, "climate change|climate emergency|climate crisis|global warming|greenhouse gas"))
-    ) |>
-    pivot_longer(
-        cols = c(climate_dict_one, climate_dict_two),
+        climate_dict_two = mean(
+            str_detect(text, "climate|global warming"),
+            na.rm = T
+        ),
+        climate_dict_one = mean(
+            str_detect(text, "climate change|global warming"),
+            na.rm = T
+        ),
+        climate_dict_three = mean(
+            str_detect(
+                text,
+                "climate change|global warming|climate crisis"
+            ),
+            na.rm = T
+        )
+    ) |> pivot_longer(
+        cols = c(climate_dict_one, climate_dict_two, climate_dict_three),
         names_to = "Dictionnary",
         values_to = "prop"
     ) |>
     ggplot(aes(year, prop, color = Dictionnary)) +
     geom_line(size = 1)  +
-    scale_color_manual(values = c("#0038B8", "#007A33"), labels = c("climate change|global warming|greenhouse gas", "climate|global warming|greenhouse gas")) +
+    scale_color_manual(
+        values = c("#0038B8", "#007A33", "#893845"),
+        labels = c(
+            "climate change|global warming",
+            "climate change|global warming|climate crisis",
+            "climate|global warming"
+        )
+    ) +
     theme_light() +
     scale_x_continuous("Year") +
     scale_y_continuous("Proportion of press releases") +
@@ -303,12 +321,13 @@ unsg_df |>
 
 ## @king2017computer experiment {.smaller}
 
-- Ask 43 undergraduates to recall keywords from a sample of twitter posts contaning "healthcare" from the time period surrounding a Supreme Court decision on Obamacare with goal with providing a list of keywords selecting posts related to Obamaware and will not select posts related to Obamacare. 
+- Ask 43 undergraduates to recall keywords from a sample of twitter posts containing "healthcare" from the time period surrounding a Supreme Court decision on Obamacare with goal with providing a list of keywords selecting posts related to Obamaware and will not select posts related to Obamacare. 
 - Repeat experiment with Boston Marathon bombing
 
 ## @king2017computer experiment {.smaller}
 
 - Median number of words recalled 8 for Obamacare and 7 for Boston Marathon
+- Obamacare : 149 unique words recalled, 66% of words recalled by only one participant 
 
 ![](images/02_King_al1.png)
 
@@ -329,9 +348,6 @@ unsg_df |>
     - All words matched will are likely to be relevant/ But will miss some relevant texts
 - More flexible dictionnary :
     - Will match more relevant texts / But will also match more irrelevant texts
-- Scunthrope problem : 
-    - Words that are not relevant but are matched by the dictionnary
-    - Spam filter : people from Scunthorpe could not register on web portal because of the word "cunt"
 
 ## How to build dictionnaries {.smaller}
 
