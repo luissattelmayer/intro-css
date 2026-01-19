@@ -148,6 +148,8 @@ sotu_20cent_tokenized_nostopwords_nonumbers_stemmed$token_stemmed
 
 ```{r}
 SnowballC::getStemLanguages() # if you want to know the abbreviations for other languages as well
+SnowballC::wordStem(c("running", "jumps", "easily", "fairly"), language = "en")
+
 ```
 
 
@@ -172,6 +174,8 @@ sotu_20cent_clean <- sotu_raw |>
   mutate(token = wordStem(token, language = "en")) |> 
   group_by(token) |> 
   filter(n() > n_rows/2000)
+
+sotu_20cent_clean
 ```
 
 
@@ -192,10 +196,10 @@ unsg_tf_idf
 ```
 
 ```{r}
-unsg_tf_idf %>%
-  group_by(secretary_general) %>%
-  slice_max(tf_idf, n = 20) %>%
-  ungroup() %>%
+unsg_tf_idf |>
+  group_by(secretary_general) |>
+  slice_max(tf_idf, n = 20) |>
+  ungroup() |>
   ggplot(aes(tf_idf, fct_reorder(word, tf_idf), fill = secretary_general)) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~secretary_general, ncol = 2, scales = "free") +

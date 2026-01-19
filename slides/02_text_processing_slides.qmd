@@ -210,6 +210,9 @@ editor_options:
 - **Applications**:
   - **n-grams**, **TF-IDF**,Scaling documents along dimensions (e.g., ideology), Topic modeling and clustering
 
+## References
+::: {#refs}
+:::
 
 
 

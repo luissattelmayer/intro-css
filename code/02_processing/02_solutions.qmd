@@ -75,11 +75,10 @@ keyword_counts |>
         mean_keywords = mean(total_keywords)
     ) |>
     ggplot(aes(x = date, y = mean_keywords, color = party)) +
-    # change color to red and blue
     scale_color_manual(values = c("blue", "red")) +
     geom_line() +
     facet_wrap(~party) +
-    theme_minimal() 
+    theme_light() 
 
 
 # Calculate TF-IDF by Party
@@ -102,11 +101,9 @@ tf_idf_by_party |>
     x = "TF-IDF",
     y = NULL
   ) +
-  theme_minimal()
+  theme_light()
 
 ```
 
 
-```{r}
-preprocessed
-```
+
