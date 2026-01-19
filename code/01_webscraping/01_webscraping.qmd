@@ -12,6 +12,8 @@ This script is an introduction to web scraping with R, with a focus on the `rves
 # Import necesarry packages
 
 needs(tidyverse, rvest)
+
+
 ```
 
 The main functions of `rvest` are the following :
@@ -51,6 +53,7 @@ Next, we extract the different elements of the page using `html_element()` with 
 ```{r}
 # Extract press relase title with .css selector .page-header
 
+    
 title <- page_html %>% 
   html_element(".page-header") |> 
   html_text2()
@@ -59,7 +62,7 @@ title
 # Extract press release text with .css selector .field--type-text-with-summary
 
 text <- page_html |> 
-  html_element(".field--type-text-with-summary") |>  
+  html_element(".field--type-text-with-summary .field__item") |>  
   html_text2()
 
 text
@@ -70,20 +73,23 @@ date <- page_html |>
   html_text2()
 
 date
+
 # Extract keywords
 
 keywords <- page_html |> 
-        html_elements(".field__items a") |> 
+        html_elements(".badge-tag") |> 
         html_text2() |>
         str_c(collapse = "|")
 
 keywords
+
 # Extract id, always useful
 
 id <- page_html |> 
     html_element(".field--name-field-symbol") |>
     html_text2()
 
+id
 # Create a data frame
 
 un_pr <- tibble(title, text, date, keywords, id)
@@ -100,8 +106,10 @@ If we go to the first page of the website, we can find the urls of all of the pr
 ```{r}
 ex_urls <- "https://press.un.org/en/content/secretary-general/press-release" |> 
     read_html() |>
-    html_elements("h3 > a") |> 
+    html_elements(".field__item a") |> 
     html_attr("href")
+
+ex_urls
 
 ex_urls <- str_c("https://press.un.org", ex_urls)
 
@@ -119,9 +127,8 @@ In this case, the worflow consists in extracting the urls of all press releases 
 ```{r}
 # Create a vector of all of the urls
 
-unsg_page_urls <- str_c("https://press.un.org/en/content/secretary-general/press-release?page=", 1:1994)
+unsg_page_urls <- str_c("https://press.un.org/en/content/secretary-general/press-release?page=", 0:10)
 
-unsg_page_urls
 ```
 
 
@@ -137,12 +144,16 @@ collect_unsg_pr_urls <- function(x) {
         mutate(link = str_c("https://press.un.org", link))
 }
 
+pr <- collect_unsg_pr_urls("https://press.un.org/en/content/secretary-general/press-release?page=5")
+pr
+
 # Test sur 10 pages because take around 35-40 minutes to run
 
-unsg_pr_urls <- map(unsg_page_urls[1:10], safely(collect_unsg_pr_urls), .progress = T) |> 
+unsg_pr_urls <- map(unsg_page_urls, safely(collect_unsg_pr_urls), .progress = T) |> 
     map_df("result") 
 
 unsg_pr_urls
+
 #write_csv(unsg_pr_urls, "data/unsg_urls.csv")
 ```
 
@@ -153,11 +164,14 @@ Now that we have the URLs of all press releases, we can iterate over each of the
 ```{r}
 
 collect_unsg_pr_content <- function(x) {
+    
+    Sys.sleep(0.5)
     # Get html code of page
     page <- read_html(x)
     # Create dataframe with the different elements
     
     tibble(
+        
         # Extract title
         title = html_element(page, ".page-header") |>
             html_text2(),
@@ -174,10 +188,11 @@ collect_unsg_pr_content <- function(x) {
     )
 }
 
+unsg_pr_urls$link
+
 unsg_df <- map(unsg_pr_urls$link, safely(collect_unsg_pr_content), .progress = T) |> 
     map_df("result")
 
-unsg_df
 
 # Step 5 : Enhance dataframe
 
@@ -190,6 +205,7 @@ unsg_df <- unsg_df |>
                date >= "1997-01-01" ~ "Kofi Annan",
                date >= "1992-01-01" ~ "Boutros Boutros-Ghali"))
 
+view(unsg_df)
 # Write the dataframe to a csv file
 #write_csv(unsg_df, "data/unsg_dataset.csv")
 
@@ -265,6 +281,7 @@ It is possible that some URLs may not work, or some of the elements you are look
 Next, most pages on the web are dynamic, meaning their content is loaded dynamically using JavaScript. In such cases, you will need to simulate a headless browser to mimic clicks on a website, which can be achieved using Selenium. This is a more advanced technique that requires additional programming knowledge. It is worth noting that while this process is quite simple in Python, it can be a nighmare to implement in R. Therefore, for dynamic web scraping, opt for Python. 
 
 # Applications
+
 
 Now that you have learned how to scrape data from the web, you can apply this knowledge to various use cases. Here are some examples of pages that you can try to scrape and where we have a solution for you if you need it. You are also free to choose any other website that interests you and we will be happy to help you with the scraping process.
 

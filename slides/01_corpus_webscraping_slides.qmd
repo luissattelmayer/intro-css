@@ -19,8 +19,8 @@ bibliography: references.bib
 
 ## What is a corpus ? {.smaller}
 
-- Every project involving text analysis starts with a corpus 
-- A collection of *machine readable* texts, along with metadata
+- Every project involving text/image/videos analysis starts with a corpus 
+- A collection of *machine readable* texts/images/videos, along with metadata
 - Corpus selection is a crucial task and often overlooked
 - Corpus selection is sampling : identifying the population of interest
 - Corpus selection is case selection : choosing documents to analyze according to research questions and interests
@@ -34,18 +34,18 @@ bibliography: references.bib
 - How exhaustive is the corpus ?        
     - Can I obtain the entirety of a document type/collection?
 - Think about data generation process
-    - How were these texts produced?
+    - How were these documents produced?
     - How could this affect the corpus?
-- Important to explore, read some of the texts
-- Think about quantity of interest,  what could you derive as a measure from those texts : 
+- Important to explore, read some of the documents
+- Think about quantity of interest,  what could you derive as a measure from those documents : 
     - eg. How much a given topic is discussed in these texts
     - eg. How much a given sentiment is expressed in these texts
     
-## Four biases in text selection {.smaller}
+## Potentiel Biases in text selection {.smaller}
+
 - **Resource Bias**
   - "texts often better reflect populations with more ressources to produce, record, and store documents" [@grimmer2022text]
   - social groups are marginalized and invisible in all societies, thus also in text
-  - eg. Twitter data is not representative of the general population; it can only speak for behavior *on Twitter*
 
 - **Incentive Bias**
   - (self-)censoring on Social Media or in official government documents is an issue [@king2013censorship]
@@ -56,7 +56,6 @@ bibliography: references.bib
 - **Retrieval Bias**
   - errors or skewed queries in text mining, intransparent APIs
 
-    
 ## Acquiring a corpus {.smaller}
 
 - Existing corpora vs creating original corpora
@@ -95,13 +94,9 @@ bibliography: references.bib
 :::: {.columns}
 ::: {.column width="40%"}
 
-
-- One important way to access data online
-- Access to data through
-    - Authentication with an API key
-    - Querying the API with specific requests
-    - Receiving data in a structured format (JSON, XML) 
-
+- A common way to access and share data online
+- Set of rules that allows one software application to communicate with another.
+- Defines what requests can be made, how to make them, and the data formats to be used.
 :::
 
 ::: {.column width="60%"}
@@ -110,6 +105,12 @@ bibliography: references.bib
 :::
 ::::
 
+## APIS {.smaller}
+
+- Accessing data usually involves : 
+    - Authenticating with an API key or token
+    - Sending requests with specific parameters
+    - Receiving structured data (e.g., JSON or XML)
 
 
 ## Advantages of APIS {.smaller}
@@ -177,7 +178,6 @@ bibliography: references.bib
 - HTML is a markup language
 - The content of the web is written in tags, which can have attributes
 
-
 ![The tree-like structure of an HTML document](https://www.w3schools.com/js/pic_htmltree.gif)
 
 ## HTML {.smaller}
@@ -188,7 +188,7 @@ bibliography: references.bib
     - h1, h2, h3
 
 - Web scraping consists in extracting the content of the html source code to get certain information
-- CTRL + U
+- CTRL + U/⌘-Option-U to see the source code of a web page
 - [Selector Gadget](https://chromewebstore.google.com/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb?hl=de&pli=1)
 
 
