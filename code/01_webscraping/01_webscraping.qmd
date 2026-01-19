@@ -11,9 +11,8 @@ This script is an introduction to web scraping with R, with a focus on the `rves
 ```{r}
 # Import necesarry packages
 
-needs(tidyverse, rvest)
-
-
+library(tidyverse)
+library(rvest)
 ```
 
 The main functions of `rvest` are the following :
@@ -53,7 +52,6 @@ Next, we extract the different elements of the page using `html_element()` with 
 ```{r}
 # Extract press relase title with .css selector .page-header
 
-    
 title <- page_html %>% 
   html_element(".page-header") |> 
   html_text2()
@@ -122,7 +120,7 @@ Yet, to collect the urls of all press releases, we have to repeat this process, 
     - https://press.un.org/en/content/secretary-general/press-release?page=2
     - https://press.un.org/en/content/secretary-general/press-release?page=3
 
-In this case, the worflow consists in extracting the urls of all press releases of a page, then moving to the next page and repeating the process until there are no more pages. Here, we have 1994 pages where press releases are stored with around 10 press releases per page (n ~ 19940 press releases).
+In this case, the worflow consists in extracting the urls of all press releases of a page, then moving to the next page and repeating the process until there are no more pages. Here, we have 2050 pages where press releases are stored with around 10 press releases per page (n ~ 20500 press releases).
 
 ```{r}
 # Create a vector of all of the urls
@@ -188,14 +186,11 @@ collect_unsg_pr_content <- function(x) {
     )
 }
 
-unsg_pr_urls$link
-
-unsg_df <- map(unsg_pr_urls$link, safely(collect_unsg_pr_content), .progress = T) |> 
+unsg_df <- map(unsg_pr_urls$link[1:10], safely(collect_unsg_pr_content), .progress = T) |> 
     map_df("result")
 
 
 # Step 5 : Enhance dataframe
-
 
 unsg_df <- unsg_df |> 
     mutate(year = str_sub(date, 1, 4) |> as.numeric(),
@@ -205,7 +200,6 @@ unsg_df <- unsg_df |>
                date >= "1997-01-01" ~ "Kofi Annan",
                date >= "1992-01-01" ~ "Boutros Boutros-Ghali"))
 
-view(unsg_df)
 # Write the dataframe to a csv file
 #write_csv(unsg_df, "data/unsg_dataset.csv")
 
@@ -219,7 +213,6 @@ Once we have collected the data, we can explore the corpus a bit with the metada
 
 ```{r}
 unsg_df <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/unsg_dataset.csv")
-
 
 # Evolution of the number of press releases over time
 
