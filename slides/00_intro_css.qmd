@@ -1,7 +1,8 @@
 ---
 title : "Introduction to Computational Social Sciences"
 author : "Malo Jan & Luis Sattelmayer"
-date : today
+date: today
+date-format: long
 css: styles.css  # Link to your custom CSS file
 execute: 
   echo: false
@@ -9,8 +10,11 @@ execute:
 format: 
     revealjs:
         highlight-style: breeze
+        citations-hover: true
         theme: simple
+        slide-number: c/t
         pdf-separate-fragments: false
+        footer: "Jan & Sattelmayer -- SciencesPo, CEE"
         self-contained: true
 bibliography: references.bib
 editor_options: 
