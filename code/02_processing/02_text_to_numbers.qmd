@@ -60,6 +60,7 @@ toy_example |>
 ```{r}
 sotu_tokens <- sotu_20cent_raw |> 
   unnest_tokens(word, text, token = "words")
+
 sotu_tokens |> 
     count(word, sort = TRUE)
 ```
@@ -112,7 +113,7 @@ stopwords_getsources()
 sotu_20cent_tokenized_nostopwords <- sotu_20cent_tokenized |> 
   filter(!token %in% stopwords_vec)
 
-sotu_20cent_tokenized_nostopwords$token
+sotu_20cent_tokenized_nostopwords |> glimpse()
 ```
 
 
@@ -180,13 +181,12 @@ sotu_20cent_clean
 
 
 ## tf-idf
-
-
 Tf-idf : decrease the weight of common words and increase the weight of rare words.
 
 ```{r}
 unsg_tokens <- unsg |> 
-  unnest_tokens(word, text, token = "words")
+  unnest_tokens(word, text, token = "words") |> 
+    filter(!str_detect(word, "[0-9]"))
 
 unsg_tf_idf <- unsg_tokens |> 
     count(secretary_general, word) |> 

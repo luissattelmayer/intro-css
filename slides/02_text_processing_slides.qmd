@@ -11,6 +11,8 @@ format:
     revealjs:
         highlight-style: breeze
         theme: simple
+        slide-number: true
+        footer: "Jan & Sattelmayer -- SciencesPo"
         pdf-separate-fragments: false
         self-contained: true
 bibliography : references.bib
