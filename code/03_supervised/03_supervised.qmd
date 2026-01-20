@@ -82,7 +82,8 @@ economy_dfm <- economy_recipe |>
   prep() |> 
   bake(new_data = NULL)
 
-economy_dfm 
+economy_dfm |> select(label, tf_text_tax) |> 
+    arrange(-tf_text_tax)
 
 
 
@@ -199,8 +200,7 @@ preds_economy_rf |>
 It is generally a good practice to benchmark different supervised models and also compare their performance against other methods to validate their effectiveness. Reviewers often request this when submitting papers with supervised models. The simplest alternative method for comparison is a dictionary of keywords aimed at measuring the same concept. Here, I create a dictionary of keywords related to the economy to compare against the random forest model. It is a simple list of words that are likely to appear in sentences related to the economy but is not exhaustive.
 
 ```{r}
-econ_keywords <- c("economy", "fiscal", "budget", "taxation", "inflation", 
-              "monetary", "subsidy", "deficit", "investment", "trade")
+econ_keywords <- c("economy")
 
 preds_economy_rf <- preds_economy_rf |> 
     mutate(
@@ -212,6 +212,10 @@ preds_economy_rf <- preds_economy_rf |>
 
 preds_economy_rf |> 
     count(pred_keywords)
+
+preds_economy_rf |> 
+    filter(pred_keywords == 1) |> 
+    select(pred_keywords, label, text) |> view()
 
 compute_metrics(preds_economy_rf, truth = label, estimate = pred_keywords)
 ```
