@@ -7,14 +7,19 @@ format : pdf
 The following script introduces supervised text classification in R. To do so, we use the `tidymodels` package, which provides a consistent interface to train and evaluate models, which are otherwised scattered across different packages in R.
 
 ```{r}
-needs(tidymodels, tidyverse, tidytext, textrecipes, vip)
+# Packages need to be installed beforehand using install.packages("package_name")
 
+library(tidymodels)
+library(tidyverse)
+library(tidytext)
+library(textrecipes)
+library(vip)
 ```
 
 To illustrate the process, we use a dataset from Benoit et al. (2016) that was crowdsourced to classify english party manifestos being about economy policy, social policy or other. The corpus contains around 16000 natural sentences from British Conservative, Labour and Liberal democrats manifestos between 1987 and 2010. We focus here on a binary classification task about the speech being about economic policy or not. 
 
 ```{r}
-df <- read_csv("https://raw.githubusercontent.com/haukelicht/advanced_text_analysis/refs/heads/main/data/labeled/benoit_crowdsourced_2016/benoit_crowdsourced_2016-policy_area.csv")
+df <- read_csv("https://cta-text-datasets.s3.eu-central-1.amazonaws.com/labeled/benoit_crowdsourced_2016/benoit_crowdsourced_2016-policy_area.csv")
 
 df |> 
     count(label)
@@ -74,18 +79,16 @@ Once we have the training and testing sets, we can begin the preprocessing steps
 economy_recipe <- recipe(label ~ text, data = df_train) |>
     step_tokenize(text) |>
     step_stopwords(text) |>
-    step_tf_df(text) 
+    step_tf(text) 
 
 economy_recipe
 
 economy_dfm <- economy_recipe |> 
   prep() |> 
-  bake(new_data = NULL)
+  bake(new_data = NULL) |> 
+bind_cols(df_train |> select(text))
 
-economy_dfm |> select(label, tf_text_tax) |> 
-    arrange(-tf_text_tax)
-
-
+economy_dfm |> select(text, label, tf_text_tax, tf_text_financet) |> view()
 
 ```
 
@@ -155,6 +158,8 @@ conf_mat
 preds_economy_rf |> 
     count(label, .pred_class)
 
+# Set 1 to be main class
+
 preds_economy_rf <- preds_economy_rf |> mutate(
     label = fct_relevel(label, c("1", "0")),
     .pred_class = fct_relevel(.pred_class, c("1", "0"))
@@ -163,13 +168,6 @@ preds_economy_rf <- preds_economy_rf |> mutate(
 ```
 
 Yet, the confusion matrix is not enough to evaluate the model. We can compute several metrics such as accuracy, recall, precision, and F1-measure to get a better understanding of the model's performance. These metrics are computed using the `metric_set()` function from the `yardstick` package.
-
-
-```{r}
-preds_economy_rf |> 
-    select(.pred_class, label) 
-
-```
 
 ```{r}
 # Create a function to compute multiple metrics
@@ -236,15 +234,20 @@ manifestos <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-
 
 preds_manifesto <- augment(economy_model_rf, manifestos)
 
-preds_manifesto |> head(10) |> view()
+preds_manifesto
 
 preds_manifesto |> 
+    # Keep only relevant parties
     filter(partyname %in% c("Lab", "Tories", "Lib Dems", "SNP", "Green")) |> 
+    # Compute counts of economy and non economy sentences by party
     group_by(partyname) |>
     count(.pred_class) |> 
+    # Compute proportions
     mutate(prop =n/sum(n)*100) |> 
-    filter(.pred_class == 1)
-
+    # Keep only economy related sentences
+    filter(.pred_class == 1) |> 
+    # Arrange by proportion
+    arrange(desc(prop))
 
 ```
 
@@ -253,7 +256,7 @@ preds_manifesto |>
 # Look at evolution over time
 
 preds_manifesto |> 
-    filter(partyname %in% c("Lab", "Tories", "Lib Dems", "SNP", "Green")) |> 
+    filter(partyname %in% c("Lab", "Tories", "Lib Dems")) |> 
     group_by(year, partyname) |> 
     count(.pred_class) |> 
     mutate(prop = n/sum(n)*100) |> 
@@ -265,123 +268,12 @@ preds_manifesto |>
         "Party",
         values = c(
             "Tories" = "#0072B2",
-            "Green" = "#009E73",
             "Lab" = "#E64B35",
-            "Lib Dems" = "#E69F00",
-            "SNP" = "black"
+            "Lib Dems" = "#E69F00"
         )) +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom") +
+    labs(
+        x = "Year",
+        y = "Proportion of Economy-Related Sentences (%)"
+    )
 ```
-
-
-## Cross validation and hyperparameter tuning
-
-As mentioned earlier, some models require hyperparameters to be set before training, and these hyperparameters can significantly impact the model's performance. To find the optimal hyperparameters, we can use a technique called grid search, which trains the model using different combinations of hyperparameters and selects the best combination based on a performance metric such as accuracy or F1-score.
-
-However, we cannot use the same data to both tune the hyperparameters and evaluate the model, as this can lead to overfitting. Instead, it is common to use cross-validation, a technique that splits the data into multiple folds. The model is trained on all but one fold and evaluated on the remaining fold. This process is repeated for each fold, and the performance is averaged to ensure that the hyperparameter selection is robust and not biased toward a specific subset of the data.
-
-![Graph from https://scikit-learn.org/stable/modules/cross_validation.html/](https://scikit-learn.org/stable/_images/grid_search_cross_validation.png)
-This process is repeated multiple times to get a more accurate estimate of the model's performance. Here, we use the `vfold_cv()` function from the `rsample` package to create 10 folds for cross-validation.
-
-```{r}
-econ_folds <- vfold_cv(df_train)
-
-econ_folds
-```
-
-
-```{r}
-workflow_econ_rf_cv <- workflow() |> 
-    add_model(rf_spec) |> 
-    add_recipe(economy_recipe)
-
-econ_rf_resampled <- fit_resamples(
-  workflow_econ_rf_cv,
-  econ_folds,
-  control = control_resamples(save_pred = TRUE),
-  metrics = metric_set(accuracy, recall, precision, f_meas)
-)
-
-#write_rds(econ_rf_resampled, "data/econ_rf_resampled.rds")
-
-#econ_rf_resampled <- read_rds("https://github.com/luissattelmayer/intro-css/raw/refs/heads/main/data/econ_rf_resampled.rds")
-```
-
-
-```{r}
-econ_cv_metrics <- collect_metrics(econ_rf_resampled)
-econ_cv_predictions <- collect_predictions(econ_rf_resampled)
-```
-
-
-```{r}
-# Define the grid of hyperparameters
-
-econ_model_rf_tune <- rand_forest(trees = tune()) |> 
-    set_mode("classification") |> 
-    set_engine("ranger")
-```
-
-With text, it is also possible to tune the preprocessing steps, such as the number of tokens to keep or the maximum number of features in the TF-IDF matrix. Here, we tune the `max_tokens` argument in the `step_tokenfilter()` function, which controls the number of tokens to keep after tokenization. We also tune the number of trees in the random forest model.
-
-```{r}
-econ_recipe_rf_tune <- recipe(label ~ text, data = df_train) |>
-    step_tokenize(text) |>
-    step_tokenfilter(text, max_tokens = tune()) |>
-    step_tfidf(text)
-
-lambda_grid <- grid_regular(
-  trees(range = c(100, 300)),
-  max_tokens(range = c(1e3, 2e3)), 
-  levels = 5
-  )
-
-econ_wf_rf_tune <- workflow() |> 
-    add_recipe(econ_recipe_rf_tune) |> 
-    add_model(econ_model_rf_tune)
-
-set.seed(123)
-
-tune_rf_rs <- tune_grid(
-  econ_wf_rf_tune,
-  econ_folds,
-  grid = lambda_grid,
-  metrics = metric_set(f_meas)
-)
-
-tune_rf_rs
-
-#write_rds(tune_rf_rs, "data/tune_rf_rs.rds")
-# tune_rf_rs <- read_rds("https://github.com/luissattelmayer/intro-css/raw/refs/heads/main/data/tune_rf_rs.rds")
-
-
-
-```
-
-Once we have tuned the hyperparameters, we can select the best model based on the F1-score and finalize the workflow with the optimal hyperparameters. The `show_best()` function displays the best model based on the F1-score, and the plot shows the performance of the models with different hyperparameters. Finally, we finalize the workflow with the best hyperparameters and fit the model on the training data with `last_fit()`.
-
-```{r}
-show_best(tune_rf_rs, "f_meas")
-
-collect_metrics(tune_rf_rs) |> 
-    ggplot(aes(x = trees, y = mean, color = as.factor(max_tokens))) +
-    geom_line() +
-    theme_light()
-
-final_rf_wf <- finalize_workflow(econ_wf_rf_tune, select_best(tune_rf_rs, metric = "f_meas"))
-
-final_rf_wf
-
-final_fitted <- last_fit(final_rf_wf, split)
-```
-
-After fitting the model, we can evaluate its performance on the test data using the `collect_predictions()` function to get the predicted class and probabilities. We can then compute the accuracy, recall, precision, and F1-score using the `compute_metrics()` function. Here we obtain a f1 score of 0.883 on the test set, that is actually not better than the one that we had without...
-
-```{r}
-predictions_last_fit <- collect_predictions(final_fitted)
-predictions_last_fit
-
-compute_metrics(predictions_last_fit, truth = label, estimate = .pred_class)
-```
-
-
