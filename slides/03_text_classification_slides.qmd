@@ -97,9 +97,9 @@ Compare to dictionnary : context of words matters
 - Ouput :
     - Probabilities of belonging to each category  
     - If two categories, a binary classification, usually > 0.5
-    - If more than two categories, a multi-class classification, class assign is highest probability
+    - If more than two categories, a multi-class classification, highest probability
 
-## Uses cases  {.smaller}
+## Use cases  {.smaller}
 
 - Policy issue classification [@burscher2015using ;  @Burst2024]
 - Populism, Nationalism, Authoritarianism [@licht2024measuring ; @bonikowski2022politics]
@@ -272,7 +272,7 @@ Compare to dictionnary : context of words matters
 - Classical models : Logistic regression, Naive Bayes, SVM, Random Forest
     - Simple and fast
     - Rely on bag-of-words representations
-    - Lot of preprocessing needed
+    - A lot of preprocessing needed
     - Limited performance 
 
 - Transformers models (eg: BERT)
