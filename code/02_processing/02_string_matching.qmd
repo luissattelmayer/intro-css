@@ -7,10 +7,8 @@ editor_options:
 In this document, we will learn how to manipulate text data in R using the *stringr* package. It provides a set of functions that make it easier to work with strings in R. The package is part of the tidyverse. All functions in stringr start with *str_*, making it easy to identify them. They are designed to work with regular expressions to manipulate strings and match patterns. To learn more about the package, you can visit the [official documentation](https://stringr.tidyverse.org/) and its presentation in Hadley Wickham's R for Data Science [book](https://r4ds.hadley.nz/strings).  
 
 ```{r}
-
 library(tidyverse)
 library(rvest)
-
 ```
 
 ## Creating and combining strings
@@ -24,10 +22,7 @@ class(text)
 ```
 
 It is also possible to have vectors of strings in R, "character vectors", that are created using the c() function. 
-
 ```{r}
-
-
 texts <- c("Some facts about US presidents:", 
           "Donald Trump was elected president in 2016.", 
             "Joe Biden won the presidency in 2020.", 
@@ -68,7 +63,7 @@ You can also detect whether a given pattern is present in a string using `str_de
 
 ```{r}
 texts
-str_detect(text, "Trump") # Detect the word Trump in the text
+str_detect(text, "Obama") # Detect the word Trump in the text
 str_detect(texts, "Trump") # Detect the word Trump in the texts
 
 str_count(text, "Trump") # Count the number of occurrences of Trump in the text
@@ -133,22 +128,22 @@ Regex contains also a set of metacharacters that are special character that has 
 The most common metacharacters is the dot `.`
 
 ```{r}
-str_view(text, "Trump...........") # Highlight the word "Trump" in the text
+str_view(text, "Trump..................") # Highlight the word "Trump" in the text
 ```
 
 An important metacharacter is the backslash `\`, which is used to escape metacharacters. For instance, if you want to match a dot, you need to escape it with a backslash. In R you need to escape the backslash itself, so you need to use two backslashes. If you want to match a literal '\', you need to use \\\\'. 
 
 ```{r}
-str_view(text, ".") # Highlight the word "Trump" in the text
-str_view(text, "\\.") # Highlight the word "Trump" in the text
+str_view(text, ".") 
+str_view(text, "\\.") 
 ```
 
 Other important metacharacters are the character classes, which are used to match specific types of characters. For instance, the character class `\\d` is used to match digits or \\w to match word characters, "\\s" to match whitespace characters.
 
 ```{r}
 str_view(text, "\\d") # Highlight digits in the text
-str_view(text, "[A-z]") # Highlight word characters in the text
-str_view(text, "\\s\\d") # Highlight whitespace characters in the text
+str_view(text, "[a-z]") # Highlight word characters in the text
+str_view(text, "\\s") # Highlight whitespace characters in the text
 ```
 
 ## Quantifiers
@@ -156,21 +151,22 @@ str_view(text, "\\s\\d") # Highlight whitespace characters in the text
 Quantifiers are used to match a specific number of occurrences of a pattern. For instance, the quantifier `+` is used to match one or more occurrences of a pattern. 
 
 ```{r}
-str_view(text, "\\d+") # Highlight word characters in the text
+str_view(text, "\\d+")
+
 str_extract_all(text, "\\d+") # Extract all digits in the text
 ```
 
 The quantifier `*` is used to match zero or more occurrences of a pattern. In the eemple below, we will match the word "president" followed by zero or more "s". 
 
 ```{r}
-str_view(text, "presidents*") 
+str_view(text, "presiden") 
 ```
 
 You can create a range of occurrences using the quantifier `{}`. For instance, if you want to match exactly 4 digits, you can use the pattern "\\d{4}". 
 
 ```{r}
 str_view(text, "\\d{4}") 
-str_view(text, "\\d{3}") 
+str_view(text, "\\d{2}") 
 
 date <- "2025-01-01"
 
@@ -238,7 +234,7 @@ unsg_df
 # Subset a corpus based on a set of keywords
 
 unsg_palestine <- unsg_df |> 
-    filter(str_detect(text, "[Pp]alestine|[Gg]aza|[Ww]est [Bb]ank|Hamas"))
+    filter(str_detect(text, "Palestine|Palestinian|[Gg]aza|[Ww]est [Bb]ank|Hamas"))
 
 
 ```
@@ -247,12 +243,14 @@ unsg_palestine <- unsg_df |>
 ```{r}
 # Add a column to the dataframe if a text contains a keyword and count the number of keywords in the text
 
-unsg_df <- unsg_df |> 
-    mutate(palestine_keywords_dummy = str_detect(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"), 
-           palestine_keywords_count = str_count(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"))
+unsg_df <- unsg_df |>
+    mutate(
+        palestine_keywords_dummy = str_detect(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas"),
+        palestine_keywords_count = str_count(text, "[Pp]alestine|[Gg]aza|[We]st [Bb]ank|Hamas")
+    )
 
 unsg_df |> 
-    filter(palestine_keywords_count > 10)
+    filter(palestine_keywords_count > 5)
 ```
 
 
@@ -298,7 +296,7 @@ scrape_congreso <- function(x) {
 
 congreso <- scrape_congreso("https://www.congreso.es/es/busqueda-de-publicaciones?p_p_id=publicaciones&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_publicaciones_mode=mostrarTextoIntegro&_publicaciones_legislatura=XIV&_publicaciones_texto=&_publicaciones_id_texto=DSCD-14-PL-30.CODI.#1")
 
-congreso
+congreso_long |> view()
 
 congreso <- congreso |>
     mutate(

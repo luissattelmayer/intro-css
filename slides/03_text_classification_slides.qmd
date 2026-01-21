@@ -88,6 +88,7 @@ Compare to dictionnary : context of words matters
 
 : From [van Atteveldt et al, 2022](https://v2.cssbook.net/content/chapter08#tbl-mllingo)
 
+
 ## Inputs and outpus in supervised learning for text analysis {.smaller}
 
 <!-- "Train a classifier" -->
@@ -140,9 +141,12 @@ Compare to dictionnary : context of words matters
 8. Use in downstream analysis-->
 
 
+
+
 ## {.smaller}
 
 ![@licht2024measuring : A supervised learning workflow](images/03_licht_pipeline.png)
+
 
 ## {.smaller}
 
