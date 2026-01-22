@@ -10,6 +10,7 @@ format:
     revealjs:
         highlight-style: breeze
         theme: simple
+        footer: "Jan & Sattelmayer -- SciencesPo"
         pdf-separate-fragments: false
         self-contained: true
 bibliography: references.bib
@@ -48,9 +49,9 @@ editor_options:
 ## How does this relate to ML? {.smaller}
 - Unsupervised learning is a crucial part of the machine learning pipeline
     - preprocess data, identify patterns, and reduce the dimensionality of data
-- Unsupervised learning is often used in combination with supervised learning to improve the performance of predictive models
-    - topic modeling can be used to identify topics in a collection of documents, which can then be used as labels in a supervised learning model
-    - word embeddings can be used to represent words as dense vectors, which can then be used as input to a supervised learning model
+- Often used in combination with supervised approaches to improve the performance of predictive models
+    - topic modeling --> identify topics in a collection of documents, which can then be used as labels in a supervised learning model
+    - word embeddings --> represent words as dense vectors, which can then be used as input to a supervised learning model
 
 
 # Topic Modeling
@@ -86,6 +87,13 @@ editor_options:
     - syntax
 - LDA enhances the basic BoW model by assuming that documents are mixtures of topics, and topics are distributions over words
 
+## @gonzatti2025far
+![](images/04_gonzatti_völker.png)
+
+
+## @gonzatti2025far
+![](images/04_gonzatti_völker_2.png)
+
 
 # Word Embeddings
 ## What are word embeddings? 
@@ -112,9 +120,9 @@ editor_options:
     - Words with similar meanings are close in the embedding space
     
 
-## Sparse one-hot vs. dense vectors
+## Sparse (one-hot) vs. dense vectors
 
-![Difference between sparse and dense matrices](images/04_we_sparse-matrix.png)
+![Difference between sparse and dense vectors (matrices)](images/04_we_sparse-matrix.png)
 
 
 ## Dense vectors {.smaller}
@@ -126,6 +134,10 @@ editor_options:
     - Reduce dimensionality
     - Improve performance/efficiency
     - Transfer learning: pre-trained embeddings can be used in other tasks
+- **Disadvantages**:
+    - Require large amounts of data to train
+    - As unsupervised as it can get, i.e. what do they mean?
+    
     
 ## Cosine Similarity {.smaller}
 - Cosine similarity: inner product of two non-zero vectors (basically taking the cosine of the angle between two vectors)
@@ -137,6 +149,8 @@ editor_options:
 ![](images/04_we_word2vec.png){height="400" width="700"}
 :::
 
+## Word embeddings in practice
+![](images/04_word2vec.png)
 
 ## Word embeddings in practice
 
