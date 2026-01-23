@@ -9,6 +9,7 @@ format:
     revealjs:
         highlight-style: breeze
         theme: simple
+        footer: "Jan & Sattelmayer -- SciencesPo"
         pdf-separate-fragments: false
         self-contained: true
 bibliography: references.bib
@@ -76,12 +77,37 @@ editor_options:
 - Deep refers to the number of layers in the network (i.e. the depth)
 
 - **Weights**: values that define the strength of the connection between two neurons in adjacent layers of a neural network
+    - Learning happens through updating weights
 - **Biases**: parameters that allow the network to shift the activation function up or down
 - **Activation Function**: decides whether a neuron should "fire" (pass its signal forward) and how strong that signal should be
     - necessary to introduce *non-linearity* into the network and handle complex patterns in the data
+    
+## 
 
-## Transformer Architecture {.smaller}
-- Also a NN, state of the art since early 2018
+- Neuron pre-activation: $z = \sum_{i=1}^{n} w_i x_i$
+
+- Neuron plus bias: $z = \sum_{i=1}^{n} w_i x_i + b$
+
+- Neuron output after activation function: $a = f(z)$
+
+- Linear models cannot say: "This matters only if something else is already true" & Many linear layers stacked together are still just one linear layer --> non-linear activation functions are crucial
+
+## Why "deep"
+
+- Each layer learns increasingly abstract representations:
+    - early layers --> simple patterns
+    - middle layers --> combinations of patterns
+    - late layers → task-specific concepts
+
+- For LLMs (this is an oversimplification!):
+    - early layers --> character/token patterns
+    - middle layers --> syntax, semantics
+    - later layers --> discourse, reasoning cues
+
+- Depth = hierarchical feature learning
+
+## Transformer Architecture
+- Also a Neural Network, state of the art since early 2018
 - "Attention is all you need" [@vaswani2017attention]
 
 - **Attention Mechanism**: 
@@ -109,19 +135,13 @@ editor_options:
 
 
 ## Transformer Architecture {.smaller}
-- **Encoder**: 
-    - processes the input sequence and generates a contextualized representation of each token
-    - multiple layers, each with attention and feedforward neural-network sub-layers
-    - captures relationships between words in the input sequence
+| Component   | What it does                                                                             | Key idea                                                                  |
+| ----------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Encoder** | Processes the input sequence and produces a contextualized representation for each token | Understands the input by learning relationships *within* the sequence     |
+| **Decoder** | Generates the output sequence based on the encoder’s representations                     | Produces text step by step, using both past outputs and the encoded input |
 
-- **Decoder**:
-    - generates the output sequence based on the encoder's representation
-    - multiple layers, with additional attention mechanisms to focus on the encoder's output
-    - machine translation, text generation/generative AI, etc.
-
-- Think about it like this: 
-    - Attention: "How does this word relate to the others in the sentence?"
-    - Feedforward: "How do I refine the representation of this word, now that I know the context?"
+- **Attention**: “How does this word relate to the others in the sentence?”
+- **Feedforward**: “How do I refine the representation of this word, now that I know the context?”
 
 ## Transfomer Architecture {.smaller}
 ::::{.columns}
@@ -150,6 +170,10 @@ editor_options:
     - processes the input sequence and generates a contextualized representation of each token
     - consists of multiple layers, each with attention and feedforward neural-network sub-layers
     - captures dynamic relationships between words in the input sequence
+    
+- **Query**: "What is the relationship of this word to others?"
+- **Key**: "How relevant is this word to others?"
+- **Value**: "What information does this word provide?"
 :::
 
 ::::
@@ -164,6 +188,8 @@ editor_options:
     - generates the output sequence based on the encoder's representation
     - also consists of multiple layers, with additional attention mechanisms to focus on the encoder's output
     - used in tasks like machine translation, text generation/generative AI, etc.
+    
+- **Masked** multi-head attention to prevent model from "seeing" future tokens during training, i.e. cheating for later tasks
 :::
 ::::
 
@@ -177,7 +203,7 @@ editor_options:
     - Picks the most likely token (*argmax*)  
     - Or samples based on the probabilities (e.g. *temperature*)
 - Softmax ensures that all output probabilities are positive and sum to 1 
-    - key step for **generative models** (aka Decoder models trained with causal language modeling)
+    - key step for **generative models** (i.e. Decoder models trained with causal language modeling)
 
 
 
@@ -398,6 +424,10 @@ editor_options:
 
 - For an opposing view see @boelaert2024machine
 
+
+## @boelaert2024machine
+![](images/05_mindthehype.png)
+
 ## Beyond text: Whisper
 - For the GitHub tutorial click [here](https://github.com/openai/whisper)
 
@@ -422,10 +452,20 @@ editor_options:
     - [Kaggle datasets](https://www.kaggle.com/datasets?tags=13207-Computer+Vision) are publicly available and pre-annotated --> can be adapted to certain tasks
 
 ## Beyond text example {.smaller}
-![Share of women in parties visual communication, detected using automated models (Jan, Piolat, and Sattelmayer ongoing)](images/05_gendered_parties.png)
+![](images/05_deepface_ex1.png)
 
 ## Beyond text example {.smaller}
-![Jan, Piolat, and Sattelmayer ongoing](images/05_gendered_countries.png)
+![](images/05_deepface_ex2.png)
+
+
+## Beyond text example {.smaller}
+![Share of women in parties visual communication, detected using automated models (Jan, Piolat, and Sattelmayer ongoing)](images/05_gender_shares.png)
+
+## Beyond text example {.smaller}
+![Jan, Piolat, and Sattelmayer ongoing](images/05_faces_per_country.png)
+
+## Beyond text example {.smaller}
+![Jan, Piolat, and Sattelmayer ongoing](images/05_faces_per_party_family.png)
 
 ## Further ressources
 - For some more basics on transformers and Neural Networks [Lena Voita's blog on NLP](https://lena-voita.github.io/nlp_course.html)

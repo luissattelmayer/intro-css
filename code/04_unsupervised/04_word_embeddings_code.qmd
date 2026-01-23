@@ -44,7 +44,7 @@ Here are two ways of accessing them. Be aware before running the lines below tha
 To download FastText, you can check out their [website](https://fasttext.cc/docs/en/crawl-vectors.html). They have off-the-shelf embeddings that you can download in 157 languages. To simply download embeddings in English, click [on this link](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.vec.gz). Download your embeddings of choice to your own machine, preferably into the environment of your R-project. You can then import it. Since they are huge, I will do this step from my own hard drive. I use `data.table::fread()` here, because it is faster than `read_csv()`. Be prepared to wait a while, when downloading and importing the data. 
 
 ```{r}
-fasttext <- data.table::fread("/Users/luissattelmayer/Downloads/cc.en.300.vec", 
+fasttext <- data.table::fread("/Users/backup-luis/Downloads/cc.en.300.vec.gz", 
                               quote ="", 
                               skip = 1, 
                               data.table = F, 
@@ -63,11 +63,7 @@ text2map.pretrained::download_pretrained("vecs_glove300_wiki_gigaword")
 
 library(text2map.pretrained)
 
-
-
-
 data("vecs_glove300_wiki_gigaword")
-
 ```
 
 The GloVe embeddings should be a large matrix with 120000000 elements. The name is very long and I rename it to `glove_wiki`. Lastly, I removed the original object to save memory.
@@ -81,19 +77,15 @@ rm(vecs_glove300_wiki_gigaword)
 The `text2vec` package provides a function to calculate the cosine similarity between two words: `sim2`. It takes two words and the embeddings as arguments and returns the cosine similarity between the two words. 
 
 ```{r}
-cos_sim <- sim2(
+sim2(
   x = glove_wiki,
-  y = glove_wiki["ai", , drop = FALSE],
+  y = glove_wiki["work", , drop = FALSE],
   method = "cosine"
 ) |> 
   enframe(name = "token", value = "cosine_sim") |> 
   mutate(cosine_sim = cosine_sim[,1]) |> 
   arrange(-cosine_sim) |> 
   slice_max(cosine_sim, n = 10)
-
-# give lowest cosine_sim
-
-cos_sim
 ```
 
 Don't hesitate to play around with different words that you put into the `sim2()` function and see what the highest cosine similarities are.
@@ -182,7 +174,7 @@ semantic_algebra("germany", "japan", "sushi")
 Why does this not work?
 
 ```{r}
-semantic_algebra("paris", "france", "malo")
+semantic_algebra("paris", "france", "CEE")
 ```
 
 
@@ -227,7 +219,7 @@ socioeconomic <- tibble(
 socio_dir <- get_direction(anchors = socioeconomic, wv = glove_wiki)
 
 # Terms to analyze
-terms <- c("banker", "teacher", "janitor", "entrepreneur", "plumber", "artist")
+terms <- c("banker", "teacher", "janitor", "entrepreneur", "plumber", "artists", "artist")
 
 # Calculate cosine similarity to the socioeconomic direction
 term_socio_bias <- sim2(socio_dir, glove_wiki[terms, ], method = "cosine")
@@ -245,8 +237,8 @@ Let's do the same thing below but with some political terms to investigate to wh
 ```{r}
 # Define socioeconomic anchor pairs
 left_right <- tibble(
-  add = c("SPD"),
-  subtract = c("CDU")
+  add = c("Democrats"),
+  subtract = c("Republicans")
 )
 
 
@@ -293,7 +285,7 @@ music_pca |>
 
 
 ```{r}
-job_query <- c("Economist", "Sociologist", "Psychologist", "Anthropologist", 
+job_query <- c("Economist", "banker" "Sociologist", "Psychologist", "Anthropologist", 
                "Historian", "Geographer", "Archeologist", "Theologist", "Pastor",
                "Priest") |> 
   str_to_lower()
@@ -303,6 +295,7 @@ job_pca <- prcomp(glove_wiki[job_query, ]) |>
   pluck("x") |> 
   as_tibble(rownames = NA) |> 
   rownames_to_column("name")
+
 
 job_pca |> 
   ggplot() +
@@ -398,8 +391,6 @@ To do this, you would need labeled data where each manifesto text is associated 
 Concept Mover's Distance classifies documents of any length along a continuous measure of engagement with a given concept of interest using word embeddings. The `text2map` package provides a function (`CMDist`). 
 
 I calculate a conceptual closeness score for each manifesto document by comparing its term-document matrix (DTM) to pre-trained word vectors (in this case, GloVe Wiki) that define the semantic space for the chosen concepts. These scores quantify the semantic alignment of each document with the selected concepts.
-
-
 
 ```{r}
 # text2map.pretrained::download_pretrained("vecs_glove300_wiki_gigaword")
