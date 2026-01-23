@@ -37,7 +37,7 @@ options(rollama_model = "llama3.1:8b-instruct-q8_0")
 
 
 ```{r}
-econ <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/annotations_june2025.csv") |> 
+econ <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/annotations_january2026.csv") |> 
     slice_sample(n = 30) |> 
     select(id, text, label)
 
@@ -76,7 +76,7 @@ MLmetrics::F1_Score(y_pred = econ$annotation, y_true = econ$label)
 If you wanted to put this into a tidy workflow...
 
 ```{r}
-econ_full <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/annotations_june2025.csv")
+econ_full <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/annotations_january2026.csv")
 
 econ_llama_annotated <- econ_full |>
   mutate(
