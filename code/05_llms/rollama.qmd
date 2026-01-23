@@ -8,7 +8,8 @@ format: html
 This document demonstrates how to use the `rollama` package in R to interact with the oLlama framework. This tutorial is very very strongly inspired by the one of [Johannes B. Gruber](https://jbgruber.github.io/rollama/articles/annotation.html#the-make_query-helper-function) who is also the author of the `rollama` package. 
 
 ```{r}
-needs(tidyverse, rollama)
+library(tidyverse)
+library(rollama)
 ```
 
 Before we can get started, you will have to install `ollama`. You can do so by following the instructions on the [ollama website](https://ollama.com/download). It will ask you to download a setup file which will then guide you through the local installation. The last step is to run a command in your terminal. 
@@ -18,8 +19,6 @@ Once you have done this, you should be able to run the following command to see 
 ```{r}
 rollama::ping_ollama()
 ```
-
-
 
 Before delving into the details on how to use the models in R, you can also check out the *ollama* package through your Terminal. If the installation was succesful, you can run "ollama"  to see the available commands that come with the ollama software. Here are some of the more important ones: 
 
@@ -33,13 +32,14 @@ The next step is to (down-)load a model. In this example, we will follow Gruber'
 
 
 ```{r}
-options(rollama_model = "llama3.2:3b-instruct-q8_0")
+options(rollama_model = "llama3.1:8b-instruct-q8_0")
 ```
 
 
 ```{r}
-econ <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/tweets_annotations.csv") |> 
-    slice(1:5)
+econ <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/annotations_june2025.csv") |> 
+    slice_sample(n = 30) |> 
+    select(id, text, label)
 
 econ
 ```
@@ -65,7 +65,7 @@ Let's now create a new column in the `econ` data frame that contains the model's
 
 ```{r}
 econ$annotation <- query(econ_queries, output = "text",  model_params = list(seed = 123, temperature = 0))
-econ
+
 ```
 
 ```{r}
@@ -76,7 +76,7 @@ MLmetrics::F1_Score(y_pred = econ$annotation, y_true = econ$label)
 If you wanted to put this into a tidy workflow...
 
 ```{r}
-econ_full <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/tweets_annotations.csv")
+econ_full <- read_csv("https://raw.githubusercontent.com/luissattelmayer/intro-css/refs/heads/main/data/annotations_june2025.csv")
 
 econ_llama_annotated <- econ_full |>
   mutate(
